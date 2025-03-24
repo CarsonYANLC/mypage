@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>语音情感识别神经网络互动教学</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 30px; line-height: 1.8; }
+    h1 { color: #2c3e50; }
+    .question { margin: 20px 0; }
+    select, input[type="text"] { padding: 5px; margin-left: 10px; }
+    .answer { display: none; margin-top: 10px; color: green; }
+    button { margin-top: 10px; padding: 5px 10px; }
+    code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>🎓 语音情感识别神经网络模型设计互动课程</h1>
+  <p>小爱同学使用 VGGish 处理音频特征，提取的大小为 <code>8x128</code>，其中 8 是时间片段数，128 是特征维度。</p>
+  <p>现在我们帮助她完成 PyTorch 神经网络的构建代码。下面是模型构建的部分：</p>
+
+  <pre><code>class Model(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.conv1 = nn.Sequential(
+            nn.Conv1d(in_channels=128, out_channels=64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            <!-- (1) --> <span id="blank1"></span>
+        )
+        self.conv2 = nn.Sequential(
+            <!-- (2) --> <span id="blank2"></span>,
+            nn.ReLU(),
+            nn.MaxPool1d(kernel_size=2, stride=2)
+        )
+        self.conv3 = nn.Sequential(
+            nn.Conv1d(in_channels=32, out_channels=16, kernel_size=3, stride=1, padding=1),
+            <!-- (3) --> <span id="blank3"></span>,
+            nn.MaxPool1d(kernel_size=2, stride=2)
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(in_features=<!-- (4) --> <span id="blank4"></span>, out_features=<!-- (5) --> <span id="blank5"></span>),
+            nn.Linear(in_features=<!-- (6) --> <span id="blank6"></span>, out_features=<!-- (7) --> <span id="blank7"></span>)
+        )
+</code></pre>
+
+  <!-- Question 1 -->
+  <div class="question">
+    <strong>(1) 填空：conv1 后的池化层代码是？</strong><br>
+    <select onchange="showAnswer(1, this.value)">
+      <option value="">请选择</option>
+      <option value="a">nn.MaxPool1d(kernel_size=2, stride=2)</option>
+      <option value="b">nn.AvgPool1d(kernel_size=2)</option>
+      <option value="c">nn.BatchNorm1d(64)</option>
+    </select>
+    <div class="answer" id="answer1">✅ 正确答案是：<code>nn.MaxPool1d(kernel_size=2, stride=2)</code></div>
+  </div>
+
+  <!-- Question 2 -->
+  <div class="question">
+    <strong>(2) 填空：conv2 的第一层卷积代码？</strong><br>
+    <input type="text" id="input2" placeholder="填写完整卷积层代码">
+    <button onclick="checkInput(2, 'nn.Conv1d(in_channels=64, out_channels=32, kernel_size=3, stride=1, padding=1)')">检查</button>
+    <div class="answer" id="answer2"></div>
+  </div>
+
+  <!-- Question 3 -->
+  <div class="question">
+    <strong>(3) 填空：conv3 的激活函数？</strong><br>
+    <select onchange="showAnswer(3, this.value)">
+      <option value="">请选择</option>
+      <option value="a">nn.Tanh()</option>
+      <option value="b">nn.Sigmoid()</option>
+      <option value="c">nn.ReLU()</option>
+    </select>
+    <div class="answer" id="answer3">✅ 正确答案是：<code>nn.ReLU()</code></div>
+  </div>
+
+  <!-- Question 4-7 -->
+  <div class="question">
+    <strong>(4)-(7) 全连接层维度推理（填入数字）：</strong><br>
+    in_features: <input type="text" id="input4" size="4"> → out_features: <input type="text" id="input5" size="4"> → 
+    in_features: <input type="text" id="input6" size="4"> → out_features: <input type="text" id="input7" size="4">
+    <button onclick="checkFC()">检查</button>
+    <div class="answer" id="answer4to7"></div>
+  </div>
+
+  <!-- Question 8-9 -->
+  <div class="question">
+    <strong>(8)-(9) 填空：计算损失的代码：</strong><br>
+    <code>loss = loss_fn( _____ , _____ )</code><br>
+    <input type="text" id="input8" placeholder="第一个参数">,
+    <input type="text" id="input9" placeholder="第二个参数">
+    <button onclick="checkLoss()">检查</button>
+    <div class="answer" id="answer8to9"></div>
+  </div>
+
+  <script>
+    function showAnswer(id, value) {
+      document.getElementById('answer' + id).style.display =
+        (id === 1 && value === 'a') || (id === 3 && value === 'c') ? 'block' : 'none';
+    }
+
+    function checkInput(id, expected) {
+      const input = document.getElementById('input' + id).value.trim();
+      const answer = document.getElementById('answer' + id);
+      if (input === expected) {
+        answer.innerHTML = '✅ 正确！';
+      } else {
+        answer.innerHTML = '❌ 错误，参考答案是：<code>' + expected + '</code>';
+      }
+      answer.style.display = 'block';
+    }
+
+    function checkFC() {
+      const correct = [2, 8, 8, 3];
+      const inputs = [4, 5, 6, 7].map(i => document.getElementById('input' + i).value.trim());
+      const answer = document.getElementById('answer4to7');
+      const correctStr = correct.join(',');
+      const inputStr = inputs.join(',');
+      if (inputStr === correctStr) {
+        answer.innerHTML = '✅ 全部正确！';
+      } else {
+        answer.innerHTML = '❌ 错误。正确填写应为：in_features: 2 → 8 → 8 → 3';
+      }
+      answer.style.display = 'block';
+    }
+
+    function checkLoss() {
+      const input8 = document.getElementById('input8').value.trim();
+      const input9 = document.getElementById('input9').value.trim();
+      const answer = document.getElementById('answer8to9');
+      if (input8 === 'y' && input9 === 'label') {
+        answer.innerHTML = '✅ 正确！';
+      } else {
+        answer.innerHTML = '❌ 错误，应为：<code>loss = loss_fn(y, label)</code>';
+      }
+      answer.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

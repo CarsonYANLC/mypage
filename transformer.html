@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>Transformer 多头注意力机制互动教学</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 30px; line-height: 1.8; }
+    h1 { color: #2c3e50; }
+    .question { margin: 20px 0; }
+    select, input[type="text"] { padding: 5px; margin-left: 10px; }
+    .answer { display: none; margin-top: 10px; color: green; }
+    button { margin-top: 10px; padding: 5px 10px; }
+    code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>🧠 Transformer 多头自注意力机制实现教学</h1>
+  <p>本节课将带你完成 Transformer 中的 <strong>Multi-Head Attention</strong> 核心实现，理解其工作原理并补全代码。</p>
+  
+  <h2>✏️ 填空练习</h2>
+
+  <!-- Question 1 -->
+  <div class="question">
+    <strong>(1) 注意力得分的计算：</strong><br>
+    <code>scores = ?</code><br>
+    <input type="text" id="input1" placeholder="请输入代码片段">
+    <button onclick="checkAnswer(1, 'np.matmul(Q, K.transpose(0, 2, 1)) / np.sqrt(d_k)')">检查</button>
+    <div class="answer" id="answer1"></div>
+  </div>
+
+  <!-- Question 2 -->
+  <div class="question">
+    <strong>(2) 输出权重矩阵 <code>WO</code> 的初始化形状？</strong><br>
+    <input type="text" id="input2" placeholder="形如 (a, b)">
+    <button onclick="checkAnswer(2, 'self.num_heads * self.head_dim, input_dim')">检查</button>
+    <div class="answer" id="answer2"></div>
+  </div>
+
+  <!-- Question 3 -->
+  <div class="question">
+    <strong>(3) 每个头的 Query Q 计算代码？</strong><br>
+    <input type="text" id="input3" placeholder="如 np.matmul(X, ...)" size="50">
+    <button onclick="checkAnswer(3, 'np.matmul(X, self.WQ[i])')">检查</button>
+    <div class="answer" id="answer3"></div>
+  </div>
+
+  <!-- Question 4 -->
+  <div class="question">
+    <strong>(4) 每个头的 Key K 计算代码？</strong><br>
+    <input type="text" id="input4" placeholder="如 np.matmul(X, ...)" size="50">
+    <button onclick="checkAnswer(4, 'np.matmul(X, self.WK[i])')">检查</button>
+    <div class="answer" id="answer4"></div>
+  </div>
+
+  <!-- Question 5 -->
+  <div class="question">
+    <strong>(5) 每个头的 Value V 计算代码？</strong><br>
+    <input type="text" id="input5" placeholder="如 np.matmul(X, ...)" size="50">
+    <button onclick="checkAnswer(5, 'np.matmul(X, self.WV[i])')">检查</button>
+    <div class="answer" id="answer5"></div>
+  </div>
+
+  <script>
+    function checkAnswer(id, expected) {
+      const input = document.getElementById('input' + id).value.trim().replace(/\s+/g, '');
+      const expectedNormalized = expected.replace(/\s+/g, '');
+      const result = document.getElementById('answer' + id);
+      if (input === expectedNormalized) {
+        result.innerHTML = '✅ 正确！';
+        result.style.color = 'green';
+      } else {
+        result.innerHTML = '❌ 错误，参考答案：<code>' + expected + '</code>';
+        result.style.color = 'red';
+      }
+      result.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

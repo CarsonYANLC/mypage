@@ -1,0 +1,535 @@
+```html
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>教师大模型（DeepSeek）使用手册</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background: #f7f7f7;
+      color: #333;
+    }
+    h1, h2, h3 {
+      margin: 1em 0 0.5em 0;
+    }
+    .toc {
+      background: #fff;
+      padding: 15px;
+      border: 1px solid #ddd;
+      margin-bottom: 2em;
+    }
+    .toc h2 {
+      margin-top: 0;
+    }
+    a {
+      text-decoration: none;
+      color: #0072c6;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    code {
+      color: #d14;
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #fafafa;
+      border-left: 4px solid #ccc;
+      padding: 1em;
+      overflow: auto;
+    }
+    .section {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 2em;
+      border: 1px solid #ddd;
+    }
+    .section h2 {
+      margin-top: 0;
+    }
+    .section h3 {
+      margin-top: 1em;
+    }
+    details {
+      margin-bottom: 1em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      padding: 0.5em 1em;
+    }
+    details summary {
+      font-weight: bold;
+      cursor: pointer;
+      list-style: none;
+    }
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+    .highlight {
+      background: #fffbcc;
+      padding: 0.1em 0.3em;
+      border-radius: 4px;
+      margin: 0 2px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>教师大模型（DeepSeek）使用手册</h1>
+
+<div class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#sec0">第 0 章：大模型概述与提示词技巧</a></li>
+    <li><a href="#sec1">第 1 章：20 条精选场景指令</a></li>
+    <li><a href="#sec2">第 2 章：DeepSeek 62 条超全指令（九大模块）</a></li>
+    <li><a href="#sec3">第 3 章：详细示例与演示（16 条课堂-作业-评估-家校沟通-管理指令）</a></li>
+    <li><a href="#sec4">第 4 章：DeepSeek 17 个实用教学案例</a></li>
+    <li><a href="#appendix">附录：提示词设计与使用技巧详解</a></li>
+  </ol>
+</div>
+
+<!-- 第0章 -->
+<div class="section" id="sec0">
+  <h2>第 0 章：大模型概述与提示词技巧</h2>
+  
+  <h3>0.1 大模型（DeepSeek）是什么</h3>
+  <p>
+    “教师大模型”（本手册中称为 <strong>DeepSeek</strong>）是基于自然语言处理技术的智能辅助手段，能够理解并生成文本，
+    辅助教师在 <em>备课、教学、评价、家校沟通、学生发展、行政管理</em> 等方面高效完成各类工作。
+  </p>
+  <ul>
+    <li><strong>核心优势：</strong>
+      <ul>
+        <li>快速生成多样化教学设计、作业、评价方案</li>
+        <li>自动整理或分析学生数据，输出可视化诊断报告</li>
+        <li>提供灵活的跨学科融合与项目式学习建议</li>
+        <li>高效编辑：演讲稿、报告、PPT 大纲、论文摘要等</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>0.2 如何给大模型下指令</h3>
+  <p>在使用 DeepSeek 时，<strong>提示词（Prompt）</strong> 非常关键。以下为常见提示词技巧：</p>
+  <ol>
+    <li><strong>角色扮演</strong>：例如“现在你是课堂行为分析师……”</li>
+    <li><strong>场景化描述</strong>：明确使用场景（如“设计某节课教案”）</li>
+    <li><strong>结构化要求</strong>：让模型输出表格、列表或按段说明</li>
+    <li><strong>分层或分步</strong>：让模型逐步思考，输出更系统</li>
+    <li><strong>限制与约束</strong>：例如“作业时间不超过 20 分钟”</li>
+    <li><strong>明确输出形式</strong>：如“提供 PPT 思维导图”或“输出脚本大纲”</li>
+  </ol>
+</div>
+
+<!-- 第1章 -->
+<div class="section" id="sec1">
+  <h2>第 1 章：20 条精选场景指令</h2>
+  <p>以下 20 条指令，涵盖备课、课堂管理、作业设计、学生成长、家校沟通、特殊教育、教师成长、应急处理、创意教学、以及工具生成器等十大类场景示例。</p>
+
+  <h3>一、备课效率革命</h3>
+  <ol>
+    <li>
+      <strong>备课指令：生活化探究 + 分层目标</strong><br/>
+      <code>“作为学科教研组长，将《牛顿定律》转化为 5 个生活化探究任务，附带分层学习目标（基础/拓展/挑战三级）。”</code>
+    </li>
+    <li>
+      <strong>跨学科大单元设计</strong><br/>
+      <code>“转换为跨学科设计师，用大单元教学思路整合历史+地理知识点，输出项目式学习地图。”</code>
+    </li>
+  </ol>
+
+  <h3>二、课堂管理秘籍</h3>
+  <ol start="3">
+    <li>
+      <strong>小组讨论参与度激励</strong><br/>
+      <code>“现在你是课堂行为分析师，针对‘小组讨论参与度低’设计 3 套激励方案，含即时奖励机制流程图。”</code>
+    </li>
+    <li>
+      <strong>教育戏剧 + 文言文沉浸式脚本</strong><br/>
+      <code>“扮演教育戏剧专家，为文言文《岳阳楼记》设计 10 分钟沉浸式角色扮演脚本（附道具清单）。”</code>
+    </li>
+  </ol>
+
+  <h3>三、作业创新工场</h3>
+  <ol start="5">
+    <li>
+      <strong>作业设计师：布鲁姆目标分类法重构</strong><br/>
+      <code>“成为作业设计师，按布鲁姆目标分类法重构《二次函数》课后练习，标注思维层级（记忆/理解/应用）。”</code>
+    </li>
+    <li>
+      <strong>AI 阅卷助手：作文评语 + 改进方案</strong><br/>
+      <code>“化身AI阅卷助手，自动生成作文个性化评语模板（含优点雷达图+改进坐标轴）。”</code>
+    </li>
+  </ol>
+
+  <h3>四、学生成长引擎</h3>
+  <ol start="7">
+    <li>
+      <strong>学习诊断师：知识漏洞拓扑图</strong><br/>
+      <code>“作为学习诊断师，根据三次月考成绩绘制知识漏洞拓扑图，推荐3个精准干预策略。”</code>
+    </li>
+    <li>
+      <strong>生涯规划导师：霍兰德测试 + 学科优势报告</strong><br/>
+      <code>“转换为生涯规划导师，为高中生设计‘霍兰德测试+学科优势’交叉分析报告（附大学专业推荐）。”</code>
+    </li>
+  </ol>
+
+  <h3>五、家校沟通桥梁</h3>
+  <ol start="9">
+    <li>
+      <strong>家校协调专家：三方沟通话术库</strong><br/>
+      <code>“现在你是家校协调专家，为‘手机管理矛盾’设计三方沟通话术库（家长/学生/教师三个版本）。”</code>
+    </li>
+    <li>
+      <strong>教育数据分析师：班级成绩可视化报告</strong><br/>
+      <code>“成为教育数据分析师，将班级成绩转化为家长会可视化报告，自动标注个体进步轨迹。”</code>
+    </li>
+  </ol>
+
+  <h3>六、特殊教育支持</h3>
+  <ol start="11">
+    <li>
+      <strong>融合教育顾问：ADHD 学生注意力训练方案</strong><br/>
+      <code>“扮演融合教育顾问，为ADHD学生设计课堂注意力训练方案（含5分钟微干预策略）。”</code>
+    </li>
+    <li>
+      <strong>资优生导师：SCAMPER 法挑战任务</strong><br/>
+      <code>“转换为资优生导师，用SCAMPER法设计学科拓展挑战任务，附带思维训练评估量表。”</code>
+    </li>
+  </ol>
+
+  <h3>七、教师成长加速</h3>
+  <ol start="13">
+    <li>
+      <strong>教学反思教练：关键事件 + 理论对照</strong><br/>
+      <code>“作为教学反思教练，用‘关键事件+理论对照’模式生成本周教学改进方案。”</code>
+    </li>
+    <li>
+      <strong>职称答辩模拟器：个性化问答题库</strong><br/>
+      <code>“成为职称答辩模拟器，生成3套个性化问答题库并标注得分点（附应急话术储备）。”</code>
+    </li>
+  </ol>
+
+  <h3>八、应急处理锦囊</h3>
+  <ol start="15">
+    <li>
+      <strong>校园危机处理专家：突发课堂冲突双环模型</strong><br/>
+      <code>“现在你是校园危机处理专家，设计‘突发课堂冲突’双环解决模型（立即干预+长期预防）。”</code>
+    </li>
+    <li>
+      <strong>教育法律顾问：课后服务安全管理风险点</strong><br/>
+      <code>“转换为教育法律顾问，罗列课后服务安全管理的5大法律风险点及规避方案。”</code>
+    </li>
+  </ol>
+
+  <h3>九、创意教学实验室</h3>
+  <ol start="17">
+    <li>
+      <strong>跨学科魔术师：物理原理 + 语文古诗记忆装置</strong><br/>
+      <code>“扮演跨学科魔术师，用物理原理设计3个语文古诗记忆装置（附材料清单与安全指引）。”</code>
+    </li>
+    <li>
+      <strong>研学旅行策划师：生态系统 + 城市公园探究手册</strong><br/>
+      <code>“成为研学旅行策划师，为《生态系统》单元设计城市公园探究手册（含PBL评估量表）。”</code>
+    </li>
+  </ol>
+
+  <h3>十、万能工具包</h3>
+  <ol start="19">
+    <li>
+      <strong>家长会 PPT 大纲生成器</strong><br/>
+      <code>“一键生成家长会PPT大纲生成器：输入3个教育关键词，输出思维导图框架+金句素材库。”</code>
+    </li>
+    <li>
+      <strong>课程思政指令</strong><br/>
+      <code>“【专业知识点】+【思政关键词】，如【汽车电路检测】+【工匠精神】，【跨境电商运营】+【文化自信】。”</code>
+    </li>
+  </ol>
+</div>
+
+<!-- 第2章 -->
+<div class="section" id="sec2">
+  <h2>第 2 章：DeepSeek 62 条超全指令（九大模块）</h2>
+  <p>此部分指令更加细分，按 <strong>课程开发与设计、教学实施与优化、作业与评价、班级管理与德育、家校沟通协作、老师专业能力提升、特殊场景应对、心理健康辅导、行政后勤支持</strong> 九大板块共 62 条，覆盖教学全流程。</p>
+
+  <h3>模块一：课程开发与设计（9 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <ol>
+      <li>跨学科项目设计</li>
+      <li>新课标落地工具</li>
+      <li>新课改衔接方案</li>
+      <li>单课教案设计</li>
+      <li>主题单元规划</li>
+      <li>教材分析工具</li>
+      <li>教具创新设计</li>
+      <li>语文字词游戏化设计</li>
+      <li>数学教学生活化</li>
+    </ol>
+  </details>
+
+  <h3>模块二：教学实施与优化（9 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <ol>
+      <li>差异化教学策略</li>
+      <li>智慧课堂管理</li>
+      <li>分层教学指令</li>
+      <li>课堂管理指令</li>
+      <li>多媒体互动设计</li>
+      <li>微课与翻转课堂设计</li>
+      <li>实践探究活动辅助</li>
+      <li>学生自主学习方案</li>
+      <li>线上线下混合教学优化</li>
+    </ol>
+  </details>
+
+  <h3>模块三：作业与评价（7 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <ol>
+      <li>作业批改指令</li>
+      <li>学情分析指令</li>
+      <li>分层作业设计</li>
+      <li>双减作业设计</li>
+      <li>课后服务指导</li>
+      <li>教务处数据统筹</li>
+      <li>数字画像构建</li>
+    </ol>
+  </details>
+
+  <h3>模块四：班级管理与德育（9 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <ol>
+      <li>行为习惯培养</li>
+      <li>主题班会设计</li>
+      <li>班干部培养</li>
+      <li>应急演练设计</li>
+      <li>班级文化墙策划</li>
+      <li>班级圈运营指南</li>
+      <li>家访路线优化</li>
+      <li>数字家长学校</li>
+      <li>特殊需求协作</li>
+    </ol>
+  </details>
+
+  <h3>模块五：家校沟通协作（8 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <p>与上文类似，包含家校沟通会策划、家长会简报、家长访谈策略等。</p>
+  </details>
+
+  <h3>模块六：老师专业能力提升（8 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <ol>
+      <li>听课评课指令</li>
+      <li>职称材料准备</li>
+      <li>课题申报指导</li>
+      <li>教学成果展示打磨</li>
+      <li>教师职业规划建议</li>
+      <li>专家讲座整理</li>
+      <li>教学反思笔记引导</li>
+      <li>教师社群运营策略</li>
+    </ol>
+  </details>
+
+  <h3>模块七：特殊场景应对（5 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <ol>
+      <li>代课方案生成</li>
+      <li>校园宣传策划</li>
+      <li>校园传染病防控</li>
+      <li>突发舆情应对</li>
+      <li>学期初应急排课</li>
+    </ol>
+  </details>
+
+  <h3>模块八：心理健康辅导（5 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <ol>
+      <li>情绪管理指导</li>
+      <li>幼小衔接准备</li>
+      <li>数字断奶计划</li>
+      <li>正念训练课程</li>
+      <li>团体辅导活动</li>
+    </ol>
+  </details>
+
+  <h3>模块九：行政后勤支持（2 条）</h3>
+  <details>
+    <summary>点击查看详情</summary>
+    <ol>
+      <li>物资申领清单</li>
+      <li>场地预约冲突解决</li>
+    </ol>
+  </details>
+</div>
+
+<!-- 第3章 -->
+<div class="section" id="sec3">
+  <h2>第 3 章：详细示例与演示</h2>
+  <p>以下示例来自 “课堂设计与活动组织、作业与测试优化、学生评估与反馈、家校沟通与协作、教学管理与专业发展” 五大方面的典型应用场景。</p>
+
+  <h3>一、课堂设计与活动组织</h3>
+  <ol>
+    <li>
+      <strong>分步骤教案生成</strong><br/>
+      <code>“设计一节动物主题 TPR 课堂，分‘热身-输入-练习-输出’，标注教具（玩偶、卡片等）和动作指令。”</code>
+    </li>
+    <li>
+      <strong>跨学科游戏化活动</strong><br/>
+      <code>“设计一个融合数学与英语的闯关游戏，包含 3 个关卡（数字单词拼图、形状分类竞赛等）。”</code>
+    </li>
+    <li>
+      <strong>差异化教学支持</strong><br/>
+      <code>“三年级分层阅读任务：A组（自主阅读）、B组（教师伴读）、C组（图文匹配），各配书单和练习。”</code>
+    </li>
+  </ol>
+
+  <h3>二、作业与测试优化</h3>
+  <ol start="4">
+    <li>
+      <strong>创意作业生成器</strong><br/>
+      <code>“为《草房子》设计 5 种非书面作业，如角色访谈剧本、场景立体书等，注明所需材料和提交形式。”</code>
+    </li>
+    <li>
+      <strong>压力测试转化器</strong><br/>
+      <code>“将五年级数学单元测试转化为‘小数王国救援行动’闯关任务，每关 1 个核心知识点+趣味惩罚机制。”</code>
+    </li>
+    <li>
+      <strong>个性化错题本</strong><br/>
+      <code>“根据 30 份试卷错题数据，输出 TOP3 错误类型 + 推荐微课视频 + 3 道同类变式题（易/中/难）。”</code>
+    </li>
+  </ol>
+
+  <h3>三、学生评估与反馈</h3>
+  <ol start="7">
+    <li>
+      <strong>非正式观察量表</strong><br/>
+      <code>“创建幼儿园中班社交能力观察表，维度含冲突解决策略、合作意愿，用 ✓/△/✕+案例记录。”</code>
+    </li>
+    <li>
+      <strong>成长轨迹可视化</strong><br/>
+      <code>“将某学生一学期作文数据转化为雷达图，并标注 2 个关键进步点，用表情符号🚀/🎯/💡表示激励。”</code>
+    </li>
+    <li>
+      <strong>1v1 反馈话术</strong><br/>
+      <code>“给偏科生设计沟通模板，用‘我观察到…+我欣赏…+我们可以尝试…’结构，避免使用‘但是’等负面词。”</code>
+    </li>
+  </ol>
+
+  <h3>四、家校沟通与协作</h3>
+  <ol start="10">
+    <li>
+      <strong>家长会简报生成</strong><br/>
+      <code>“输入班级期中数据，生成 200 字简报（柱状图+关键结论+3 条家庭辅导建议），用【!】标注隐性能力。”</code>
+    </li>
+    <li>
+      <strong>突发事件应对模板</strong><br/>
+      <code>“制定校园冲突事件沟通流程，含 5W1H 记录模板 + 家长沟通话术（共情-过程还原-解决方案）+后续跟进清单。”</code>
+    </li>
+    <li>
+      <strong>个性化家访指南</strong><br/>
+      <code>“根据学生档案，生成 3 个破冰话题 + 2 个学业建议 + 1 个非学术优点强调点，用💡标记沟通策略。”</code>
+    </li>
+  </ol>
+
+  <h3>五、教学管理与专业发展</h3>
+  <ol start="13">
+    <li>
+      <strong>会议效率提升器</strong><br/>
+      <code>“将 90 分钟教研会议转化为高效议程：会前资料包+会中计时+会后行动表，用🚩标注优先级。”</code>
+    </li>
+    <li>
+      <strong>论文选题挖掘器</strong><br/>
+      <code>“分析近 3 年小学科学教学研究热点，输出 5 个创新选题+APA格式文献+风险提示。”</code>
+    </li>
+    <li>
+      <strong>跨校资源整合</strong><br/>
+      <code>“创建区域教师协作网需求模板：资源供需匹配表+在线教研日程生成器+知识产权协议范本，用⭐标注紧缺资源。”</code>
+    </li>
+  </ol>
+</div>
+
+<!-- 第4章 -->
+<div class="section" id="sec4">
+  <h2>第 4 章：DeepSeek 17 个实用教学案例</h2>
+  <p>
+    以下 17 个案例对如何实际调用 DeepSeek 进行教案编写、报告生成、演讲稿撰写、工作计划、学期总结、论文大纲、课件框架、作业出题、课堂活动设计等都进行了示范。
+  </p>
+  <ol>
+    <li>教案编写助手</li>
+    <li>报告生成器</li>
+    <li>演讲稿创作工具</li>
+    <li>工作计划制定者</li>
+    <li>学期总结生成器</li>
+    <li>论文创作神器</li>
+    <li>教学课件大纲生成器</li>
+    <li>作业出题助手</li>
+    <li>课堂活动设计</li>
+    <li>家长会 PPT 大纲生成</li>
+    <li>教学进度安排优化器</li>
+    <li>教师培训方案制定器</li>
+    <li>教学资源推荐引擎</li>
+    <li>课堂活动策划工具</li>
+    <li>家长会 PPT 大纲生成（另一个扩展示例）</li>
+    <li>教学进度安排优化器（另一个扩展示例）</li>
+    <li>教师培训方案制定器（另一个扩展示例）</li>
+  </ol>
+
+  <p>例如：</p>
+  <ul>
+    <li>
+      <strong>教案编写助手</strong><br/>
+      <em>提示词</em>：学科名称 + 课程主题 + 教学目标 + 教学重难点 + 教学方法 + 教学过程框架<br/>
+      <em>示例</em>：撰写“初中数学《一元一次方程》”完整教案。
+    </li>
+    <li>
+      <strong>报告生成器</strong><br/>
+      <em>提示词</em>：报告类型 + 时间段 + 关键数据 + 主要事件与问题<br/>
+      <em>示例</em>：撰写本学期教学工作总结报告，自动生成结构化文本等。
+    </li>
+    <li>
+      <strong>作业出题助手</strong><br/>
+      <em>提示词</em>：学科 + 知识点范围 + 题型要求（选择/填空/解答）+ 难度层次 + 题量<br/>
+      <em>示例</em>：为“小学数学分数初步认识”批量生成基础/中等难度题。
+    </li>
+  </ul>
+</div>
+
+<!-- 附录 -->
+<div class="section" id="appendix">
+  <h2>附录：提示词设计与使用技巧详解</h2>
+  <ol>
+    <li><strong>分步思维链</strong>：将复杂任务拆分为多个小目标，引导模型逐步给出回答。</li>
+    <li><strong>场景化限定</strong>：明确教学场景、角色、时间、对象，让输出更具针对性。</li>
+    <li><strong>数据驱动</strong>：可输入学生成绩、行为数据，让模型给出个性化分析。</li>
+    <li><strong>可视化输出</strong>：要求模型使用表格、流程图、思维导图、雷达图等形式。</li>
+    <li><strong>流程优化</strong>：在会议、活动、作业等场景中，使用“准备-实施-反馈”结构。</li>
+    <li><strong>法律保障</strong>：遇到安全管理、家校纠纷等场景时，让模型添加风险提示。</li>
+    <li><strong>反思迭代</strong>：可多次追加指令，迭代修改输出，直到获得满意结果。</li>
+  </ol>
+
+  <p><strong>使用小结：</strong></p>
+  <ul>
+    <li>通过本手册可快速了解 DeepSeek 多场景指令与提示词格式。</li>
+    <li>在 <em>备课、课堂管理、作业设计、学生成长、家校沟通、应急处理、教师专业发展</em> 等方面应用。</li>
+    <li>善用角色扮演、数据驱动、可视化、分层设计等技巧，提升效率与创意。</li>
+    <li>重要场景建议“人工复核”以确保内容准确合规。</li>
+  </ul>
+
+  <p><em>祝各位老师借助 DeepSeek 减负增效，创新教学，实现“智能 + 教育”！</em></p>
+</div>
+
+</body>
+</html>
+```

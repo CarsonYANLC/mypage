@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>零基础互动式习题解析</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6em;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .question-block {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .explanation {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-left: 4px solid #5dade2;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .check-btn, .explain-btn {
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .show {
+            display: block !important;
+        }
+        code {
+            background: #eef;
+            padding: 2px 4px;
+            font-family: Consolas, monospace;
+        }
+    </style>
+</head>
+<body>
+
+<h1>零基础互动式习题与解析</h1>
+<p>下面的题目涵盖了 <strong>Pandas</strong>、<strong>NumPy</strong>、<strong>Matplotlib</strong>、<strong>深度学习</strong>等常见知识点。请先尝试选择答案，然后点击“<em>检验答案</em>”查看是否正确，并可点击“<em>查看解析</em>”获取详细讲解。</p>
+
+<hr />
+
+<!-- 统一的JS脚本区 -->
+<script>
+    // 每道题的正确答案索引（从0开始：A=0, B=1, C=2, D=3）
+    // 顺序：1-15
+    const correctAnswers = [
+        2, // Q1: C
+        0, // Q2: A
+        0, // Q3: A
+        0, // Q4: A
+        2, // Q5: C
+        1, // Q6: B
+        0, // Q7: A
+        2, // Q8: C
+        0, // Q9: A
+        2, // Q10: C
+        0, // Q11: A
+        0, // Q12: A
+        0, // Q13: A
+        1, // Q14: B
+        3  // Q15: D
+    ];
+
+    function checkAnswer(questionIndex) {
+        const radios = document.getElementsByName("q" + questionIndex);
+        let userAnswer = -1;
+        for (let i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                userAnswer = i;
+                break;
+            }
+        }
+
+        const resultSpan = document.getElementById("result" + questionIndex);
+        if (userAnswer === -1) {
+            resultSpan.innerHTML = "<span class='incorrect'>请先选择一个选项</span>";
+            return;
+        }
+
+        if (userAnswer === correctAnswers[questionIndex - 1]) {
+            resultSpan.innerHTML = "<span class='correct'>✔ 恭喜，回答正确</span>";
+        } else {
+            resultSpan.innerHTML = "<span class='incorrect'>✘ 回答错误</span>";
+        }
+    }
+
+    function toggleExplanation(questionIndex) {
+        const exp = document.getElementById("exp" + questionIndex);
+        // 切换显示/隐藏
+        if (exp.classList.contains("show")) {
+            exp.classList.remove("show");
+        } else {
+            exp.classList.add("show");
+        }
+    }
+</script>
+
+
+<!-- Question 1 -->
+<div class="question-block">
+    <h3>第1题. Pandas 中的 DataFrame 与 Series 的主要区别是什么？</h3>
+    <div class="options">
+        <label><input type="radio" name="q1"> A. DataFrame 只能存储数值数据，而 Series 可以存储任何类型的数据</label>
+        <label><input type="radio" name="q1"> B. DataFrame 不支持缺失值，而 Series 支持</label>
+        <label><input type="radio" name="q1"> C. DataFrame 是二维结构，可以包含多列数据，而 Series 是一维结构</label>
+        <label><input type="radio" name="q1"> D. DataFrame 是 Pandas 独有的，而 Series 是 NumPy 的特性</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(1)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(1)">查看解析</button>
+    <span id="result1"></span>
+    <div class="explanation" id="exp1">
+        <p><strong>答案：C</strong></p>
+        <p><strong>解析：</strong>在 Pandas 中，<code>Series</code> 是一种一维的数据结构，就像带标签的一维数组；而 <code>DataFrame</code> 则是一个二维的数据结构，可以包含多列，并且每一列都可以是不同类型的数据。记忆方法很简单：<em>Series</em> = 一列数据，<em>DataFrame</em> = 多列组成的表格。</p>
+    </div>
+</div>
+
+<!-- Question 2 -->
+<div class="question-block">
+    <h3>第2题. 你有一个包含 10000 个正态分布随机数的 Numpy 数组 data，需要将这些数据标准化（均值为 0，标准差为 1），并计算标准化后数组中绝对值大于 2 的元素个数 count，下列哪一段代码能正确完成？</h3>
+    <div class="options">
+        <label><input type="radio" name="q2"> A. <code>normalized_data = (data - np.mean(data)) / np.std(data)</code><br>
+            <code>count = np.sum(np.abs(normalized_data) > 2)</code></label>
+        <label><input type="radio" name="q2"> B. <code>normalized_data = (data - np.median(data)) / np.std(data)</code><br>
+            <code>count = np.sum(normalized_data > 2)</code></label>
+        <label><input type="radio" name="q2"> C. <code>normalized_data = (data - np.mean(data)) / np.var(data)</code><br>
+            <code>count = np.sum(np.abs(normalized_data) > 2)</code></label>
+        <label><input type="radio" name="q2"> D. <code>normalized_data = (data - np.mean(data)) / np.std(data)</code><br>
+            <code>count = np.sum(normalized_data &gt; 2)</code></label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(2)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(2)">查看解析</button>
+    <span id="result2"></span>
+    <div class="explanation" id="exp2">
+        <p><strong>答案：A</strong></p>
+        <p><strong>解析：</strong></p>
+        <ul>
+            <li>数据标准化： <em>标准化</em>就是将数据减去均值再除以标准差，而不是方差。正确公式是：<br>
+                <code>normalized_data = (data - mean) / std</code></li>
+            <li>计算绝对值大于 2 的元素个数： <code>np.sum(np.abs(normalized_data) &gt; 2)</code></li>
+        </ul>
+        <p>选项 B 使用了 <code>median</code> 代替 <code>mean</code> 并且只统计大于 2 的元素数，不符合题意；选项 C 用了 <code>np.var(data)</code>，不是标准差；选项 D 只统计了大于 2 的数量，而题干是绝对值大于 2 的数量，少了负方向上的统计。</p>
+    </div>
+</div>
+
+<!-- Question 3 -->
+<div class="question-block">
+    <h3>第3题. 你有一个包含客户信息的 DataFrame df，其中 'age' 列有一些缺失值，希望将这些缺失值填充为平均值，下面哪一段代码可以正确完成？</h3>
+    <div class="options">
+        <label><input type="radio" name="q3"> A. <code>df['age'].fillna(df['age'].mean(), inplace=True)</code></label>
+        <label><input type="radio" name="q3"> B. <code>df['age'] = df['age'].apply(lambda x: df['age'].mean() if not pd.isnull(x) else x)</code></label>
+        <label><input type="radio" name="q3"> C. <code>df['age'].replace(np.nan, df['age'].mean())</code></label>
+        <label><input type="radio" name="q3"> D. <code>df['age'].interpolate(method='mean', inplace=True)</code></label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(3)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(3)">查看解析</button>
+    <span id="result3"></span>
+    <div class="explanation" id="exp3">
+        <p><strong>答案：A</strong></p>
+        <p><strong>解析：</strong>在 Pandas 中，直接使用 <code>fillna</code> 并传入均值即可完成缺失值的填充。<code>inplace=True</code> 表示在原 DataFrame 上进行修改。其余选项不是错误就是不符合题干的要求。</p>
+    </div>
+</div>
+
+<!-- Question 4 -->
+<div class="question-block">
+    <h3>第4题. 你有一个包含年度温度数据的 DataFrame df，其中列 'year' 和 'temperature'，要绘制温度随年份变化的折线图，可能使用的代码是？</h3>
+    <div class="options">
+        <label><input type="radio" name="q4"> A. <code>matplotlib.pyplot.plot(df['year'], df['temperature'])</code></label>
+        <label><input type="radio" name="q4"> B. <code>matplotlib.pyplot.bar(df['year'], df['temperature'])</code></label>
+        <label><input type="radio" name="q4"> C. <code>matplotlib.pyplot.hist(df['temperature'])</code></label>
+        <label><input type="radio" name="q4"> D. <code>matplotlib.pyplot.scatter(df['year'], df['temperature'])</code></label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(4)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(4)">查看解析</button>
+    <span id="result4"></span>
+    <div class="explanation" id="exp4">
+        <p><strong>答案：A</strong></p>
+        <p><strong>解析：</strong>折线图通常用 <code>plot(x, y)</code> 来绘制，这里 <code>year</code> 作为横轴，<code>temperature</code> 作为纵轴，就能展示温度随时间的变化趋势。选项 B 为柱状图，C 为直方图，D 为散点图，都不符合题意。</p>
+    </div>
+</div>
+
+<!-- Question 5 -->
+<div class="question-block">
+    <h3>第5题. Matplotlib 库中，哪种图表最适合展示数据的频率分布情况？</h3>
+    <div class="options">
+        <label><input type="radio" name="q5"> A. 折线图</label>
+        <label><input type="radio" name="q5"> B. 饼图</label>
+        <label><input type="radio" name="q5"> C. 直方图</label>
+        <label><input type="radio" name="q5"> D. 散点图</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(5)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(5)">查看解析</button>
+    <span id="result5"></span>
+    <div class="explanation" id="exp5">
+        <p><strong>答案：C</strong></p>
+        <p><strong>解析：</strong>直方图（<em>histogram</em>）最常用来观察一组数据在各区间段上的分布与频率特征。例如：<code>plt.hist(data)</code>。</p>
+    </div>
+</div>
+
+<!-- Question 6 -->
+<div class="question-block">
+    <h3>第6题. 在处理一张大小为 512x512 的三通道彩色图像时，先对每个通道四条边进行 padding （用 2 填充，padding 大小均为 1），再使用 3x3 的卷积核对某一通道卷积，最终得到的特征图大小是？</h3>
+    <div class="options">
+        <label><input type="radio" name="q6"> A. 510x510</label>
+        <label><input type="radio" name="q6"> B. 512x512</label>
+        <label><input type="radio" name="q6"> C. 514x514</label>
+        <label><input type="radio" name="q6"> D. 以上均不对</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(6)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(6)">查看解析</button>
+    <span id="result6"></span>
+    <div class="explanation" id="exp6">
+        <p><strong>答案：B</strong></p>
+        <p><strong>解析：</strong>若卷积核大小为 3x3，padding=1，stride=1（默认不变）：
+        <br>输出图像大小的计算公式为：<br>
+        <code>Out = (W - K + 2 * P) / S + 1</code>（其中W为输入大小，K为卷积核大小，P为padding，S为步长）<br>
+        将数字代入：<code>(512 - 3 + 2*1)/1 + 1 = 512</code>，因此输出仍为 512x512。</p>
+        <p>题干虽然说用 <em>数值2</em> 填充，但是只要 padding 大小是1，对输出尺寸就是+2-3+1 的计算，不影响最终是 512 大小。</p>
+    </div>
+</div>
+
+<!-- Question 7 -->
+<div class="question-block">
+    <h3>第7题. 均方差损失函数（MSE）下，如果某次输入为 [0.3, 0.6, 0.1, 0.0, -0.9] ，真实标签是 [0.0, 1.0, 0.0, 0.0, 1.0] ，模型预测是 [0.2, 0.9, -0.3, 0.0, 1.0] ，则损失值是多少？</h3>
+    <div class="options">
+        <label><input type="radio" name="q7"> A. 0.028</label>
+        <label><input type="radio" name="q7"> B. 0.14</label>
+        <label><input type="radio" name="q7"> C. 0.27</label>
+        <label><input type="radio" name="q7"> D. 0.36</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(7)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(7)">查看解析</button>
+    <span id="result7"></span>
+    <div class="explanation" id="exp7">
+        <p><strong>答案：A</strong></p>
+        <p><strong>解析：</strong>均方差（MSE）的公式为： 
+        <br><code>MSE = (1/n) * Σ (y<sub>i</sub> - ŷ<sub>i</sub>)²</code>，
+        <br>其中 n=5。我们需要分别计算 5 个位置的误差：</p>
+        <ul>
+            <li>真实值 vs 预测值：<br>
+                (1) (0.0 - 0.2)² = 0.04 <br>
+                (2) (1.0 - 0.9)² = 0.01 <br>
+                (3) (0.0 - (-0.3))² = 0.09 <br>
+                (4) (0.0 - 0.0)² = 0.00 <br>
+                (5) (1.0 - 1.0)² = 0.00 <br>
+            </li>
+            <li>误差总和： 0.04 + 0.01 + 0.09 + 0 + 0 = 0.14</li>
+            <li>除以 n=5 得到： <code>0.14 / 5 = 0.028</code></li>
+        </ul>
+        <p>所以 MSE = 0.028。</p>
+    </div>
+</div>
+
+<!-- Question 8 -->
+<div class="question-block">
+    <h3>第8题. 下面哪个不是最大池化层（Max Pooling）的作用？</h3>
+    <div class="options">
+        <label><input type="radio" name="q8"> A. 提高计算速度</label>
+        <label><input type="radio" name="q8"> B. 提高提取特征的鲁棒性</label>
+        <label><input type="radio" name="q8"> C. 增大模型参数量，有利于学习更多的信息</label>
+        <label><input type="radio" name="q8"> D. 提升模型的尺度不变性</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(8)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(8)">查看解析</button>
+    <span id="result8"></span>
+    <div class="explanation" id="exp8">
+        <p><strong>答案：C</strong></p>
+        <p><strong>解析：</strong>最大池化（MaxPool）可以减少特征图的宽高，从而减少后续计算量（提高计算速度）、增强特征提取的鲁棒性，并在一定程度上对缩放具有不变性。但它不会增加模型参数量，反而是减少空间尺寸，通常也减少了网络需要处理的数据规模。</p>
+    </div>
+</div>
+
+<!-- Question 9 -->
+<div class="question-block">
+    <h3>第9题. 在 PyTorch 中，输入图像 224x224（三通道）后，经过一个大小为 3x3、通道数 3、padding=1、步长（stride）未知的卷积核，再经过一个 2x2、stride=2、padding=0 的最大池化层，最终输出 1 个通道、尺寸为 112x112。若没有偏置项，请推断该卷积层的 stride 并写出代码。</h3>
+    <div class="options">
+        <label><input type="radio" name="q9"> A. stride=1；然后再做最大池化，通道数变为1</label>
+        <label><input type="radio" name="q9"> B. stride=2；然后再做最大池化，通道数变为1</label>
+        <label><input type="radio" name="q9"> C. stride=1；然后最大池化层 stride=1</label>
+        <label><input type="radio" name="q9"> D. stride=2；然后最大池化层 stride=1</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(9)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(9)">查看解析</button>
+    <span id="result9"></span>
+    <div class="explanation" id="exp9">
+        <p><strong>答案：A</strong></p>
+        <p><strong>解析：</strong>如果卷积层 stride=1，padding=1，并且卷积核 3x3，对于输入 224x224，不会改变空间尺寸，输出依然是 224x224（通道数由 3 变成 3 也可以，或者更多，这要看卷积核数量。但这里题目最终说是输出 1 个通道，说明卷积核数量=1）。接着再经过一个 2x2、stride=2 的最大池化操作后，<code>224/2 = 112</code>。所以最终得到的特征图尺寸为 112x112，且通道数=1。</p>
+        <p><strong>代码示例：</strong></p>
+<pre><code>import torch
+import torch.nn as nn
+
+conv = nn.Conv2d(in_channels=3, out_channels=1, kernel_size=3, stride=1, padding=1, bias=False)
+pool = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+</code></pre>
+    </div>
+</div>
+
+<!-- Question 10 -->
+<div class="question-block">
+    <h3>第10题. 下面的左图经过卷积操作后，右图周围留有一圈黑边，最可能的原因是什么？</h3>
+    <div class="options">
+        <label><input type="radio" name="q10"> A. 卷积核的值全是 0</label>
+        <label><input type="radio" name="q10"> B. 左图周围像素值是 0</label>
+        <label><input type="radio" name="q10"> C. 左图周围进行了 padding 操作，用 0 值填充</label>
+        <label><input type="radio" name="q10"> D. 以上选项均有可能</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(10)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(10)">查看解析</button>
+    <span id="result10"></span>
+    <div class="explanation" id="exp10">
+        <p><strong>答案：C</strong></p>
+        <p><strong>解析：</strong>若卷积后出现一圈黑边，最常见的原因是对原图做了零填充（padding=0），卷积计算时填充部分因为是 0，会导致卷积结果呈现一圈边缘变黑。题干并没明确说卷积核权重都为 0 或原图像素都为 0，所以最合理的解释是 <strong>padding 为 0</strong>。</p>
+    </div>
+</div>
+
+<!-- Question 11 -->
+<div class="question-block">
+    <h3>第11题. 生成对抗网络（GAN）中，判别器（Discriminator）的作用是？</h3>
+    <div class="options">
+        <label><input type="radio" name="q11"> A. 通过判别数据真假为生成器提供学习目标</label>
+        <label><input type="radio" name="q11"> B. 通过判别数据真假完成数据检测任务</label>
+        <label><input type="radio" name="q11"> C. 通过判别数据真假收敛到常数函数</label>
+        <label><input type="radio" name="q11"> D. 通过判别数据真假给真实数据评分排序</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(11)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(11)">查看解析</button>
+    <span id="result11"></span>
+    <div class="explanation" id="exp11">
+        <p><strong>答案：A</strong></p>
+        <p><strong>解析：</strong>在生成对抗网络中，判别器通过判断输入是真实样本还是生成器输出的“假”样本，从而将判别结果（也就是“打分”或区分结果）反馈给生成器，以指导生成器不断改进生成质量。</p>
+    </div>
+</div>
+
+<!-- Question 12 -->
+<div class="question-block">
+    <h3>第12题. 关于行人重识别（ReID）中常用的 Triplet Loss，下列说法错误的是？</h3>
+    <div class="options">
+        <label><input type="radio" name="q12"> A. 对于给定的 anchor，在 mini-batch 内根据特征差异大小选定 positive 和 negative</label>
+        <label><input type="radio" name="q12"> B. Triplet Loss 的训练目标为：anchor 和 positive 的距离应大于 anchor 和 negative 的距离</label>
+        <label><input type="radio" name="q12"> C. 计算 Triplet Loss 前需将特征归一化</label>
+        <label><input type="radio" name="q12"> D. 优化目标为最小化 anchor 与 positive 的差异并最大化 anchor 与 negative 的差异</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(12)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(12)">查看解析</button>
+    <span id="result12"></span>
+    <div class="explanation" id="exp12">
+        <p><strong>答案：A</strong> 不是错误； <strong>B</strong> 这个叙述是错误的；需要仔细辨别一下。</p>
+        <p><strong>然而，根据最终答案给出：选项 A</strong>。这里要仔细说明：</p>
+        <ul>
+            <li>选项 A：<em>“对于给定的 anchor，在 mini-batch 内根据特征之间的差异大小选定 positive 和 negative”</em> 这在实践中确实是一种常见的做法：一般会从 batch 中找到与 anchor 同类（距离较近）的当作 positive，异类（距离较远）的当作 negative。</li>
+            <li>选项 B：<em>“训练目标：anchor 和 positive 的距离应大于 anchor 和 negative 的距离”</em> 这其实<em>写反了</em>。正确的目标是：<strong>anchor 和 positive 的距离</strong> <em>应小</em>于 <strong>anchor 和 negative 的距离</strong>。题干中 B 说“应大于”，所以 B <strong>是错误的表述</strong>。</li>
+            <li>选项 C：在很多实现中，确实会先对特征进行 L2 归一化后再算距离，减少量纲差异。</li>
+            <li>选项 D：也是描述了 Triplet Loss 的本质：<strong>最小化 (anchor - positive) 的距离</strong>，<strong>最大化 (anchor - negative) 的距离</strong>。</li>
+        </ul>
+        <p>故本题问“哪项说法是错误的”，应该选 <strong>B</strong>。<br>
+        题干给的最终答案列表是：Q12 的答案为 <strong>A</strong>。但根据题意，<strong>应为 B 才是错误的陈述</strong>。</p>
+        <hr>
+        <p>若严格按照“最终答案”给出的答案：<strong>A</strong>。这与常识不符，但由于您给出的最终答案顺序是<em>(11-15: A A A B D)</em>，对应 Q12=“A”。只好依据所给答案。本解析以实际知识点为准：理论上 B 更像是错误选项，A 并不算错误。</p>
+        <p>如果要与题目给的最终答案保持一致，就认定 “A 是错误陈述”。可能是题目想表达：<em>“Triplet Loss 并不是一定只依赖 mini-batch 内部去选 positive/negative，可能还有别的采样策略”</em>。但总体上，此处存有歧义。</p>
+    </div>
+</div>
+
+<!-- Question 13 -->
+<div class="question-block">
+    <h3>第13题. 关于 Global Average Pooling（GAP），下列哪一项描述错误？</h3>
+    <div class="options">
+        <label><input type="radio" name="q13"> A. 在 PyTorch 中，对尺寸为 d*H*W 的特征图应用 GAP，可通过 nn.AdaptiveAvgPool2d(kernel_size=(H, W)) 实现</label>
+        <label><input type="radio" name="q13"> B. GAP 在计算时会丢弃特征图的空间位置信息</label>
+        <label><input type="radio" name="q13"> C. GAP 可用于防止过拟合</label>
+        <label><input type="radio" name="q13"> D. GAP 相比于基于特征图的预测降低了模型参数</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(13)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(13)">查看解析</button>
+    <span id="result13"></span>
+    <div class="explanation" id="exp13">
+        <p><strong>答案：A</strong></p>
+        <p><strong>解析：</strong>本题题意是“下列哪一项是错误的描述？”。这里按照最终答案列表（Q13=A），即选项 A 被认为是错误。</p>
+        <p>实际上：</p>
+        <ul>
+            <li>在 PyTorch 中若要对 <code>d*H*W</code> 的特征图做 Global Average Pooling，确实可以用 <code>nn.AdaptiveAvgPool2d((1,1))</code> 来直接得到 <code>d*1*1</code> 大小的结果。或者使用 <code>nn.AdaptiveAvgPool2d(output_size=(H, W))</code> 只是指定最终特征图大小，这种写法并不常见于“Global平均”语境，但也不算错误。</li>
+            <li>GAP 会把整张特征图求平均，确实会丢失空间位置信息。</li>
+            <li>GAP 可以减少参数量，从而有助于防止过拟合。</li>
+        </ul>
+        <p>题干的选项 A：“可以通过 <code>nn.AdaptiveAvgPool2d(kernel_size=(H, W))</code> 实现 GAP”——其实是可以的，但是一般“全局池化”指将 H×W 直接缩成 1×1。若题目较严格地认为 <em>“GAP 就是得到 1x1”</em>，那么 <code>(H, W)</code> 并非真的“全局平均到一个值”，可能被视为错误。此处遵照题目给出的最终答案即可。</p>
+    </div>
+</div>
+
+<!-- Question 14 -->
+<div class="question-block">
+    <h3>第14题. 情感分类中，给定文本 x 的输出 f(x)，标签 y ∈ {0,1}，下列哪个损失设计明显不合理？</h3>
+    <div class="options">
+        <label><input type="radio" name="q14"> A. 训练阶段：∑|y - f(x)|；推理时：选与 f(x)差绝对值最小的标签</label>
+        <label><input type="radio" name="q14"> B. 训练阶段：∑(y - f(x))³；推理时：同理取差绝对值最小</label>
+        <label><input type="radio" name="q14"> C. 训练阶段：-∑[y<sub>i</sub> log p(x<sub>i</sub>) + (1 - y<sub>i</sub>) log (1 - p(x<sub>i</sub>))]，p(x)=e<sup>-f(x)</sup> / [1 + e<sup>-f(x)</sup>]；推理时 p>0.5 则选1，否则选0</label>
+        <label><input type="radio" name="q14"> D. 训练阶段：-∑[y<sub>i</sub> log p(x<sub>i</sub>) + (1 - y<sub>i</sub>) log (1 - p(x<sub>i</sub>))]，p(x)=1 / [1 + e<sup>-f(x)</sup>]；推理时 p>0.5 则选1，否则选0</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(14)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(14)">查看解析</button>
+    <span id="result14"></span>
+    <div class="explanation" id="exp14">
+        <p><strong>答案：B</strong></p>
+        <p><strong>解析：</strong>本题给出的最终正确选项是 B 表示“不合理”。为什么？因为在二分类任务中，采用三次方误差（(y - f(x))³）非常奇怪，不常见且没有常规理论依据。最经典的做法是使用交叉熵损失（即 C 和 D 形式）。<br>
+        A 也可以视为一种回归类的损失（L1），理论上也能用，只是不常见，但尚不至于“明显不合理”。B 使用三次方差距就很不常见，且不方便优化。</p>
+    </div>
+</div>
+
+<!-- Question 15 -->
+<div class="question-block">
+    <h3>第15题. 以下关于 RNN 模型的说法不正确的是？</h3>
+    <div class="options">
+        <label><input type="radio" name="q15"> A. 训练长序列时易出现梯度爆炸或梯度消失</label>
+        <label><input type="radio" name="q15"> B. 可以处理不定长度序列</label>
+        <label><input type="radio" name="q15"> C. 常常考虑引入门控机制或梯度裁剪改善训练稳定性</label>
+        <label><input type="radio" name="q15"> D. 模型参数量与输入序列长度有关</label>
+    </div>
+    <button class="check-btn" onclick="checkAnswer(15)">检验答案</button>
+    <button class="explain-btn" onclick="toggleExplanation(15)">查看解析</button>
+    <span id="result15"></span>
+    <div class="explanation" id="exp15">
+        <p><strong>答案：D</strong></p>
+        <p><strong>解析：</strong>RNN 的参数量与隐藏层维度、输入维度等有关，但与输入序列的实际长度无关。即使输入更长的序列，模型本身的参数总量并没有变化。<br>
+        选项 A、B、C 都是正确描述。</p>
+    </div>
+</div>
+
+<hr />
+<p>以上即为所有 15 道题目的互动式解析。祝学习顺利！</p>
+
+</body>
+</html>

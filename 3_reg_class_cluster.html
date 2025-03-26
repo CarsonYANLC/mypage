@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>回归、分类、聚类 & 线性回归、逻辑回归——交互式学习页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            margin-bottom: 8px;
+        }
+        .content-section {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .question-block {
+            background: #fcfcfc;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+            padding: 15px;
+        }
+        .question-block h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .answers-area, .tf-area {
+            margin: 10px 0;
+        }
+        .answer-reveal {
+            display: none;
+            margin-top: 10px;
+            background: #e6f7ff;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .btn-show-answer {
+            margin-top: 10px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .btn-show-answer:hover {
+            background: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .subtitle {
+            color: #2980b9;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #e6f7ff;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .explanation {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>回归 (Regression)、分类 (Classification)、聚类 (Clustering) & 线性回归 (Linear Regression)、逻辑回归 (Logistic Regression)</h1>
+
+<div class="content-section">
+    <h2>一、回归、分类、聚类</h2>
+    <h3>1. 回归 (Regression)</h3>
+    <p><strong>定义：</strong>回归的目标是预测一个 <em>连续值</em>，例如房价、温度、销售量等。</p>
+    <p><strong>常见算法：</strong></p>
+    <ul>
+        <li>线性回归 (Linear Regression)</li>
+        <li>多项式回归 (Polynomial Regression)</li>
+        <li>回归树 (Regression Tree)</li>
+    </ul>
+    <p><strong>案例：</strong>房价预测、股票价格预测、销售量预测等。</p>
+
+    <h3>2. 分类 (Classification)</h3>
+    <p><strong>定义：</strong>分类的目标是预测一个 <em>离散类别</em>标签，如垃圾邮件或正常邮件、图像中的猫/狗识别等。</p>
+    <p><strong>常见算法：</strong></p>
+    <ul>
+        <li>逻辑回归 (Logistic Regression)</li>
+        <li>决策树 (Decision Tree)</li>
+        <li>随机森林 (Random Forest)</li>
+        <li>支持向量机 (SVM)</li>
+        <li>神经网络 (ANN)</li>
+    </ul>
+    <p><strong>案例：</strong>垃圾邮件过滤、肿瘤良恶性判别、手写数字识别等。</p>
+
+    <h3>3. 聚类 (Clustering)</h3>
+    <p><strong>定义：</strong>将相似的数据样本划分到同一组，没有明确标签，属于无监督学习，用于数据探索或结构发现。</p>
+    <p><strong>常见算法：</strong></p>
+    <ul>
+        <li>K-means</li>
+        <li>层次聚类 (Hierarchical Clustering)</li>
+        <li>DBSCAN</li>
+    </ul>
+    <p><strong>案例：</strong>客户分群、图像分割、文本聚类等。</p>
+
+    <h3>方法与注意点</h3>
+    <ul>
+        <li>回归、分类都属于 <strong>监督学习</strong>（有标签）；聚类属于 <strong>无监督学习</strong>（无标签）。</li>
+        <li>如果预测目标是连续值 → 选择回归；如果是有限类别 → 选择分类；如果要发现未知类别或相似分组 → 选择聚类。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>二、线性回归 & 逻辑回归</h2>
+    <h3>2.1 线性回归 (Linear Regression)</h3>
+    <p><strong>基本思想：</strong>假设输出 y 与输入特征 x 之间存在近似线性关系，常用 <em>最小二乘法(OLS)</em> 来拟合参数。</p>
+    <p><strong>模型形式：</strong></p>
+    <pre>y = w0 + w1*x1 + w2*x2 + ... + wn*xn</pre>
+    <p><strong>参数求解：</strong>最常见方式是最小化平方误差 (RSS)。<br/>
+    RSS = Σ (y_i - y_pred_i)²。</p>
+    <p><strong>适用场景：</strong>目标值是连续变量，且与特征大体呈线性关系。</p>
+
+    <h3>2.2 逻辑回归 (Logistic Regression)</h3>
+    <p><strong>基本思想：</strong>主要用于二分类或多分类，通过 <em>Sigmoid 函数</em> 将线性组合的结果映射到 (0,1) 之间，输出“某类别”的概率。</p>
+    <p><strong>模型形式：</strong></p>
+    <pre>p = 1 / (1 + e^(-z)), 其中 z = w0 + w1*x1 + ... + wn*xn</pre>
+    <p><strong>损失函数：</strong>常用对数似然 (Log-likelihood)，通过极大似然估计求解参数。</p>
+    <p><strong>应用场景：</strong>二分类(如垃圾邮件/正常邮件)，也可用 One-vs-Rest 扩展到多分类。</p>
+
+    <h3>方法与案例</h3>
+    <ul>
+        <li><strong>线性回归案例：</strong>房价预测、身高和体重关系、销售额预测等。</li>
+        <li><strong>逻辑回归案例：</strong>垃圾邮件检测、用户流失预测、肿瘤良恶性判别（二分类）。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>三、20 道模拟测试题</h2>
+    <p>以下题目涵盖回归、分类、聚类以及线性回归、逻辑回归的概念与应用。每题均带有解析，建议先思考答案再查看。</p>
+
+    <!-- 单选题(8道) -->
+    <h3>单选题 (共 8 题)</h3>
+
+    <!-- Q1 -->
+    <div class="question-block">
+        <h4>1. 如果任务需要预测“房价”，下列哪种方法更适合？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q1" id="q1a" value="A">
+            <label for="q1a">A. 分类 (Classification)</label><br/>
+            <input type="radio" name="q1" id="q1b" value="B">
+            <label for="q1b">B. 回归 (Regression)</label><br/>
+            <input type="radio" name="q1" id="q1c" value="C">
+            <label for="q1c">C. 聚类 (Clustering)</label><br/>
+            <input type="radio" name="q1" id="q1d" value="D">
+            <label for="q1d">D. 降维 (Dimensionality Reduction)</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer1')">显示解析</button>
+        <div class="answer-reveal" id="answer1">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>房价是一个连续值预测问题，故属于回归任务。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block">
+        <h4>2. 若想将大量“没有标签”的用户分群，属于下列哪种学习类型？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q2" id="q2a" value="A">
+            <label for="q2a">A. 分类</label><br/>
+            <input type="radio" name="q2" id="q2b" value="B">
+            <label for="q2b">B. 回归</label><br/>
+            <input type="radio" name="q2" id="q2c" value="C">
+            <label for="q2c">C. 聚类</label><br/>
+            <input type="radio" name="q2" id="q2d" value="D">
+            <label for="q2d">D. 强化学习</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer2')">显示解析</button>
+        <div class="answer-reveal" id="answer2">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>在没有标签的数据中做分组或划分，是聚类任务（无监督学习）。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block">
+        <h4>3. 在线性回归中，最常见的参数求解方法是什么？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q3" id="q3a" value="A">
+            <label for="q3a">A. 最小二乘法 (OLS)</label><br/>
+            <input type="radio" name="q3" id="q3b" value="B">
+            <label for="q3b">B. 交叉熵损失</label><br/>
+            <input type="radio" name="q3" id="q3c" value="C">
+            <label for="q3c">C. 信息增益</label><br/>
+            <input type="radio" name="q3" id="q3d" value="D">
+            <label for="q3d">D. k-means++ 初始化</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer3')">显示解析</button>
+        <div class="answer-reveal" id="answer3">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性回归最常见的求解方式即是最小二乘法(OLS)，最小化平方误差。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block">
+        <h4>4. 逻辑回归(Logistic Regression)的输出值往往被解释为：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q4" id="q4a" value="A">
+            <label for="q4a">A. 离散的标签值(0或1)</label><br/>
+            <input type="radio" name="q4" id="q4b" value="B">
+            <label for="q4b">B. 可在(-∞, +∞)区间的任意实数</label><br/>
+            <input type="radio" name="q4" id="q4c" value="C">
+            <label for="q4c">C. 属于某一类别的概率(范围在0到1之间)</label><br/>
+            <input type="radio" name="q4" id="q4d" value="D">
+            <label for="q4d">D. 残差 (residual)</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer4')">显示解析</button>
+        <div class="answer-reveal" id="answer4">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>逻辑回归通过 Sigmoid函数 将线性组合映射到 (0,1) 区间内，可解释为属于正类的概率。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block">
+        <h4>5. 若我们想解决“垃圾邮件检测”问题，下面哪类方法最合适？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q5" id="q5a" value="A">
+            <label for="q5a">A. 回归</label><br/>
+            <input type="radio" name="q5" id="q5b" value="B">
+            <label for="q5b">B. 分类</label><br/>
+            <input type="radio" name="q5" id="q5c" value="C">
+            <label for="q5c">C. 聚类</label><br/>
+            <input type="radio" name="q5" id="q5d" value="D">
+            <label for="q5d">D. 强化学习</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer5')">显示解析</button>
+        <div class="answer-reveal" id="answer5">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>垃圾邮件检测是分类问题（是否垃圾），通过逻辑回归、决策树等监督学习算法可实现。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block">
+        <h4>6. 在逻辑回归中，下列哪一个不是常见的步骤或概念？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q6" id="q6a" value="A">
+            <label for="q6a">A. 使用对数似然函数进行参数估计</label><br/>
+            <input type="radio" name="q6" id="q6b" value="B">
+            <label for="q6b">B. 利用 Sigmoid 将线性组合映射到(0,1)区间</label><br/>
+            <input type="radio" name="q6" id="q6c" value="C">
+            <label for="q6c">C. 求解最小平方误差作为主要目标</label><br/>
+            <input type="radio" name="q6" id="q6d" value="D">
+            <label for="q6d">D. 预测输出为某一类别的概率</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer6')">显示解析</button>
+        <div class="answer-reveal" id="answer6">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>最小平方误差通常用于线性回归。逻辑回归采用对数似然损失，通过极大似然估计来求解。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block">
+        <h4>7. 下列哪项“不是”回归任务的典型案例？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q7" id="q7a" value="A">
+            <label for="q7a">A. 房价预测</label><br/>
+            <input type="radio" name="q7" id="q7b" value="B">
+            <label for="q7b">B. 股票价格预测</label><br/>
+            <input type="radio" name="q7" id="q7c" value="C">
+            <label for="q7c">C. 客户购买行为分群</label><br/>
+            <input type="radio" name="q7" id="q7d" value="D">
+            <label for="q7d">D. 年龄预测</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer7')">显示解析</button>
+        <div class="answer-reveal" id="answer7">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>客户分群属于无监督学习（聚类），其余如房价、股票价格、年龄都是连续值预测任务。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block">
+        <h4>8. 如果想把图像分成“猫”或“狗”两类标签，最合适的任务是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q8" id="q8a" value="A">
+            <label for="q8a">A. 回归</label><br/>
+            <input type="radio" name="q8" id="q8b" value="B">
+            <label for="q8b">B. 分类</label><br/>
+            <input type="radio" name="q8" id="q8c" value="C">
+            <label for="q8c">C. 聚类</label><br/>
+            <input type="radio" name="q8" id="q8d" value="D">
+            <label for="q8d">D. 降维</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer8')">显示解析</button>
+        <div class="answer-reveal" id="answer8">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>把图像判别为猫或狗，属于离散标签预测（分类）。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 多选题(6道) -->
+    <h3>多选题 (共 6 题)</h3>
+
+    <!-- Q9 -->
+    <div class="question-block">
+        <h4>9. 关于回归、分类和聚类，下列哪些说法是正确的？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q9" id="q9a" value="A">
+            <label for="q9a">A. 回归和分类都属于有标签的监督学习</label><br/>
+            <input type="checkbox" name="q9" id="q9b" value="B">
+            <label for="q9b">B. 聚类通常没有预先标签，属于无监督学习</label><br/>
+            <input type="checkbox" name="q9" id="q9c" value="C">
+            <label for="q9c">C. 回归的目标变量是离散值</label><br/>
+            <input type="checkbox" name="q9" id="q9d" value="D">
+            <label for="q9d">D. 分类的目标变量是离散类别</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer9')">显示解析</button>
+        <div class="answer-reveal" id="answer9">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>回归、分类是有监督学习，聚类是无监督；回归预测连续值 (C 错)，分类预测离散类别。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block">
+        <h4>10. 下列场景中，哪些可以使用聚类算法来进行初步分析？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q10" id="q10a" value="A">
+            <label for="q10a">A. 将电商用户分为不同偏好群体</label><br/>
+            <input type="checkbox" name="q10" id="q10b" value="B">
+            <label for="q10b">B. 识别手写数字是否是 0-9</label><br/>
+            <input type="checkbox" name="q10" id="q10c" value="C">
+            <label for="q10c">C. 发掘文本中可能包含的主题分布</label><br/>
+            <input type="checkbox" name="q10" id="q10d" value="D">
+            <label for="q10d">D. 房价预测</label><br/>
+            <input type="checkbox" name="q10" id="q10e" value="E">
+            <label for="q10e">E. 将图像进行“相似风格”分组</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer10')">显示解析</button>
+        <div class="answer-reveal" id="answer10">
+            <strong>正确答案：A, C, E</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>用户分群、文本主题发掘、图像相似分组均是无监督聚类常见场景；手写数字识别有明确标签（0~9），房价预测为连续值回归。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-block">
+        <h4>11. 关于线性回归，下列哪些说法是正确的？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q11" id="q11a" value="A">
+            <label for="q11a">A. 假设输出与输入特征间存在线性关系</label><br/>
+            <input type="checkbox" name="q11" id="q11b" value="B">
+            <label for="q11b">B. 常用最小二乘法最小化平方误差</label><br/>
+            <input type="checkbox" name="q11" id="q11c" value="C">
+            <label for="q11c">C. 最适合做多分类问题</label><br/>
+            <input type="checkbox" name="q11" id="q11d" value="D">
+            <label for="q11d">D. 可用来预测连续值，如房价、温度</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer11')">显示解析</button>
+        <div class="answer-reveal" id="answer11">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性回归适用于回归任务（预测连续值），最常见的解法是最小二乘法，且假设线性关系；多分类则是分类任务 (C 错)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block">
+        <h4>12. 关于逻辑回归，下列哪些描述是正确的？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q12" id="q12a" value="A">
+            <label for="q12a">A. 输出可以解释为某类别的概率</label><br/>
+            <input type="checkbox" name="q12" id="q12b" value="B">
+            <label for="q12b">B. 损失函数通常为对数似然 (Log-likelihood)</label><br/>
+            <input type="checkbox" name="q12" id="q12c" value="C">
+            <label for="q12c">C. 最常用于预测连续目标值</label><br/>
+            <input type="checkbox" name="q12" id="q12d" value="D">
+            <label for="q12d">D. 可以通过 One-vs-Rest 方式扩展到多分类</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer12')">显示解析</button>
+        <div class="answer-reveal" id="answer12">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>逻辑回归的输出是概率 (A)，损失函数是对数似然 (B)，可用 One-vs-Rest 扩展多分类 (D)。预测连续值一般是回归，不是逻辑回归。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block">
+        <h4>13. 下列哪些算法可以用于分类任务？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q13" id="q13a" value="A">
+            <label for="q13a">A. 线性回归</label><br/>
+            <input type="checkbox" name="q13" id="q13b" value="B">
+            <label for="q13b">B. 逻辑回归</label><br/>
+            <input type="checkbox" name="q13" id="q13c" value="C">
+            <label for="q13c">C. 决策树</label><br/>
+            <input type="checkbox" name="q13" id="q13d" value="D">
+            <label for="q13d">D. K-means</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer13')">显示解析</button>
+        <div class="answer-reveal" id="answer13">
+            <strong>正确答案：B, C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>逻辑回归和决策树都是常见的分类算法，线性回归主要用于回归，K-means 用于聚类。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block">
+        <h4>14. 下列哪些说法与回归、分类、聚类三者关系正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q14" id="q14a" value="A">
+            <label for="q14a">A. 回归和分类都依赖已知标签 (y)，聚类不需要标签</label><br/>
+            <input type="checkbox" name="q14" id="q14b" value="B">
+            <label for="q14b">B. 聚类可以代替回归预测具体数值</label><br/>
+            <input type="checkbox" name="q14" id="q14c" value="C">
+            <label for="q14c">C. 分类输出离散类别，回归输出连续值</label><br/>
+            <input type="checkbox" name="q14" id="q14d" value="D">
+            <label for="q14d">D. 聚类属于无监督学习</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer14')">显示解析</button>
+        <div class="answer-reveal" id="answer14">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>回归、分类是监督学习 (需要标签)，聚类无标签 (无监督)，分类输出离散类别，回归输出连续值。聚类并不能直接预测具体数值 (B 错)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 判断题(6道) -->
+    <h3>判断题 (共 6 题)</h3>
+
+    <!-- Q15 -->
+    <div class="question-block">
+        <h4>15. 判断：回归和聚类都需要标签(y)才能训练模型。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q15" id="q15t" value="True">
+            <label for="q15t">True</label>
+            <input type="radio" name="q15" id="q15f" value="False">
+            <label for="q15f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer15')">显示解析</button>
+        <div class="answer-reveal" id="answer15">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>回归需要标签(连续值)，但聚类是无监督学习，没有标签。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question-block">
+        <h4>16. 判断：线性回归只能用于一元输入特征，无法扩展到多元输入。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q16" id="q16t" value="True">
+            <label for="q16t">True</label>
+            <input type="radio" name="q16" id="q16f" value="False">
+            <label for="q16f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer16')">显示解析</button>
+        <div class="answer-reveal" id="answer16">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性回归可以扩展到多元输入特征 (多元线性回归)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block">
+        <h4>17. 判断：逻辑回归可以用来处理多分类场景，但需采取 One-vs-Rest 或 Softmax 等方式。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q17" id="q17t" value="True">
+            <label for="q17t">True</label>
+            <input type="radio" name="q17" id="q17f" value="False">
+            <label for="q17f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer17')">显示解析</button>
+        <div class="answer-reveal" id="answer17">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>逻辑回归最常用于二分类，但可以通过多分类策略扩展到多分类问题，如 One-vs-Rest (OvR) 或多项式Logistic(Softmax)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-block">
+        <h4>18. 判断：如果目标是预测股票是否会上涨或下跌，最好把它看作回归问题。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q18" id="q18t" value="True">
+            <label for="q18t">True</label>
+            <input type="radio" name="q18" id="q18f" value="False">
+            <label for="q18f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer18')">显示解析</button>
+        <div class="answer-reveal" id="answer18">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>上涨/下跌是二分类问题，属于离散标签。除非你要预测确切的涨幅值，才是回归。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-block">
+        <h4>19. 判断：聚类可以用于处理没有标签的数据集。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q19" id="q19t" value="True">
+            <label for="q19t">True</label>
+            <input type="radio" name="q19" id="q19f" value="False">
+            <label for="q19f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer19')">显示解析</button>
+        <div class="answer-reveal" id="answer19">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>聚类是无监督学习，一般用于没有标签的数据。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-block">
+        <h4>20. 判断：在多项式回归中，如果将输入 x 转化为 (x, x², x³, ...) 就可以在某种程度上拟合非线性关系。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q20" id="q20t" value="True">
+            <label for="q20t">True</label>
+            <input type="radio" name="q20" id="q20f" value="False">
+            <label for="q20f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer20')">显示解析</button>
+        <div class="answer-reveal" id="answer20">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>多项式回归是通过增加 x 的幂次项来捕捉一定程度的非线性关系。</p>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- content-section end -->
+
+<script>
+function showAnswer(id) {
+    const revealDiv = document.getElementById(id);
+    if (revealDiv.style.display === 'none' || revealDiv.style.display === '') {
+        revealDiv.style.display = 'block';
+    } else {
+        revealDiv.style.display = 'none';
+    }
+}
+</script>
+
+</body>
+</html>

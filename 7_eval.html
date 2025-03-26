@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>模型评估 & 常用指标——交互式学习页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            margin-bottom: 8px;
+        }
+        .content-section {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .question-block {
+            background: #fcfcfc;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+            padding: 15px;
+        }
+        .question-block h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .answers-area, .tf-area {
+            margin: 10px 0;
+        }
+        .answer-reveal {
+            display: none;
+            margin-top: 10px;
+            background: #e6f7ff;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .btn-show-answer {
+            margin-top: 10px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .btn-show-answer:hover {
+            background: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .subtitle {
+            color: #2980b9;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #e6f7ff;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .explanation {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>模型评估 & 常用指标</h1>
+
+<div class="content-section">
+    <h2>一、模型评估 (Module Evaluation) 及常用指标</h2>
+    <p>在机器学习中，模型训练完成后需要通过一定的指标来判断模型的表现和质量。不同场景可能使用不同的指标，下面将介绍几项常用评估方式。</p>
+
+    <h3>1. 混淆矩阵 (Confusion Matrix)</h3>
+    <p><strong>定义：</strong>混淆矩阵常用于二分类场景，是一个 2×2 的矩阵，用来汇总“预测标签”与“真实标签”的匹配情况。</p>
+    <ul>
+        <li><strong>True Positive (TP)</strong>：实际为正类，预测也为正类</li>
+        <li><strong>False Positive (FP)</strong>：实际为负类，预测错误地为正类（“误报”）</li>
+        <li><strong>False Negative (FN)</strong>：实际为正类，预测错误地为负类（“漏报”）</li>
+        <li><strong>True Negative (TN)</strong>：实际为负类，预测也为负类</li>
+    </ul>
+    <p><strong>通俗案例：</strong>在垃圾邮件检测中：
+    <ul>
+      <li>TP: 邮件确实是垃圾邮件，模型也正确识别为垃圾邮件</li>
+      <li>FP: 邮件并非垃圾，但模型却识别为垃圾</li>
+      <li>FN: 邮件是垃圾，但模型却误认为正常</li>
+      <li>TN: 邮件是正常，模型也识别为正常</li>
+    </ul>
+    通过此矩阵可直接看到模型的错分情况。</p>
+
+    <h3>2. 精确率 (Precision)、准确率 (Accuracy)、召回率 (Recall)</h3>
+    <p>模型好坏不能只依赖一个指标，特别是在类别不平衡的场景下（如诈骗识别、疾病诊断）。以下列出常用度量：</p>
+    <ul>
+        <li><strong>准确率 (Accuracy)</strong> = 正确预测数量 / 总预测数量
+            <ul>
+              <li>若样本不平衡，accuracy 并不总能反映分类器对少数类的识别能力。</li>
+              <li>示例：100 个样本预测对了 90 个 → accuracy = 90%。但若其中只有 5 个正类，你对正类预测不佳也难被 accuracy 反映。</li>
+            </ul>
+        </li>
+        <li><strong>精确率 (Precision)</strong> = TP / (TP + FP)
+            <ul>
+              <li>在所有被预测为正类的样本中，有多少是真正的正类？</li>
+              <li>强调“预测为正”的质量，一种“查准率”。</li>
+            </ul>
+        </li>
+        <li><strong>召回率 (Recall)</strong> = TP / (TP + FN)
+            <ul>
+              <li>在所有真正的正类中，你预测出来了多少？</li>
+              <li>强调覆盖率，也称“查全率”。</li>
+            </ul>
+        </li>
+        <li><strong>F1-score</strong>
+            <ul>
+              <li>精确率(Precision)和召回率(Recall)的调和平均 F1 = 2 * (Precision*Recall)/(Precision+Recall)</li>
+              <li>当你需要平衡“查准率”和“查全率”时使用。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>3. 交叉验证 (Cross Validation)</h3>
+    <p>为更稳定地评估模型性能，往往将数据集分成多个互斥子集(k-fold)，循环做训练/验证，以避免一次随机划分带来的偏差。</p>
+    <ul>
+        <li><strong>k-fold 交叉验证</strong>：将数据分成 k 份，每次取 1 份做验证，其他 (k-1) 份做训练，重复 k 次，综合评估平均结果。</li>
+        <li><strong>优点：</strong>充分利用数据，每个样本都做过验证，得到更可靠的模型评估。</li>
+        <li><strong>缺点：</strong>计算量增加，需要多次训练。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>二、20 道模拟测试题</h2>
+    <p>以下题目围绕“混淆矩阵、Accuracy、Precision、Recall、F1-score、交叉验证”等主题，涵盖单选、多选和判断题共 20 道。请先思考答案，再查看解析！</p>
+
+    <!-- 单选题(8道) -->
+    <h3>单选题 (共 8 题)</h3>
+
+    <!-- Q1 -->
+    <div class="question-block">
+        <h4>1. 以下哪个选项可用于描述二分类问题中“被预测为正类中的真正正类的比例”？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q1" id="q1a" value="A">
+            <label for="q1a">A. Accuracy (准确率)</label><br/>
+            <input type="radio" name="q1" id="q1b" value="B">
+            <label for="q1b">B. Precision (精确率)</label><br/>
+            <input type="radio" name="q1" id="q1c" value="C">
+            <label for="q1c">C. Recall (召回率)</label><br/>
+            <input type="radio" name="q1" id="q1d" value="D">
+            <label for="q1d">D. F1-score</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer1')">显示解析</button>
+        <div class="answer-reveal" id="answer1">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>精确率(Precision) = TP / (TP + FP)，反映被预测正类中真正正类的比例。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block">
+        <h4>2. 若某模型在 100 个样本中预测正确 80 个，则其 Accuracy 为：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q2" id="q2a" value="A">
+            <label for="q2a">A. 60%</label><br/>
+            <input type="radio" name="q2" id="q2b" value="B">
+            <label for="q2b">B. 70%</label><br/>
+            <input type="radio" name="q2" id="q2c" value="C">
+            <label for="q2c">C. 80%</label><br/>
+            <input type="radio" name="q2" id="q2d" value="D">
+            <label for="q2d">D. 无法判断</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer2')">显示解析</button>
+        <div class="answer-reveal" id="answer2">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p>预测正确 80 个 → Accuracy = 80/100 = 80%。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block">
+        <h4>3. 混淆矩阵中，False Negative (FN) 表示：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q3" id="q3a" value="A">
+            <label for="q3a">A. 实际负类，预测负类</label><br/>
+            <input type="radio" name="q3" id="q3b" value="B">
+            <label for="q3b">B. 实际正类，但预测成负类</label><br/>
+            <input type="radio" name="q3" id="q3c" value="C">
+            <label for="q3c">C. 实际负类，但预测成正类</label><br/>
+            <input type="radio" name="q3" id="q3d" value="D">
+            <label for="q3d">D. 实际正类，预测正类</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer3')">显示解析</button>
+        <div class="answer-reveal" id="answer3">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>FN：实际为正，但被预测为负（漏判）。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block">
+        <h4>4. 当我们关注模型对少数类的检出率时，下列哪个指标最合适？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q4" id="q4a" value="A">
+            <label for="q4a">A. Accuracy</label><br/>
+            <input type="radio" name="q4" id="q4b" value="B">
+            <label for="q4b">B. Precision</label><br/>
+            <input type="radio" name="q4" id="q4c" value="C">
+            <label for="q4c">C. Recall</label><br/>
+            <input type="radio" name="q4" id="q4d" value="D">
+            <label for="q4d">D. F1-score</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer4')">显示解析</button>
+        <div class="answer-reveal" id="answer4">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p>Recall (召回率) 反映了在所有真正正类中，你能找出的比例，尤其适合衡量“漏报”情况。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block">
+        <h4>5. 当 Precision 和 Recall 都很重要，需要折中时通常看什么？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q5" id="q5a" value="A">
+            <label for="q5a">A. Accuracy</label><br/>
+            <input type="radio" name="q5" id="q5b" value="B">
+            <label for="q5b">B. F1-score</label><br/>
+            <input type="radio" name="q5" id="q5c" value="C">
+            <label for="q5c">C. Specificity</label><br/>
+            <input type="radio" name="q5" id="q5d" value="D">
+            <label for="q5d">D. TP+TN</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer5')">显示解析</button>
+        <div class="answer-reveal" id="answer5">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>F1-score 是精确率和召回率的调和平均，在两者均衡时常用。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block">
+        <h4>6. 若在医疗诊断中非常担心漏诊(将有病人判为无病)，则应尽量提升：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q6" id="q6a" value="A">
+            <label for="q6a">A. Precision</label><br/>
+            <input type="radio" name="q6" id="q6b" value="B">
+            <label for="q6b">B. Recall</label><br/>
+            <input type="radio" name="q6" id="q6c" value="C">
+            <label for="q6c">C. Accuracy</label><br/>
+            <input type="radio" name="q6" id="q6d" value="D">
+            <label for="q6d">D. 以上都不是</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer6')">显示解析</button>
+        <div class="answer-reveal" id="answer6">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>Recall 高意味着“真正正类中预测出的比率”高，可避免“漏诊”。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block">
+        <h4>7. 交叉验证 (Cross Validation) 的主要作用是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q7" id="q7a" value="A">
+            <label for="q7a">A. 检测模型在不同数据划分下的稳定性</label><br/>
+            <input type="radio" name="q7" id="q7b" value="B">
+            <label for="q7b">B. 用来计算残差</label><br/>
+            <input type="radio" name="q7" id="q7c" value="C">
+            <label for="q7c">C. 仅用于图像数据增强</label><br/>
+            <input type="radio" name="q7" id="q7d" value="D">
+            <label for="q7d">D. 用来更改模型的标签数量</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer7')">显示解析</button>
+        <div class="answer-reveal" id="answer7">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p>交叉验证可减少数据划分的随机性，提高评估结果的稳定性。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block">
+        <h4>8. 如果想要在所有样本都参与训练、也都做验证，采用哪种方法最好？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q8" id="q8a" value="A">
+            <label for="q8a">A. 留出法 (train-test split)</label><br/>
+            <input type="radio" name="q8" id="q8b" value="B">
+            <label for="q8b">B. k-fold 交叉验证</label><br/>
+            <input type="radio" name="q8" id="q8c" value="C">
+            <label for="q8c">C. 不做验证</label><br/>
+            <input type="radio" name="q8" id="q8d" value="D">
+            <label for="q8d">D. 网格搜索</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer8')">显示解析</button>
+        <div class="answer-reveal" id="answer8">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>k-fold 交叉验证能让每一份数据既做过训练也做过验证。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 多选题(6道) -->
+    <h3>多选题 (共 6 题)</h3>
+
+    <!-- Q9 -->
+    <div class="question-block">
+        <h4>9. 混淆矩阵中的 TP, FP, FN, TN，可帮助我们计算下列哪些指标？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q9" id="q9a" value="A">
+            <label for="q9a">A. Accuracy</label><br/>
+            <input type="checkbox" name="q9" id="q9b" value="B">
+            <label for="q9b">B. Precision</label><br/>
+            <input type="checkbox" name="q9" id="q9c" value="C">
+            <label for="q9c">C. Recall</label><br/>
+            <input type="checkbox" name="q9" id="q9d" value="D">
+            <label for="q9d">D. F1-score</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer9')">显示解析</button>
+        <div class="answer-reveal" id="answer9">
+            <strong>正确答案：A, B, C, D</strong>
+            <div class="explanation">
+                <p>所有这些指标(A, B, C, 以及F1)都可由 TP, FP, FN, TN 计算得到。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block">
+        <h4>10. 关于 Accuracy 下列哪些说法正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q10" id="q10a" value="A">
+            <label for="q10a">A. Accuracy 越高越好，适合一切场景</label><br/>
+            <input type="checkbox" name="q10" id="q10b" value="B">
+            <label for="q10b">B. 当数据类别分布极不平衡时，Accuracy 可能失真</label><br/>
+            <input type="checkbox" name="q10" id="q10c" value="C">
+            <label for="q10c">C. Accuracy = (TP + TN)/(TP+TN+FP+FN)</label><br/>
+            <input type="checkbox" name="q10" id="q10d" value="D">
+            <label for="q10d">D. 若正确预测数=90，样本总数=100，则 Accuracy=0.9</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer10')">显示解析</button>
+        <div class="answer-reveal" id="answer10">
+            <strong>正确答案：B, C, D</strong>
+            <div class="explanation">
+                <p>A错误，因为Accuracy在极度不平衡场景下可能无法有效反映模型对少数类的表现。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-block">
+        <h4>11. Precision 和 Recall 的关系，下列哪些是正确的？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q11" id="q11a" value="A">
+            <label for="q11a">A. Precision = TP/(TP+FP)，Recall = TP/(TP+FN)</label><br/>
+            <input type="checkbox" name="q11" id="q11b" value="B">
+            <label for="q11b">B. 若希望减少“漏报”，应提高 Recall</label><br/>
+            <input type="checkbox" name="q11" id="q11c" value="C">
+            <label for="q11c">C. 提高 Precision 一定会提高 Recall</label><br/>
+            <input type="checkbox" name="q11" id="q11d" value="D">
+            <label for="q11d">D. 二者往往存在“此消彼长”的关系，需折中</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer11')">显示解析</button>
+        <div class="answer-reveal" id="answer11">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p>提高Precision通常会导致对正类的判定更“严格”，可能降低Recall (C错误)。两者需要平衡。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block">
+        <h4>12. 关于 F1-score，下列哪些说法正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q12" id="q12a" value="A">
+            <label for="q12a">A. 它是对 Precision 和 Recall 的调和平均</label><br/>
+            <input type="checkbox" name="q12" id="q12b" value="B">
+            <label for="q12b">B. 当 Precision=Recall 时，F1=Precision=Recall</label><br/>
+            <input type="checkbox" name="q12" id="q12c" value="C">
+            <label for="q12c">C. F1-score 只适用于回归任务</label><br/>
+            <input type="checkbox" name="q12" id="q12d" value="D">
+            <label for="q12d">D. 若 F1-score 较高，说明在查准率和查全率两方面都有较好表现</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer12')">显示解析</button>
+        <div class="answer-reveal" id="answer12">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p>F1-score 主要用于分类(尤其不平衡分类场景)，并非回归任务 (C错误)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block">
+        <h4>13. 对于分类数据非常不平衡的情形，下列哪些指标更能反映模型对少数类的能力？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q13" id="q13a" value="A">
+            <label for="q13a">A. Accuracy</label><br/>
+            <input type="checkbox" name="q13" id="q13b" value="B">
+            <label for="q13b">B. Precision</label><br/>
+            <input type="checkbox" name="q13" id="q13c" value="C">
+            <label for="q13c">C. Recall</label><br/>
+            <input type="checkbox" name="q13" id="q13d" value="D">
+            <label for="q13d">D. F1-score</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer13')">显示解析</button>
+        <div class="answer-reveal" id="answer13">
+            <strong>正确答案：B, C, D</strong>
+            <div class="explanation">
+                <p>A在极度不平衡时可能很高却对少数类没帮助。Precision/Recall/F1更敏感少数类表现。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block">
+        <h4>14. 关于交叉验证 (Cross Validation)，下列哪些说法正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q14" id="q14a" value="A">
+            <label for="q14a">A. k-fold CV 中，每次都用 (k-1) 份训练，1 份验证</label><br/>
+            <input type="checkbox" name="q14" id="q14b" value="B">
+            <label for="q14b">B. 在 k-fold 下，每个样本都做过验证</label><br/>
+            <input type="checkbox" name="q14" id="q14c" value="C">
+            <label for="q14c">C. CV 会极大减少过拟合风险，但耗时更高</label><br/>
+            <input type="checkbox" name="q14" id="q14d" value="D">
+            <label for="q14d">D. CV 只适用于回归问题，分类不可用</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer14')">显示解析</button>
+        <div class="answer-reveal" id="answer14">
+            <strong>正确答案：A, B, C</strong>
+            <div class="explanation">
+                <p>D错误，CV方法既可用于回归，也可用于分类。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question-block">
+        <h4>15. 在 k-fold 交叉验证中，若数据非常有限且要最大化训练数据使用，下列选择最合适的是？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q15" id="q15a" value="A">
+            <label for="q15a">A. k=2</label><br/>
+            <input type="checkbox" name="q15" id="q15b" value="B">
+            <label for="q15b">B. k=5</label><br/>
+            <input type="checkbox" name="q15" id="q15c" value="C">
+            <label for="q15c">C. k=10</label><br/>
+            <input type="checkbox" name="q15" id="q15d" value="D">
+            <label for="q15d">D. Leave-One-Out(LOO) CV</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer15')">显示解析</button>
+        <div class="answer-reveal" id="answer15">
+            <strong>正确答案：C, D</strong>
+            <div class="explanation">
+                <p>数据非常有限时，增大 k 值(如 10) 或采用 LOO (k=n) 能最大化训练数据使用量，但计算代价更高。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 判断题(6道) -->
+    <h3>判断题 (共 6 题)</h3>
+
+    <!-- Q16 -->
+    <div class="question-block">
+        <h4>16. 判断：混淆矩阵只适用于多分类场景，二分类并不需要它。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q16" id="q16t" value="True">
+            <label for="q16t">True</label>
+            <input type="radio" name="q16" id="q16f" value="False">
+            <label for="q16f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer16')">显示解析</button>
+        <div class="answer-reveal" id="answer16">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p>混淆矩阵在二分类中也非常常见(2x2 矩阵)。多分类可扩展到更大的矩阵。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block">
+        <h4>17. 判断：若类别高度不平衡，单看 Accuracy 可能会导致错误的乐观判断。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q17" id="q17t" value="True">
+            <label for="q17t">True</label>
+            <input type="radio" name="q17" id="q17f" value="False">
+            <label for="q17f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer17')">显示解析</button>
+        <div class="answer-reveal" id="answer17">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>不平衡场景下，如 99:1，直接预测全部为多数类就能得到 99% Accuracy。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-block">
+        <h4>18. 判断：Precision 和 Recall 互相独立，提高前者不影响后者。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q18" id="q18t" value="True">
+            <label for="q18t">True</label>
+            <input type="radio" name="q18" id="q18f" value="False">
+            <label for="q18f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer18')">显示解析</button>
+        <div class="answer-reveal" id="answer18">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p>两者往往是一种此消彼长的关系。提高Precision可能会牺牲Recall，反之亦然。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-block">
+        <h4>19. 判断：F1-score 在 Precision=Recall 时达到最大值，并等于它们的共同值。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q19" id="q19t" value="True">
+            <label for="q19t">True</label>
+            <input type="radio" name="q19" id="q19f" value="False">
+            <label for="q19f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer19')">显示解析</button>
+        <div class="answer-reveal" id="answer19">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>如果 P=R，则 F1 = 2PR/(P+R)= P=R。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-block">
+        <h4>20. 判断：在 k-fold 交叉验证中，每份数据仅在一次训练集中出现。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q20" id="q20t" value="True">
+            <label for="q20t">True</label>
+            <input type="radio" name="q20" id="q20f" value="False">
+            <label for="q20f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer20')">显示解析</button>
+        <div class="answer-reveal" id="answer20">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p>在k-fold中，每次划分不一样，每个样本会在k-1次出现在训练集，1次出现在验证集。</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function showAnswer(id) {
+    const revealDiv = document.getElementById(id);
+    if (revealDiv.style.display === 'none' || revealDiv.style.display === '') {
+        revealDiv.style.display = 'block';
+    } else {
+        revealDiv.style.display = 'none';
+    }
+}
+</script>
+
+</body>
+</html>

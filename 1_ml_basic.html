@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>监督学习与无监督学习——交互式学习页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            margin-bottom: 8px;
+        }
+        .content-section {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .question-block {
+            background: #fcfcfc;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+            padding: 15px;
+        }
+        .question-block h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .answers-area, .tf-area {
+            margin: 10px 0;
+        }
+        .answer-reveal {
+            display: none;
+            margin-top: 10px;
+            background: #e6f7ff;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .btn-show-answer {
+            margin-top: 10px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .btn-show-answer:hover {
+            background: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .subtitle {
+            color: #2980b9;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #e6f7ff;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .explanation {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>监督学习 (Supervised Learning) vs 无监督学习 (Unsupervised Learning)</h1>
+<div class="content-section">
+    <h2>一、概念与对比</h2>
+    <p><strong>监督学习：</strong>在训练数据中已经有了特征（输入）和标签（输出）的对应关系，算法的目标是根据现有的“已知样本”来学习一个模型，以便对新的未见数据进行预测或分类。</p>
+    <ul>
+        <li>常见任务：回归（预测连续值）、分类（预测离散标签）。</li>
+        <li>常见算法：<em>线性回归、逻辑回归、决策树、随机森林、SVM、神经网络</em>等。</li>
+    </ul>
+
+    <p><strong>无监督学习：</strong>数据中没有提供标签（输出），算法需要在未分类或未标注的数据中自动发现“隐藏模式”或“结构”。</p>
+    <ul>
+        <li>常见任务：聚类、降维、异常检测等。</li>
+        <li>常见算法：<em>K-means、层次聚类、DBSCAN、PCA、t-SNE</em>等。</li>
+    </ul>
+
+    <h3>常见区别</h3>
+    <ul>
+        <li><strong>目标：</strong>监督学习是“预测”，无监督学习是“结构发现”。</li>
+        <li><strong>数据格式：</strong>监督学习需要(x, y)对；无监督学习只有 x。</li>
+        <li><strong>结果评估：</strong>监督学习可通过精确率、准确率、召回率等指标；无监督学习常使用轮廓系数、DBI 等聚类质量或人工评估。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>二、常见算法介绍</h2>
+    <h3>2.1 监督学习算法示例</h3>
+    <ul>
+        <li><strong>线性回归 (Linear Regression)：</strong><br/>
+            假设输入特征与输出变量之间存在线性关系，常用最小二乘法求解。适用于房价预测、销售额预测等连续值预测场景。</li>
+        <li><strong>逻辑回归 (Logistic Regression)：</strong><br/>
+            利用Sigmoid函数将线性组合结果映射到(0,1)，输出属于某一类别的概率。多用于二分类任务，如垃圾邮件检测。</li>
+        <li><strong>决策树 (Decision Tree)：</strong><br/>
+            通过特征条件划分形成树结构，可解释性强。但易过拟合，需要剪枝等手段。</li>
+        <li><strong>随机森林 (Random Forest)：</strong><br/>
+            多棵决策树形成的集成学习，减小过拟合风险，适用于分类、回归。</li>
+        <li><strong>SVM (支持向量机)：</strong><br/>
+            通过最大化间隔区分数据，核方法可处理非线性问题。常用于文本分类、图像识别。</li>
+        <li><strong>神经网络 (Neural Network)：</strong><br/>
+            模拟生物神经元连接，适合处理复杂映射问题，衍生深度学习应用。</li>
+    </ul>
+
+    <h3>2.2 无监督学习算法示例</h3>
+    <ul>
+        <li><strong>K-means 聚类：</strong><br/>
+            先指定K个簇，迭代更新簇中心与分配样本。简单高效，但需事先假设K，且易受初始中心影响。</li>
+        <li><strong>层次聚类 (Hierarchical Clustering)：</strong><br/>
+            采用自底向上或自顶向下的思路合并/拆分簇，最终形成树状结构 (dendrogram)。可在任意层次上截断得到不同数量的簇。</li>
+        <li><strong>DBSCAN：</strong><br/>
+            基于密度的聚类算法，通过半径 (ε) 与最少点数 (MinPts) 来判定核心点、边界点、噪音点，可发现任意形状簇并识别离群点。</li>
+        <li><strong>PCA (主成分分析)：</strong><br/>
+            线性降维方法，提取能最大化方差的正交主成分，用于特征压缩、去噪、可视化等。</li>
+        <li><strong>t-SNE：</strong><br/>
+            非线性降维方法，尤其适合高维数据的可视化，能更好地保留局部邻域结构，但计算量大、对参数敏感。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>三、20 道交互式模拟试题</h2>
+    <p>下面的试题涵盖单选题、多选题和判断题。每道题提供了“显示解析”功能，建议先自行思考或记录答案，再点击“显示解析”查看详细解答。</p>
+
+    <!-- 单选题(8道) -->
+    <h3>单选题 (共 8 题)</h3>
+
+    <!-- Q1 -->
+    <div class="question-block">
+        <h4>1. 下列哪个场景适合用“无监督学习”方法？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q1" id="q1a" value="A">
+            <label for="q1a">A. 房价预测</label><br/>
+            <input type="radio" name="q1" id="q1b" value="B">
+            <label for="q1b">B. 垃圾邮件识别</label><br/>
+            <input type="radio" name="q1" id="q1c" value="C">
+            <label for="q1c">C. 用户分群</label><br/>
+            <input type="radio" name="q1" id="q1d" value="D">
+            <label for="q1d">D. 手写数字识别(0-9)</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer1')">显示解析</button>
+        <div class="answer-reveal" id="answer1">
+            <strong>正确答案：C</strong>  
+            <div class="explanation">
+                <p><strong>解析：</strong>房价预测、垃圾邮件识别、手写数字识别都是有标签的监督学习问题；用户分群通常没有预先的标签，需要在数据中挖掘潜在结构，属于无监督学习（聚类）。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block">
+        <h4>2. 线性回归最常用的参数求解方式是什么？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q2" id="q2a" value="A">
+            <label for="q2a">A. 梯度上升</label><br/>
+            <input type="radio" name="q2" id="q2b" value="B">
+            <label for="q2b">B. 最小二乘法 (OLS)</label><br/>
+            <input type="radio" name="q2" id="q2c" value="C">
+            <label for="q2c">C. 最大似然估计</label><br/>
+            <input type="radio" name="q2" id="q2d" value="D">
+            <label for="q2d">D. EM 算法</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer2')">显示解析</button>
+        <div class="answer-reveal" id="answer2">
+            <strong>正确答案：B</strong>  
+            <div class="explanation">
+                <p><strong>解析：</strong>线性回归的经典解法就是最小二乘法(OLS)。梯度下降也是一种可行的数值解法，但最常见、最直接的公式解是 OLS。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block">
+        <h4>3. DBSCAN 聚类的主要优点之一是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q3" id="q3a" value="A">
+            <label for="q3a">A. 需要事先指定 K</label><br/>
+            <input type="radio" name="q3" id="q3b" value="B">
+            <label for="q3b">B. 只适合球状聚类</label><br/>
+            <input type="radio" name="q3" id="q3c" value="C">
+            <label for="q3c">C. 能识别噪音点且不需指定聚类数</label><br/>
+            <input type="radio" name="q3" id="q3d" value="D">
+            <label for="q3d">D. 必须在高维下才能工作</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer3')">显示解析</button>
+        <div class="answer-reveal" id="answer3">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>DBSCAN 不需要预先定义簇的数量 K，算法可根据密度特征划分聚类并识别离群点。它在“球状”或非球状分布上都可能有不错的表现，对高维数据则可能出现“维度灾难”。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block">
+        <h4>4. 对于二分类任务，逻辑回归（Logistic Regression）的输出值通常代表什么？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q4" id="q4a" value="A">
+            <label for="q4a">A. 离散的标签</label><br/>
+            <input type="radio" name="q4" id="q4b" value="B">
+            <label for="q4b">B. 值范围在 (0, 1) 的概率</label><br/>
+            <input type="radio" name="q4" id="q4c" value="C">
+            <label for="q4c">C. 可以无限大或无限小的实数</label><br/>
+            <input type="radio" name="q4" id="q4d" value="D">
+            <label for="q4d">D. 残差值</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer4')">显示解析</button>
+        <div class="answer-reveal" id="answer4">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>逻辑回归通过 Sigmoid 函数将线性组合映射到 (0,1) 区间，该输出可解释为样本为“正类”的概率。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block">
+        <h4>5. 在 PCA（主成分分析）中，最主要的目标是什么？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q5" id="q5a" value="A">
+            <label for="q5a">A. 训练一个二分类器</label><br/>
+            <input type="radio" name="q5" id="q5b" value="B">
+            <label for="q5b">B. 找到最大间隔的超平面</label><br/>
+            <input type="radio" name="q5" id="q5c" value="C">
+            <label for="q5c">C. 在保持数据主要方差的同时实现降维</label><br/>
+            <input type="radio" name="q5" id="q5d" value="D">
+            <label for="q5d">D. 检测噪音点和异常点</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer5')">显示解析</button>
+        <div class="answer-reveal" id="answer5">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>PCA 通过寻找数据在正交主成分方向上的最大方差来实现降维。它不是分类器，也不进行异常检测。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block">
+        <h4>6. 下列哪一种算法最不容易产生“过拟合”问题？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q6" id="q6a" value="A">
+            <label for="q6a">A. 线性回归</label><br/>
+            <input type="radio" name="q6" id="q6b" value="B">
+            <label for="q6b">B. 深度神经网络</label><br/>
+            <input type="radio" name="q6" id="q6c" value="C">
+            <label for="q6c">C. 决策树</label><br/>
+            <input type="radio" name="q6" id="q6d" value="D">
+            <label for="q6d">D. K-means 聚类</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer6')">显示解析</button>
+        <div class="answer-reveal" id="answer6">
+            <strong>正确答案：D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>“过拟合”多指有标签监督学习中模型对训练数据记忆过度。K-means 是无监督聚类，虽然也有可能“聚类不好”，但并不属于监督学习范畴下常说的“过拟合”。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block">
+        <h4>7. 要给电商网站上的商品做“相似商品推荐”，下列哪种思路更合适？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q7" id="q7a" value="A">
+            <label for="q7a">A. 用SVM进行二分类</label><br/>
+            <input type="radio" name="q7" id="q7b" value="B">
+            <label for="q7b">B. 用K-means对商品做聚类</label><br/>
+            <input type="radio" name="q7" id="q7c" value="C">
+            <label for="q7c">C. 用决策树回归预测商品价格</label><br/>
+            <input type="radio" name="q7" id="q7d" value="D">
+            <label for="q7d">D. 用PCA寻找最大方差</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer7')">显示解析</button>
+        <div class="answer-reveal" id="answer7">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>对商品做聚类，可以根据商品特征（如类目、文本描述、销量、评价等）将相似商品分到同一簇，用于推荐。这属于无监督学习场景。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block">
+        <h4>8. 在 K-means 聚类中，若初始簇中心选择不当，最常见的改进方法是什么？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q8" id="q8a" value="A">
+            <label for="q8a">A. 手动减少迭代次数</label><br/>
+            <input type="radio" name="q8" id="q8b" value="B">
+            <label for="q8b">B. 使用线性回归替代</label><br/>
+            <input type="radio" name="q8" id="q8c" value="C">
+            <label for="q8c">C. 多次随机初始化或 K-means++ 初始化</label><br/>
+            <input type="radio" name="q8" id="q8d" value="D">
+            <label for="q8d">D. 将 K 改为 1</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer8')">显示解析</button>
+        <div class="answer-reveal" id="answer8">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>K-means 对初始中心敏感。常用的方法是多次随机初始化后选取最佳结果，或使用K-means++进行更好的初始点选择。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 多选题(6道) -->
+    <h3>多选题 (共 6 题)</h3>
+
+    <!-- Q9 -->
+    <div class="question-block">
+        <h4>9. 关于监督学习和无监督学习，下列描述正确的是：</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q9" id="q9a" value="A">
+            <label for="q9a">A. 监督学习需要带标签的数据</label><br/>
+            <input type="checkbox" name="q9" id="q9b" value="B">
+            <label for="q9b">B. 无监督学习没有任何先验标签</label><br/>
+            <input type="checkbox" name="q9" id="q9c" value="C">
+            <label for="q9c">C. 无监督学习只能用于分类任务</label><br/>
+            <input type="checkbox" name="q9" id="q9d" value="D">
+            <label for="q9d">D. 监督学习的目标是根据特征来预测标签</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer9')">显示解析</button>
+        <div class="answer-reveal" id="answer9">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>监督学习需要 (x, y) 对；无监督学习没有 y；监督学习本质是“从特征预测标签”。无监督学习不仅仅用于分类(实际上无标签，还谈不上传统“分类”)，所以 C 是错误的。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block">
+        <h4>10. 下列哪些算法通常属于“无监督学习”范畴？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q10" id="q10a" value="A">
+            <label for="q10a">A. K-means</label><br/>
+            <input type="checkbox" name="q10" id="q10b" value="B">
+            <label for="q10b">B. DBSCAN</label><br/>
+            <input type="checkbox" name="q10" id="q10c" value="C">
+            <label for="q10c">C. 决策树</label><br/>
+            <input type="checkbox" name="q10" id="q10d" value="D">
+            <label for="q10d">D. PCA</label><br/>
+            <input type="checkbox" name="q10" id="q10e" value="E">
+            <label for="q10e">E. 逻辑回归</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer10')">显示解析</button>
+        <div class="answer-reveal" id="answer10">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>K-means、DBSCAN、PCA 都是典型的无监督学习算法；决策树和逻辑回归是监督学习。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-block">
+        <h4>11. 线性回归模型中，下列哪些说法是正确的？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q11" id="q11a" value="A">
+            <label for="q11a">A. 可以使用梯度下降来求解</label><br/>
+            <input type="checkbox" name="q11" id="q11b" value="B">
+            <label for="q11b">B. 假设输出和输入之间是线性关系</label><br/>
+            <input type="checkbox" name="q11" id="q11c" value="C">
+            <label for="q11c">C. 不适合预测连续值</label><br/>
+            <input type="checkbox" name="q11" id="q11d" value="D">
+            <label for="q11d">D. 可通过最小二乘法最小化预测误差</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer11')">显示解析</button>
+        <div class="answer-reveal" id="answer11">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性回归可以使用梯度下降或最小二乘法来求解，模型设定是线性关系，且非常适合连续值预测，因此 C 表述错误。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block">
+        <h4>12. 下列哪些问题是聚类算法在实际应用中可能面临的挑战？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q12" id="q12a" value="A">
+            <label for="q12a">A. 需要指定或估计聚类数</label><br/>
+            <input type="checkbox" name="q12" id="q12b" value="B">
+            <label for="q12b">B. 维度过高导致的“维度灾难”</label><br/>
+            <input type="checkbox" name="q12" id="q12c" value="C">
+            <label for="q12c">C. 对初始值敏感</label><br/>
+            <input type="checkbox" name="q12" id="q12d" value="D">
+            <label for="q12d">D. 训练集标签不足</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer12')">显示解析</button>
+        <div class="answer-reveal" id="answer12">
+            <strong>正确答案：A, B, C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>无监督聚类不需要标签，因此“训练集标签不足”并不是聚类算法的问题；但指定或估计聚类数（K-means）、高维度特征处理、对初始聚类中心敏感（K-means 等）都是常见挑战。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block">
+        <h4>13. 关于降维方法，下列哪些说法是正确的？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q13" id="q13a" value="A">
+            <label for="q13a">A. PCA 是一种线性降维方法</label><br/>
+            <input type="checkbox" name="q13" id="q13b" value="B">
+            <label for="q13b">B. t-SNE 更注重保持局部邻域的结构，可用于可视化</label><br/>
+            <input type="checkbox" name="q13" id="q13c" value="C">
+            <label for="q13c">C. PCA 无法用于特征压缩</label><br/>
+            <input type="checkbox" name="q13" id="q13d" value="D">
+            <label for="q13d">D. t-SNE 对参数较敏感，计算量大</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer13')">显示解析</button>
+        <div class="answer-reveal" id="answer13">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>PCA 确实是线性降维，也可用来做特征压缩、去噪（所以 C 错）。t-SNE 是非线性降维法，注重局部邻域保真，但对参数(perplexity 等)敏感，也相对耗时。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block">
+        <h4>14. 对于决策树而言，下列哪些方法可用来防止过拟合？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q14" id="q14a" value="A">
+            <label for="q14a">A. 剪枝 (Pruning)</label><br/>
+            <input type="checkbox" name="q14" id="q14b" value="B">
+            <label for="q14b">B. 深度增加到极大</label><br/>
+            <input type="checkbox" name="q14" id="q14c" value="C">
+            <label for="q14c">C. 限制叶节点最少样本数</label><br/>
+            <input type="checkbox" name="q14" id="q14d" value="D">
+            <label for="q14d">D. 使用随机森林进行集成</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer14')">显示解析</button>
+        <div class="answer-reveal" id="answer14">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>让决策树无限制生长(深度极大)通常会导致过拟合。剪枝、限制叶节点最少样本数、使用集成学习(随机森林)都是有效防止过拟合的手段。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 判断题(6道) -->
+    <h3>判断题 (共 6 题)</h3>
+
+    <!-- Q15 -->
+    <div class="question-block">
+        <h4>15. 判断：K-means 聚类与监督学习中的 KNN 算法实际上都是同一类算法。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q15" id="q15t" value="True">
+            <label for="q15t">True</label>
+            <input type="radio" name="q15" id="q15f" value="False">
+            <label for="q15f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer15')">显示解析</button>
+        <div class="answer-reveal" id="answer15">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>K-means 是无监督聚类算法，需要指定K进行分簇；KNN (k近邻) 是有监督的分类或回归算法，两者原理与应用场景都不同。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question-block">
+        <h4>16. 判断：在无监督学习场景中，我们通常可以直接计算准确率(accuracy)。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q16" id="q16t" value="True">
+            <label for="q16t">True</label>
+            <input type="radio" name="q16" id="q16f" value="False">
+            <label for="q16f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer16')">显示解析</button>
+        <div class="answer-reveal" id="answer16">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>无监督学习没有真实标签，很难直接用准确率衡量，需要使用轮廓系数、Calinski-Harabasz 指数等方法，或在已有某种“外部标签”时才能做对比。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block">
+        <h4>17. 判断：DBSCAN 在检测异常点(噪音点)方面可能比 K-means 更适合。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q17" id="q17t" value="True">
+            <label for="q17t">True</label>
+            <input type="radio" name="q17" id="q17f" value="False">
+            <label for="q17f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer17')">显示解析</button>
+        <div class="answer-reveal" id="answer17">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>K-means 并无显式识别异常点的机制；DBSCAN 把低密度点视为噪音点，对异常检测往往更有效。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-block">
+        <h4>18. 判断：在 PCA 中，主成分是两两正交的，但并不一定能完整保留数据的非线性结构信息。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q18" id="q18t" value="True">
+            <label for="q18t">True</label>
+            <input type="radio" name="q18" id="q18f" value="False">
+            <label for="q18f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer18')">显示解析</button>
+        <div class="answer-reveal" id="answer18">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>PCA 做的是线性变换，主成分正交，但对非线性分布的信息无法很好地保留。这时可以考虑 t-SNE 等非线性降维。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-block">
+        <h4>19. 判断：层次聚类产生的树状结构(dendrogram)可以在任意层截断，从而得到对应数量的簇。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q19" id="q19t" value="True">
+            <label for="q19t">True</label>
+            <input type="radio" name="q19" id="q19f" value="False">
+            <label for="q19f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer19')">显示解析</button>
+        <div class="answer-reveal" id="answer19">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>层次聚类通常自底向上或自顶向下建立聚类树，不同层次对应不同数量的聚类，故可在任意层截断。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-block">
+        <h4>20. 判断：当数据维度很高时，t-SNE 的计算速度往往比 PCA 更快。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q20" id="q20t" value="True">
+            <label for="q20t">True</label>
+            <input type="radio" name="q20" id="q20f" value="False">
+            <label for="q20f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer20')">显示解析</button>
+        <div class="answer-reveal" id="answer20">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>t-SNE 对高维数据的计算量很大，对参数也敏感，一般远不如 PCA 快。PCA 利用矩阵分解，效率相对更高。</p>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- end content-section -->
+
+<div class="content-section">
+    <h2>四、学习建议</h2>
+    <ul>
+        <li>从实际案例入手，先了解数据格式（是否带标签）再选择算法。</li>
+        <li>掌握数据预处理：缺失值处理、归一化、特征选择或降维等，会直接影响模型效果。</li>
+        <li>熟悉算法原理：了解距离度量、损失函数、梯度下降、剪枝等核心机制。</li>
+        <li>多进行参数调优：如 K-means 的 K 值与初始化、DBSCAN 的 ε、MinPts、SVM 的核函数选择等。</li>
+        <li>实践中可结合监督与无监督方法：先用聚类或降维做探索，再将结果融入分类/回归。</li>
+    </ul>
+</div>
+
+<script>
+function showAnswer(id) {
+    var revealDiv = document.getElementById(id);
+    if (revealDiv.style.display === 'none' || revealDiv.style.display === '') {
+        revealDiv.style.display = 'block';
+    } else {
+        revealDiv.style.display = 'none';
+    }
+}
+</script>
+
+</body>
+</html>
+```

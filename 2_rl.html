@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>强化学习（Reinforcement Learning）——交互式学习页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            margin-bottom: 8px;
+        }
+        .content-section {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .question-block {
+            background: #fcfcfc;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+            padding: 15px;
+        }
+        .question-block h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .answers-area, .tf-area {
+            margin: 10px 0;
+        }
+        .answer-reveal {
+            display: none;
+            margin-top: 10px;
+            background: #e6f7ff;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .btn-show-answer {
+            margin-top: 10px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .btn-show-answer:hover {
+            background: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .subtitle {
+            color: #2980b9;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #e6f7ff;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .explanation {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>强化学习 (Reinforcement Learning)</h1>
+<div class="content-section">
+    <h2>概念与原理</h2>
+    <p><strong>强化学习：</strong>指智能体 (<em>agent</em>) 在与环境 (<em>environment</em>) 的交互过程中，根据环境反馈的 <strong>奖励或惩罚</strong> 来不断调整策略 (<em>policy</em>)，以达到 <strong>最大化累积奖励</strong> (cumulative reward) 的目的。</p>
+    <ul>
+        <li>在每个时刻，智能体观察到当前的 <strong>状态</strong> (state)，然后采取一个 <strong>动作</strong> (action)。</li>
+        <li>环境接收到动作后反馈一个 <strong>奖励</strong> (reward)，并转移到下一个状态。智能体重复这一过程。</li>
+        <li>智能体的目标是学习到一个能够在长期回报上最优的策略 (policy)。</li>
+    </ul>
+
+    <h3>马尔可夫决策过程 (MDP)</h3>
+    <ul>
+        <li><strong>状态 (S)</strong>：描述环境的当前情形，如围棋盘某个局面。</li>
+        <li><strong>动作 (A)</strong>：在给定状态下，智能体可做出的决策或行为，如下一步走哪。</li>
+        <li><strong>转移概率 (P)</strong>：从某状态采取某动作后转移到下一个状态的概率分布。</li>
+        <li><strong>奖励 (R)</strong>：对该动作的即时评分，可能是正或负，也可能是零。</li>
+        <li><strong>策略 (π)</strong>：在每个状态下如何选择动作的规则或函数。</li>
+    </ul>
+
+    <h3>关键要点</h3>
+    <ul>
+        <li><strong>探索 (Exploration)</strong> vs <strong>利用 (Exploitation)</strong>：需要在尝试新动作获取新信息 (探索) 和利用已知最好行动 (利用) 间取得平衡。</li>
+        <li><strong>折扣因子 (γ)</strong>：衡量当前奖励与未来奖励的重要性。</li>
+        <li><strong>价值函数 (Value Function)</strong>：衡量在某状态下能获得的长期奖励期望。</li>
+        <li><strong>Q函数 (Action-Value Function)</strong>：状态-动作对的长期价值。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>应用场景</h2>
+    <p><strong>游戏AI：</strong>例如 AlphaGo、AlphaZero，靠自我博弈和强化学习，学会围棋、象棋或各种 Atari 游戏。</p>
+    <ul>
+        <li>AI 只需知道游戏规则与胜负评价，通过探索与试错来学习。</li>
+        <li>DeepMind 的研究表明，只观察像素和即时分数，也能学会玩多种 Atari 游戏。</li>
+    </ul>
+    <p><strong>自动驾驶：</strong>在模拟或现实道路中，通过不断试错、收集反馈（如保持车道、避免碰撞）来优化驾驶策略。</p>
+    <p><strong>机器人控制：</strong>机器人在真实世界 (或仿真环境) 中不断尝试动作并获取反馈，学会平衡、行走、抓取物体等。</p>
+</div>
+
+<div class="content-section">
+    <h2>经典案例</h2>
+    <ul>
+        <li><strong>AlphaGo/AlphaZero：</strong>在围棋、国际象棋等高维度策略游戏中，通过自我博弈产生海量数据，结合蒙特卡洛树搜索和强化学习不断提升棋力。</li>
+        <li><strong>Atari 游戏：</strong>深度强化学习 (DQN 等) 只需像素和游戏分数作为输入和奖励，就能逼近人类水平甚至超越。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>互动与学习建议</h2>
+    <ul>
+        <li><strong>动手实验：</strong>可以在开源平台 (如 <em>OpenAI Gym</em>) 上尝试简单游戏（CartPole、MountainCar）强化学习。</li>
+        <li><strong>尝试调参：</strong>如学习率 (learning rate)、折扣因子 (γ)、探索率 (ε) 等，对智能体收敛速度和表现影响很大。</li>
+        <li><strong>理论结合实践：</strong>了解 Q-learning、SARSA、DQN 等核心算法流程与原理。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>20 道模拟测试题</h2>
+    <p>以下题目包含单选、多选和判断题，帮助你测试对强化学习的理解。建议先自行思考答案，再查看解析。</p>
+
+    <!-- 单选题(8道) -->
+    <h3>单选题 (共 8 题)</h3>
+
+    <!-- Q1 -->
+    <div class="question-block">
+        <h4>1. 强化学习与监督学习最大的区别是什么？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q1" id="q1a" value="A">
+            <label for="q1a">A. 强化学习需要大量带标签的数据</label><br/>
+            <input type="radio" name="q1" id="q1b" value="B">
+            <label for="q1b">B. 强化学习中，智能体通过与环境交互并基于奖励或惩罚来学习策略</label><br/>
+            <input type="radio" name="q1" id="q1c" value="C">
+            <label for="q1c">C. 强化学习无法使用神经网络</label><br/>
+            <input type="radio" name="q1" id="q1d" value="D">
+            <label for="q1d">D. 强化学习只适合做聚类任务</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer1')">显示解析</button>
+        <div class="answer-reveal" id="answer1">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>强化学习依赖与环境的交互以及相应的奖惩来不断调整策略，而监督学习依赖大量的有标签数据进行学习。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block">
+        <h4>2. 以下哪个不是强化学习常见的概念？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q2" id="q2a" value="A">
+            <label for="q2a">A. 状态 (state)</label><br/>
+            <input type="radio" name="q2" id="q2b" value="B">
+            <label for="q2b">B. 动作 (action)</label><br/>
+            <input type="radio" name="q2" id="q2c" value="C">
+            <label for="q2c">C. 标签 (label)</label><br/>
+            <input type="radio" name="q2" id="q2d" value="D">
+            <label for="q2d">D. 奖励 (reward)</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer2')">显示解析</button>
+        <div class="answer-reveal" id="answer2">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>强化学习中没有“标签 (label)”的概念，常见的是状态、动作、奖励、策略等。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block">
+        <h4>3. 在马尔可夫决策过程 (MDP) 中，下列哪项用于表示从某状态采取某动作后，转移到下一个状态的概率分布？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q3" id="q3a" value="A">
+            <label for="q3a">A. 策略 (policy)</label><br/>
+            <input type="radio" name="q3" id="q3b" value="B">
+            <label for="q3b">B. 转移概率 (transition probability)</label><br/>
+            <input type="radio" name="q3" id="q3c" value="C">
+            <label for="q3c">C. 折扣因子 (gamma)</label><br/>
+            <input type="radio" name="q3" id="q3d" value="D">
+            <label for="q3d">D. Q函数 (Q-value)</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer3')">显示解析</button>
+        <div class="answer-reveal" id="answer3">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>转移概率 (transition probability) 指定在当前状态执行某动作后转移到下一状态的概率分布。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block">
+        <h4>4. 强化学习中的“探索 (exploration)”指的是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q4" id="q4a" value="A">
+            <label for="q4a">A. 不断尝试新的动作以获取未知信息</label><br/>
+            <input type="radio" name="q4" id="q4b" value="B">
+            <label for="q4b">B. 只使用当前最优策略</label><br/>
+            <input type="radio" name="q4" id="q4c" value="C">
+            <label for="q4c">C. 让智能体反复在同一状态执行相同动作</label><br/>
+            <input type="radio" name="q4" id="q4d" value="D">
+            <label for="q4d">D. 人工标注大量样本</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer4')">显示解析</button>
+        <div class="answer-reveal" id="answer4">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>“探索”意味着尝试新的动作或未知的状态动作对，以期获得更多信息，而“利用”则是使用已知收益最好的动作。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block">
+        <h4>5. 下列哪种应用最可能用到强化学习？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q5" id="q5a" value="A">
+            <label for="q5a">A. 对图片中的人脸进行分类</label><br/>
+            <input type="radio" name="q5" id="q5b" value="B">
+            <label for="q5b">B. 利用博弈对弈来提高棋力</label><br/>
+            <input type="radio" name="q5" id="q5c" value="C">
+            <label for="q5c">C. 将文本聚类为多个主题</label><br/>
+            <input type="radio" name="q5" id="q5d" value="D">
+            <label for="q5d">D. 用回归模型预测股价</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer5')">显示解析</button>
+        <div class="answer-reveal" id="answer5">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>强化学习典型应用是游戏或博弈，对图片分类是监督学习，聚类是无监督学习，用回归模型预测股价是监督学习(回归)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block">
+        <h4>6. 关于折扣因子 (gamma)，下列说法正确的是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q6" id="q6a" value="A">
+            <label for="q6a">A. gamma 越大，越重视短期奖励</label><br/>
+            <input type="radio" name="q6" id="q6b" value="B">
+            <label for="q6b">B. gamma 越小，越重视长期奖励</label><br/>
+            <input type="radio" name="q6" id="q6c" value="C">
+            <label for="q6c">C. gamma = 1 时，智能体同样重视当前奖励和未来奖励</label><br/>
+            <input type="radio" name="q6" id="q6d" value="D">
+            <label for="q6d">D. gamma 在强化学习中毫无意义</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer6')">显示解析</button>
+        <div class="answer-reveal" id="answer6">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>折扣因子 (gamma) 值在 [0,1]，越接近 0 越重视即时奖励，越接近 1 越重视长期回报。<br/>当 gamma=1 时，表示未来奖励不会被折扣，意味着智能体把当前与未来奖励同等看待。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block">
+        <h4>7. 在围棋AI AlphaGo 中，强化学习的主要作用是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q7" id="q7a" value="A">
+            <label for="q7a">A. 通过大量对弈并根据胜负奖励来不断优化策略</label><br/>
+            <input type="radio" name="q7" id="q7b" value="B">
+            <label for="q7b">B. 仅需要带标签的数据来训练图像识别模型</label><br/>
+            <input type="radio" name="q7" id="q7c" value="C">
+            <label for="q7c">C. 做无监督聚类，将棋局分类</label><br/>
+            <input type="radio" name="q7" id="q7d" value="D">
+            <label for="q7d">D. 完全随机走子，不需要策略</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer7')">显示解析</button>
+        <div class="answer-reveal" id="answer7">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>AlphaGo 通过自我对弈（环境反馈是赢或输）来强化策略，使其在围棋游戏中不断提升水平。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block">
+        <h4>8. Atari 游戏中，为什么强化学习特别适用？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q8" id="q8a" value="A">
+            <label for="q8a">A. 因为 Atari 游戏都有现成的标签</label><br/>
+            <input type="radio" name="q8" id="q8b" value="B">
+            <label for="q8b">B. 游戏过程天然提供奖励（分数），agent 不断尝试动作并获得反馈</label><br/>
+            <input type="radio" name="q8" id="q8c" value="C">
+            <label for="q8c">C. 只能用无监督学习完成</label><br/>
+            <input type="radio" name="q8" id="q8d" value="D">
+            <label for="q8d">D. 完全依赖人类示范才能学习</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer8')">显示解析</button>
+        <div class="answer-reveal" id="answer8">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>Atari 游戏都有明显的得分机制，强化学习把得分当作即时或延迟奖励，通过不断试错和策略更新来提高得分。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 多选题(6道) -->
+    <h3>多选题 (共 6 题)</h3>
+
+    <!-- Q9 -->
+    <div class="question-block">
+        <h4>9. 下列关于强化学习的说法正确的是：</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q9" id="q9a" value="A">
+            <label for="q9a">A. 强化学习的关键要素包括状态、动作、奖励</label><br/>
+            <input type="checkbox" name="q9" id="q9b" value="B">
+            <label for="q9b">B. 强化学习完全不需要和环境交互</label><br/>
+            <input type="checkbox" name="q9" id="q9c" value="C">
+            <label for="q9c">C. 强化学习需要平衡探索和利用</label><br/>
+            <input type="checkbox" name="q9" id="q9d" value="D">
+            <label for="q9d">D. 强化学习旨在最大化累积奖励</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer9')">显示解析</button>
+        <div class="answer-reveal" id="answer9">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>强化学习必须和环境交互 (所以 B 错)，关键要素包含状态、动作、奖励，核心目标是最大化累积奖励，同时在探索与利用之间寻求平衡。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block">
+        <h4>10. 一般情况下，以下哪些问题可以用强化学习来解决？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q10" id="q10a" value="A">
+            <label for="q10a">A. 游戏 AI</label><br/>
+            <input type="checkbox" name="q10" id="q10b" value="B">
+            <label for="q10b">B. 机器人平衡控制</label><br/>
+            <input type="checkbox" name="q10" id="q10c" value="C">
+            <label for="q10c">C. 图像分类</label><br/>
+            <input type="checkbox" name="q10" id="q10d" value="D">
+            <label for="q10d">D. 自动驾驶决策</label><br/>
+            <input type="checkbox" name="q10" id="q10e" value="E">
+            <label for="q10e">E. 主题模型 (LDA)</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer10')">显示解析</button>
+        <div class="answer-reveal" id="answer10">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>图像分类通常是监督学习任务 (C)，主题模型 LDA 是无监督学习 (E)。强化学习典型应用包括游戏AI、机器人控制、自动驾驶等。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-block">
+        <h4>11. 关于 Q-learning，下列哪些说法正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q11" id="q11a" value="A">
+            <label for="q11a">A. Q-learning 是一种基于值函数的强化学习算法</label><br/>
+            <input type="checkbox" name="q11" id="q11b" value="B">
+            <label for="q11b">B. Q-learning 不需要和环境交互，只要有数据集就行</label><br/>
+            <input type="checkbox" name="q11" id="q11c" value="C">
+            <label for="q11c">C. Q 表示状态-动作对的价值 (Action-Value)</label><br/>
+            <input type="checkbox" name="q11" id="q11d" value="D">
+            <label for="q11d">D. Q-learning 可以在更新时使用最大化下一步的 Q 值来进行策略改进</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer11')">显示解析</button>
+        <div class="answer-reveal" id="answer11">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>Q-learning 需要和环境交互 (B 错)，Q 表示 Action-Value，利用最大 Q 实现策略改进，属于基于值函数的强化学习方法。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block">
+        <h4>12. 强化学习在自动驾驶中的应用，面临哪些技术挑战？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q12" id="q12a" value="A">
+            <label for="q12a">A. 真实环境试错成本高</label><br/>
+            <input type="checkbox" name="q12" id="q12b" value="B">
+            <label for="q12b">B. 状态空间可能非常庞大</label><br/>
+            <input type="checkbox" name="q12" id="q12c" value="C">
+            <label for="q12c">C. 无法获得任何奖励信号</label><br/>
+            <input type="checkbox" name="q12" id="q12d" value="D">
+            <label for="q12d">D. 需要依赖大量仿真或模拟环境来训练</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer12')">显示解析</button>
+        <div class="answer-reveal" id="answer12">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>自动驾驶中试错成本极高（安全风险），状态空间巨大（各种路况、交通参与者），所以需要大量仿真环境来训练；奖励信号可以通过安全驾驶、低碰撞率、平稳性等指标获取，C 表述错误。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block">
+        <h4>13. 下列哪些说法与强化学习中的“探索-利用困境”相关？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q13" id="q13a" value="A">
+            <label for="q13a">A. 如果只利用当前最好策略，可能会错失更佳选项</label><br/>
+            <input type="checkbox" name="q13" id="q13b" value="B">
+            <label for="q13b">B. 不断尝试随机动作，可能浪费时间和资源</label><br/>
+            <input type="checkbox" name="q13" id="q13c" value="C">
+            <label for="q13c">C. 不需要关注长远收益</label><br/>
+            <input type="checkbox" name="q13" id="q13d" value="D">
+            <label for="q13d">D. 通过 ε-greedy 等方法在探索与利用之间取得平衡</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer13')">显示解析</button>
+        <div class="answer-reveal" id="answer13">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>“探索-利用困境”就是在更多尝试潜在更佳动作 (探索) 与利用当前最好策略之间进行取舍。仅利用可能局部最优，仅探索可能浪费资源，需要 ε-greedy 等平衡手段。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block">
+        <h4>14. 关于深度强化学习 (Deep RL)，下列哪些描述正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q14" id="q14a" value="A">
+            <label for="q14a">A. 使用深度神经网络来逼近价值函数或策略函数</label><br/>
+            <input type="checkbox" name="q14" id="q14b" value="B">
+            <label for="q14b">B. 只适合线性可分的状态空间</label><br/>
+            <input type="checkbox" name="q14" id="q14c" value="C">
+            <label for="q14c">C. 能处理高维输入（如图像像素）</label><br/>
+            <input type="checkbox" name="q14" id="q14d" value="D">
+            <label for="q14d">D. 是强化学习与深度学习的结合</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer14')">显示解析</button>
+        <div class="answer-reveal" id="answer14">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>深度强化学习结合神经网络和强化学习，适合处理高维感知 (如图像)。并不只适合线性可分空间 (B 错)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 判断题(6道) -->
+    <h3>判断题 (共 6 题)</h3>
+
+    <!-- Q15 -->
+    <div class="question-block">
+        <h4>15. 判断：在强化学习中，智能体主要依靠事先标注好的大量标签来学习。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q15" id="q15t" value="True">
+            <label for="q15t">True</label>
+            <input type="radio" name="q15" id="q15f" value="False">
+            <label for="q15f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer15')">显示解析</button>
+        <div class="answer-reveal" id="answer15">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>强化学习不依赖事先标注的标签，而是通过与环境交互获取奖励或惩罚来学习。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question-block">
+        <h4>16. 判断：AlphaZero 依赖大量的人类对局数据来进行训练。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q16" id="q16t" value="True">
+            <label for="q16t">True</label>
+            <input type="radio" name="q16" id="q16f" value="False">
+            <label for="q16f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer16')">显示解析</button>
+        <div class="answer-reveal" id="answer16">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>AlphaZero 基本不依赖大量人类对局数据，而是靠自我博弈学习策略，真正的突破点之一。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block">
+        <h4>17. 判断：强化学习中的奖励可以是即时反馈，也可能是延迟反馈。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q17" id="q17t" value="True">
+            <label for="q17t">True</label>
+            <input type="radio" name="q17" id="q17f" value="False">
+            <label for="q17f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer17')">显示解析</button>
+        <div class="answer-reveal" id="answer17">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>游戏中的得分、或最终胜负都是可能的奖励形式，有些是即时 (得到分数)，有些只有在终局才能获知。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-block">
+        <h4>18. 判断：强化学习中完全没有“过拟合”这种现象。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q18" id="q18t" value="True">
+            <label for="q18t">True</label>
+            <input type="radio" name="q18" id="q18f" value="False">
+            <label for="q18f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer18')">显示解析</button>
+        <div class="answer-reveal" id="answer18">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>尽管强化学习与监督学习不同，但在深度强化学习中也可能出现过拟合，即在训练环境或场景表现很好，换到新环境性能大幅下降。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-block">
+        <h4>19. 判断：在机器人控制任务中，为了安全起见，可以借助仿真环境进行大量训练。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q19" id="q19t" value="True">
+            <label for="q19t">True</label>
+            <input type="radio" name="q19" id="q19f" value="False">
+            <label for="q19f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer19')">显示解析</button>
+        <div class="answer-reveal" id="answer19">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>真实机器人试错成本高，可能损坏设备或存在安全隐患，因此常在仿真环境训练并再做迁移。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-block">
+        <h4>20. 判断：强化学习不适合高维数据输入场景，例如图像像素。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q20" id="q20t" value="True">
+            <label for="q20t">True</label>
+            <input type="radio" name="q20" id="q20f" value="False">
+            <label for="q20f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer20')">显示解析</button>
+        <div class="answer-reveal" id="answer20">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>借助深度神经网络作为近似函数，强化学习已经能处理高维图像输入，如 Atari 游戏。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function showAnswer(id) {
+        var revealDiv = document.getElementById(id);
+        if (revealDiv.style.display === 'none' || revealDiv.style.display === '') {
+            revealDiv.style.display = 'block';
+        } else {
+            revealDiv.style.display = 'none';
+        }
+    }
+    </script>
+
+</div>
+
+</body>
+</html>

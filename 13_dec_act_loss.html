@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>神经网络常见函数与数据处理 - 互动学习</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f8fa;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #4c8bf5;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      background-color: #4c8bf5;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .section-content p {
+      margin: 0.5rem 0;
+      text-indent: 2em;
+    }
+    ul {
+      margin-left: 2rem;
+      list-style-type: circle;
+    }
+    .example {
+      background-color: #f0f4ff;
+      border-left: 4px solid #4c8bf5;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .interactive {
+      background-color: #fffde7;
+      border-left: 4px solid #ffeb3b;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .quiz {
+      margin-top: 2rem;
+    }
+    .question {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .question h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    .options {
+      margin-left: 1rem;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    .check-answer {
+      background-color: #4c8bf5;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0.5rem 0;
+    }
+    .explanation {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background-color: #e8f5e9;
+      border-left: 4px solid #66bb6a;
+      display: none;
+    }
+    footer {
+      background-color: #4c8bf5;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    .btn-toggle {
+      color: #4c8bf5;
+      background-color: #fff;
+      border: 1px solid #4c8bf5;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>神经网络常见函数与数据处理 - 互动学习</h1>
+</header>
+
+<main>
+  <div class="section">
+    <h2 class="section-title">7. 决策函数、激活函数、损失函数</h2>
+    <div class="section-content">
+      <h3>决策函数（Decision Function）</h3>
+      <p>神经网络在做预测时，往往需要一个最终的“决策或判断”过程，这个过程就由“决策函数”来实现。对于分类任务，最常见的方式是对输出层各神经元的得分（或者概率）进行 <code>argmax</code>，即选择数值最大的输出所对应的类别，作为最终分类结果。对于回归或其他数值预测任务，可能用输出层的值直接作为预测结果。</p>
+      <div class="example">
+        <h4>【小案例】</h4>
+        <p>假设输出层有3个神经元分别代表类别A、B、C，它们的输出值分别为[0.2, 0.7, 0.1]，我们用<code>argmax</code>可以得到中间那个值最大(0.7)，因此预测类别为B。</p>
+      </div>
+
+      <h3>激活函数（Activation Function）</h3>
+      <p>激活函数为神经网络提供了非线性特性，如果没有激活函数，整个网络将退化成简单的线性计算（线性叠加），难以学习复杂的映射关系。以下是常见的激活函数：</p>
+      <ul>
+        <li><strong>Sigmoid</strong>：输出范围在 (0, 1)。常用于二分类时表示类别的概率，但在深层网络中容易出现梯度消失问题。</li>
+        <li><strong>ReLU</strong> (Rectified Linear Unit)：如果输入小于0则输出0，否则输出原值。计算速度快，深度学习中应用最广。</li>
+        <li><strong>Tanh</strong>：输出范围在 (-1, 1)，有时在循环神经网络中使用。</li>
+        <li><strong>Softmax</strong>：常用于多分类任务，输出的每个神经元都可以被视为对应类别的“概率”。</li>
+      </ul>
+      <p>如果没有激活函数，网络的表达能力会受限，无法刻画复杂的非线性关系。</p>
+
+      <h3>损失函数（Loss Function）</h3>
+      <p>损失函数用来衡量“预测结果”和“真实结果”之间的差距。神经网络通过反向传播和梯度下降，不断最小化这个误差。根据任务不同，我们会选择不同的损失函数：</p>
+      <ul>
+        <li><strong>均方误差(MSE)</strong>：回归任务常用，如 (预测 - 真实)^2 的平均值。</li>
+        <li><strong>交叉熵损失(Cross Entropy)</strong>：分类任务常用，能更好地衡量预测的概率分布和真实分布之间的差距。</li>
+      </ul>
+      <div class="interactive">
+        <h4>【互动问题】</h4>
+        <p>1. 如果没有激活函数，网络做出来的决策有什么限制？</p>
+        <p>2. 你能想到生活里什么事情可以用“最大值”决策来做最后的判断吗？（比如投票、打分最高者胜出等）</p>
+        <button class="btn-toggle" onclick="toggleHints('hint1')">点击查看提示</button>
+        <div id="hint1" class="hidden">
+          <p>提示：没有激活函数时，网络变成了线性组合，不具备学习复杂映射的能力；生活中“投票最高者当选”“分数最高者胜出”等场景都属于argmax式决策。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">二、数据相关</h2>
+
+    <div class="section-content">
+      <h3>1. 数据清洗（Data Cleaning）的一般过程</h3>
+      <p>数据清洗是为了保证我们训练模型的数据足够干净和可靠，如果数据“脏乱”，往往会导致模型学习到错误的模式或规律。一般流程包括：</p>
+      <ul>
+        <li><strong>搜集数据</strong>：从各渠道拿到原始数据，可能数据格式不一、缺失、不完整甚至有错误。</li>
+        <li><strong>缺失值处理</strong>：发现部分属性缺失，可选择补全或删除。补全时通常用平均值、中位数或通过插值法等方式。</li>
+        <li><strong>异常值处理</strong>：检测明显不合理的极端值，如人的身高=300cm；排除或特殊处理它们。</li>
+        <li><strong>数据类型转换</strong>：将文本类信息转为数值、日期转为时间戳等，以便于模型处理。</li>
+        <li><strong>特征工程</strong>：根据业务理解，把原始特征转换或组合成更有价值的新特征，比如将“收入”这个连续值离散化为“高收入”“中等收入”等。</li>
+      </ul>
+      <div class="interactive">
+        <h4>【互动问题】</h4>
+        <p>1. 为什么要做数据清洗？如果数据脏乱，会对模型产生什么影响？</p>
+        <p>2. 你能列举生活中可能存在“异常值”的例子吗？</p>
+        <button class="btn-toggle" onclick="toggleHints('hint2')">点击查看提示</button>
+        <div id="hint2" class="hidden">
+          <p>提示：脏乱的数据会误导模型，可能学不到真实规律；生活中“身高=3米”“体重=3克”等都是异常值。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-content">
+      <h3>2. 训练集（Training Set）、测试集（Testing Set）、验证集（Validation Set）</h3>
+      <p>在机器学习和神经网络训练中，合理地划分数据对于评估模型性能和防止过拟合至关重要：</p>
+      <ul>
+        <li><strong>训练集</strong>：用来“教”神经网络，让它从这些数据中学习规律，并不断更新参数。</li>
+        <li><strong>测试集</strong>：用来最终评估模型的实际表现。测试集在训练过程中不参与训练，仅做最后的效果检测。</li>
+        <li><strong>验证集</strong>：用来在训练过程中协助调参，比如调整网络结构、学习率等，也可以监测过拟合。</li>
+      </ul>
+      <p>为什么要分训练集、验证集和测试集呢？因为如果只用训练集来调参，又用同样的数据评估，可能会过度拟合，无法反映模型的真实泛化能力。</p>
+      <div class="interactive">
+        <h4>【互动问题】</h4>
+        <p>1. 为什么要把数据分成训练集、验证集和测试集？只用训练集把模型调好再拿去测试行不行？</p>
+        <p>2. 如果我们只有很少的数据，怎么划分训练、验证和测试集才更合理？</p>
+        <button class="btn-toggle" onclick="toggleHints('hint3')">点击查看提示</button>
+        <div id="hint3" class="hidden">
+          <p>提示：只用训练集去调参会过拟合，无法真实评估；若数据较少，可以用交叉验证（k-fold cross validation）等方法。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section quiz">
+    <h2 class="section-title">习题：检验你的学习成果</h2>
+    <p>以下共有20道题目，包括单选题、多选题、判断题。完成后点击“检查答案”查看解析。</p>
+
+    <!-- 1 -->
+    <div class="question" data-answer="B">
+      <h4>1. 神经网络做分类决策时最常用的方法是（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q1" value="A"> 用最小值作为决策</label>
+        <label><input type="radio" name="q1" value="B"> 用argmax找到输出层中数值最大的那个神经元对应的类别</label>
+        <label><input type="radio" name="q1" value="C"> 只能随机猜测</label>
+        <label><input type="radio" name="q1" value="D"> 没有任何方法</label>
+      </div>
+      <div class="explanation">分类通常通过选择预测值最大的输出节点作为最终分类结果。</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="question" data-answer="错误">
+      <h4>2. 判断题：没有激活函数也能让神经网络学到复杂非线性映射。</h4>
+      <div class="options">
+        <label><input type="radio" name="q2" value="正确"> 正确</label>
+        <label><input type="radio" name="q2" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">没有激活函数时网络只能进行线性映射，无法学习复杂非线性关系。</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="question" data-answer="A">
+      <h4>3. 单选题：下列哪个激活函数在输入<0时输出0，否则输出原值？</h4>
+      <div class="options">
+        <label><input type="radio" name="q3" value="A"> ReLU</label>
+        <label><input type="radio" name="q3" value="B"> Sigmoid</label>
+        <label><input type="radio" name="q3" value="C"> Tanh</label>
+        <label><input type="radio" name="q3" value="D"> Softmax</label>
+      </div>
+      <div class="explanation">ReLU函数定义：ReLU(x)=max(0, x)。</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="question" data-answer="C">
+      <h4>4. 多选题：下列哪些属于常见的激活函数？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q4" value="A"> Sigmoid</label>
+        <label><input type="checkbox" name="q4" value="B"> ReLU</label>
+        <label><input type="checkbox" name="q4" value="C"> Tanh</label>
+        <label><input type="checkbox" name="q4" value="D"> MeanPooling</label>
+      </div>
+      <div class="explanation">Sigmoid、ReLU、Tanh都是常见激活函数，而MeanPooling是一种下采样操作，不属于激活函数。</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="question" data-answer="C">
+      <h4>5. 下列哪项是回归任务中常用的损失函数？（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q5" value="A"> 交叉熵损失</label>
+        <label><input type="radio" name="q5" value="B"> Hinge Loss</label>
+        <label><input type="radio" name="q5" value="C"> 均方误差（MSE）</label>
+        <label><input type="radio" name="q5" value="D"> Dice Loss</label>
+      </div>
+      <div class="explanation">回归任务最常用的损失函数之一就是均方误差(MSE)。</div>
+    </div>
+
+    <!-- 6 -->
+    <div class="question" data-answer="AB">
+      <h4>6. 多选题：关于交叉熵损失，下列哪些说法正确？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q6" value="A"> 常用于分类任务</label>
+        <label><input type="checkbox" name="q6" value="B"> 度量预测概率分布与真实分布之间的差异</label>
+        <label><input type="checkbox" name="q6" value="C"> 只能用于回归问题</label>
+        <label><input type="checkbox" name="q6" value="D"> 输出一定要是负数</label>
+      </div>
+      <div class="explanation">交叉熵适合概率输出（如Softmax），用于衡量预测分布与真实分布间的差异。</div>
+    </div>
+
+    <!-- 7 -->
+    <div class="question" data-answer="正确">
+      <h4>7. 判断题：如果数据质量太差，模型可能会学到错误的规律。</h4>
+      <div class="options">
+        <label><input type="radio" name="q7" value="正确"> 正确</label>
+        <label><input type="radio" name="q7" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">脏数据会误导模型，让模型学到不可靠的模式。</div>
+    </div>
+
+    <!-- 8 -->
+    <div class="question" data-answer="BD">
+      <h4>8. 多选题：以下哪些属于数据清洗中的常见步骤？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q8" value="A"> 直接训练模型</label>
+        <label><input type="checkbox" name="q8" value="B"> 处理缺失值</label>
+        <label><input type="checkbox" name="q8" value="C"> 过拟合正则化</label>
+        <label><input type="checkbox" name="q8" value="D"> 异常值处理</label>
+      </div>
+      <div class="explanation">数据清洗主要包括处理缺失值、异常值、转换类型等。</div>
+    </div>
+
+    <!-- 9 -->
+    <div class="question" data-answer="B">
+      <h4>9. 下列哪种情况属于异常值？（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q9" value="A"> 某人身高170cm</label>
+        <label><input type="radio" name="q9" value="B"> 某人身高300cm</label>
+        <label><input type="radio" name="q9" value="C"> 某人2年内体重变动了10kg</label>
+        <label><input type="radio" name="q9" value="D"> 某人年收入在平均水平附近</label>
+      </div>
+      <div class="explanation">300cm 的身高极不合理，很可能是数据录入错误或极端值。</div>
+    </div>
+
+    <!-- 10 -->
+    <div class="question" data-answer="错误">
+      <h4>10. 判断题：数据清洗完成后就无需再进行特征工程。</h4>
+      <div class="options">
+        <label><input type="radio" name="q10" value="正确"> 正确</label>
+        <label><input type="radio" name="q10" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">数据清洗是基础步骤，之后通常还要做特征工程来提升模型表现。</div>
+    </div>
+
+    <!-- 11 -->
+    <div class="question" data-answer="ABC">
+      <h4>11. 多选题：在进行特征工程时，我们可以做哪些操作？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q11" value="A"> 将连续值分段，如把年龄划分成不同年龄段</label>
+        <label><input type="checkbox" name="q11" value="B"> 组合多个已有特征生成新的特征</label>
+        <label><input type="checkbox" name="q11" value="C"> 将日期型特征拆分成年、月、日</label>
+        <label><input type="checkbox" name="q11" value="D"> 整体删除已处理干净的数据</label>
+      </div>
+      <div class="explanation">特征工程是让数据更能反映业务含义或模型需求，通常会进行离散化、衍生特征等操作。</div>
+    </div>
+
+    <!-- 12 -->
+    <div class="question" data-answer="B">
+      <h4>12. 单选题：在神经网络训练中，下列哪种情况最能客观评估模型对新数据的泛化能力？</h4>
+      <div class="options">
+        <label><input type="radio" name="q12" value="A"> 观察训练集上的准确率</label>
+        <label><input type="radio" name="q12" value="B"> 观察测试集上的准确率</label>
+        <label><input type="radio" name="q12" value="C"> 只用验证集做最终评价</label>
+        <label><input type="radio" name="q12" value="D"> 都不合适</label>
+      </div>
+      <div class="explanation">测试集是训练过程中完全未见过的数据，用于最终评价模型的泛化性能。</div>
+    </div>
+
+    <!-- 13 -->
+    <div class="question" data-answer="正确">
+      <h4>13. 判断题：验证集通常在训练过程中用于调参或监控过拟合。</h4>
+      <div class="options">
+        <label><input type="radio" name="q13" value="正确"> 正确</label>
+        <label><input type="radio" name="q13" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">验证集不用于最终评估，而是为训练过程提供参考。</div>
+    </div>
+
+    <!-- 14 -->
+    <div class="question" data-answer="A">
+      <h4>14. 单选题：如果我们只用训练集来做模型选择和参数调节，那么：</h4>
+      <div class="options">
+        <label><input type="radio" name="q14" value="A"> 可能发生过拟合，无法真实评估模型效果</label>
+        <label><input type="radio" name="q14" value="B"> 结果一定最优</label>
+        <label><input type="radio" name="q14" value="C"> 不需要再用任何其他数据</label>
+        <label><input type="radio" name="q14" value="D"> 没有任何影响</label>
+      </div>
+      <div class="explanation">若只在训练集上调参并评估，模型可能只对训练数据表现好，实际泛化差。</div>
+    </div>
+
+    <!-- 15 -->
+    <div class="question" data-answer="C">
+      <h4>15. 多选题：下列哪些选项描述了过拟合可能的现象？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q15" value="A"> 训练集上精度高，但测试集精度明显下降</label>
+        <label><input type="checkbox" name="q15" value="B"> 模型学习到一些数据中的随机噪声</label>
+        <label><input type="checkbox" name="q15" value="C"> 通过验证集或测试集能发现问题</label>
+        <label><input type="checkbox" name="q15" value="D"> 训练集上也很差</label>
+      </div>
+      <div class="explanation">过拟合时训练集表现好，但泛化到新数据表现差，一般在测试或验证中暴露。</div>
+    </div>
+
+    <!-- 16 -->
+    <div class="question" data-answer="错误">
+      <h4>16. 判断题：对于数据很少的情况，仍然应该严格划分三部分（训练、验证、测试），哪怕每部分数据量只有极少。</h4>
+      <div class="options">
+        <label><input type="radio" name="q16" value="正确"> 正确</label>
+        <label><input type="radio" name="q16" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">在数据很少时，可通过交叉验证等方式，避免把数据分得太碎。</div>
+    </div>
+
+    <!-- 17 -->
+    <div class="question" data-answer="C">
+      <h4>17. 单选题：下面哪种做法能在数据少的情况下更好地利用数据？</h4>
+      <div class="options">
+        <label><input type="radio" name="q17" value="A"> 训练集减少，测试集扩大</label>
+        <label><input type="radio" name="q17" value="B"> 全部数据都做测试集</label>
+        <label><input type="radio" name="q17" value="C"> 使用k-fold交叉验证</label>
+        <label><input type="radio" name="q17" value="D"> 合并训练集和测试集一起训练</label>
+      </div>
+      <div class="explanation">k-fold交叉验证可以在数据少时有效利用样本，提高评估稳定性。</div>
+    </div>
+
+    <!-- 18 -->
+    <div class="question" data-answer="ABC">
+      <h4>18. 多选题：下列哪些情形会导致模型在新数据上的表现大大降低？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q18" value="A"> 训练数据脏乱且未做清洗</label>
+        <label><input type="checkbox" name="q18" value="B"> 严重过拟合</label>
+        <label><input type="checkbox" name="q18" value="C"> 训练、测试数据分布差异巨大</label>
+        <label><input type="checkbox" name="q18" value="D"> 使用了激活函数</label>
+      </div>
+      <div class="explanation">数据质量、过拟合、数据分布不一致都会影响泛化；激活函数是常见网络结构要素。</div>
+    </div>
+
+    <!-- 19 -->
+    <div class="question" data-answer="正确">
+      <h4>19. 判断题：在多分类任务中，Softmax激活函数往往配合交叉熵损失函数一起使用。</h4>
+      <div class="options">
+        <label><input type="radio" name="q19" value="正确"> 正确</label>
+        <label><input type="radio" name="q19" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">多分类场景下，Softmax+交叉熵是非常经典的组合。</div>
+    </div>
+
+    <!-- 20 -->
+    <div class="question" data-answer="AD">
+      <h4>20. 多选题：以下哪些做法能更客观地评估模型的最终性能？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q20" value="A"> 将一部分数据用作测试集，在训练结束后才使用</label>
+        <label><input type="checkbox" name="q20" value="B"> 只在训练集上反复测评</label>
+        <label><input type="checkbox" name="q20" value="C"> 用验证集替代测试集做最终评估</label>
+        <label><input type="checkbox" name="q20" value="D"> 使用交叉验证，在所有折叠平均结果作为最终评估</label>
+      </div>
+      <div class="explanation">留出独立测试集或使用交叉验证都可以更公正地反映模型真实表现。</div>
+    </div>
+
+    <button class="check-answer" onclick="checkAnswers()">检查答案</button>
+  </div>
+</main>
+
+<footer>
+  <p>祝学习愉快，继续加油！</p>
+</footer>
+
+<script>
+  function toggleHints(id) {
+    const hint = document.getElementById(id);
+    if(hint.classList.contains('hidden')) {
+      hint.classList.remove('hidden');
+    } else {
+      hint.classList.add('hidden');
+    }
+  }
+
+  function checkAnswers() {
+    const questions = document.querySelectorAll('.question');
+    questions.forEach((q) => {
+      const correctAnswer = q.getAttribute('data-answer');
+      const explanation = q.querySelector('.explanation');
+
+      let userAnswer = "";
+      const checkboxes = q.querySelectorAll('input[type=checkbox]');
+      const radios = q.querySelectorAll('input[type=radio]');
+
+      if (checkboxes.length > 0) {
+        // 多选题
+        let checkedValues = [];
+        checkboxes.forEach((cb) => {
+          if (cb.checked) {
+            checkedValues.push(cb.value);
+          }
+        });
+        userAnswer = checkedValues.join('');
+      } else if (radios.length > 0) {
+        // 单选题或判断题
+        radios.forEach((r) => {
+          if (r.checked) {
+            userAnswer = r.value;
+          }
+        });
+      }
+
+      // 比较答案（多选题顺序不固定，需要做一下排序再比较）
+      const sortedCorrect = correctAnswer.split('').sort().join('');
+      const sortedUser = userAnswer.split('').sort().join('');
+
+      if (sortedCorrect === sortedUser) {
+        q.style.border = '2px solid #66bb6a';
+      } else {
+        q.style.border = '2px solid #ef5350';
+      }
+
+      // 显示解析
+      explanation.style.display = 'block';
+    });
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

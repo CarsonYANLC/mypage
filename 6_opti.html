@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>最优化方法 & 残差、偏差、方差——交互式学习页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            margin-bottom: 8px;
+        }
+        .content-section {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .question-block {
+            background: #fcfcfc;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+            padding: 15px;
+        }
+        .question-block h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .answers-area, .tf-area {
+            margin: 10px 0;
+        }
+        .answer-reveal {
+            display: none;
+            margin-top: 10px;
+            background: #e6f7ff;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .btn-show-answer {
+            margin-top: 10px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .btn-show-answer:hover {
+            background: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .subtitle {
+            color: #2980b9;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #e6f7ff;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .explanation {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>最优化方法 & 残差 (residual)、偏差 (bias)、方差 (variance)</h1>
+
+<div class="content-section">
+    <h2>一、最优化方法</h2>
+    <p>在机器学习中，许多问题都可视为“<strong>最优化</strong>”问题：给定一个损失函数或目标函数，期望通过不断调整模型参数以最小化(或最大化)该目标。以下为常见最优化方法，并提供典型场景与通俗案例来帮助理解。</p>
+
+    <h3>1. 梯度下降 (Gradient Descent)</h3>
+    <p><strong>核心思想：</strong>计算损失函数对参数的梯度，沿着<em>负梯度</em>方向更新参数，使损失不断下降。</p>
+    <p><strong>通俗解析：</strong>可以把损失函数想象成一座山峰，梯度代表“山坡的坡度”，负梯度则是“下坡方向”。每一步我们都顺着山坡往下走，逐渐逼近山谷最低点。</p>
+    <ul>
+        <li><strong>案例：</strong>线性回归在维度较高时常用梯度下降而非解析解；神经网络训练中亦普遍使用各种基于梯度下降的算法(如Adam)。</li>
+        <li><strong>注意：</strong>学习率(lr)的选择影响巨大：lr太大可能导致震荡或发散，lr太小则收敛速度非常慢。</li>
+    </ul>
+
+    <h3>2. 随机梯度下降 (SGD)</h3>
+    <p><strong>核心思想：</strong>在每次更新时，仅使用一个或一小批(mini-batch)数据来近似整批数据的梯度，降低了每次迭代的计算量。</p>
+    <p><strong>通俗解析：</strong>比起整座山都要看完再走，SGD 相当于“局部采样”山坡感觉一下就往下走，速度更快，但是有随机抖动，需要适当平均和调整。</p>
+    <ul>
+        <li><strong>案例：</strong>深度学习普遍使用 mini-batch SGD，能在海量数据(上百万样本)中保持可行的迭代速度；在线学习(online learning)中，数据源源不断到来，适合SGD动态更新。</li>
+        <li><strong>优缺点：</strong>SGD计算快(优点)但更新噪音大，需配合学习率衰减、动量(momentum)等技巧。</li>
+    </ul>
+
+    <h3>3. 牛顿法 / 新顿-拉夫森法</h3>
+    <p><strong>核心思想：</strong>利用二阶导数(或Hessian矩阵)来捕捉曲率信息，能够在理想条件下快速收敛到极小值。</p>
+    <p><strong>通俗解析：</strong>若梯度是描述“坡度方向”，那么 Hessian 进一步告诉你“坡度的弯曲度”——在哪些方向上更陡或更缓。</p>
+    <ul>
+        <li><strong>案例：</strong>在维度较低且损失函数凸的场景(如简单线性回归)中，牛顿法可一次性逼近最优解。</li>
+        <li><strong>限制：</strong>对大规模数据或高维问题，计算并存储 Hessian 代价极高，往往不可行。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>二、残差 (residual)、偏差 (bias)、方差 (variance)</h2>
+    <p>理解残差、偏差、方差三者有助于判断模型的拟合状况，以及是否存在欠拟合或过拟合问题。也为后续的模型调优提供思路。</p>
+
+    <h3>1. 残差 (Residual)</h3>
+    <ul>
+        <li><strong>定义：</strong>单个样本的真实值 y 与预测值 y_hat 之间的差异： <code>residual = y - y_hat</code>。</li>
+        <li><strong>意义：</strong>衡量在某一具体点上模型“偏离真实值”的程度。若残差很大，说明在该样本上预测不准。</li>
+        <li><strong>案例：</strong>线性回归最小化的往往是所有残差的平方和(RSS)。梯度提升决策树(GBDT)中也会基于残差训练下一棵树。</li>
+    </ul>
+
+    <h3>2. 偏差 (Bias)</h3>
+    <ul>
+        <li><strong>定义：</strong>模型预测的期望值与真实值的差异。从整体平均(或期望)角度度量系统误差。</li>
+        <li><strong>意义：</strong>如果偏差高，表明模型过于简单或假设过于强，无法捕捉数据真实分布，易出现欠拟合。</li>
+        <li><strong>现象：</strong>训练集与测试集都表现不佳。</li>
+    </ul>
+
+    <h3>3. 方差 (Variance)</h3>
+    <ul>
+        <li><strong>定义：</strong>模型对训练数据波动的敏感程度；若方差高，说明模型极度依赖训练集中的一些偶然特性(噪音)。</li>
+        <li><strong>意义：</strong>方差高常导致过拟合，在训练集表现非常好，测试集却明显劣化。</li>
+        <li><strong>现象：</strong>换一批训练数据，模型可能变化很大。</li>
+    </ul>
+
+    <h3>4. 平衡偏差-方差</h3>
+    <ul>
+        <li><strong>平衡思想：</strong>若模型太简单→偏差高；太复杂→方差高，需要找一个中庸点。</li>
+        <li><strong>处理方法：</strong>交叉验证调参、正则化、集成学习都是在平衡这两者。</li>
+        <li><strong>参考公式：</strong>总误差 ≈ 偏差² + 方差 + 噪音。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>三、20 道模拟测试题</h2>
+    <p>以下包括单选题、多选题、判断题三种形式，共 20 题，帮助巩固对“最优化方法”和“残差、偏差、方差”的理解。</p>
+
+    <h3>(1) 单选题 (10 题)</h3>
+
+    <!-- Q1 -->
+    <div class="question-block">
+        <h4>1. 下列哪种方法不属于一阶(基于梯度)优化？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q1" id="q1a" value="A">
+            <label for="q1a">A. 梯度下降 (GD)</label><br/>
+            <input type="radio" name="q1" id="q1b" value="B">
+            <label for="q1b">B. 牛顿法</label><br/>
+            <input type="radio" name="q1" id="q1c" value="C">
+            <label for="q1c">C. 随机梯度下降 (SGD)</label><br/>
+            <input type="radio" name="q1" id="q1d" value="D">
+            <label for="q1d">D. Mini-batch SGD</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer1')">显示解析</button>
+        <div class="answer-reveal" id="answer1">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>牛顿法属于二阶(基于 Hessian)的优化方法，A/C/D都基于一阶梯度。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block">
+        <h4>2. 在神经网络训练中，下列哪种现象可能暗示学习率过大？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q2" id="q2a" value="A">
+            <label for="q2a">A. 损失在不断下降，且收敛较快</label><br/>
+            <input type="radio" name="q2" id="q2b" value="B">
+            <label for="q2b">B. 损失时而变大时而变小，整体波动剧烈，难以收敛</label><br/>
+            <input type="radio" name="q2" id="q2c" value="C">
+            <label for="q2c">C. 损失始终很稳定在一个较高值</label><br/>
+            <input type="radio" name="q2" id="q2d" value="D">
+            <label for="q2d">D. 训练集和测试集准确率都较低</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer2')">显示解析</button>
+        <div class="answer-reveal" id="answer2">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>学习率过大可能导致在最优点附近来回震荡，损失上下波动。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block">
+        <h4>3. 如果我们的目标函数有许多局部极小值，下列哪种简单方法可能更易陷入局部最优？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q3" id="q3a" value="A">
+            <label for="q3a">A. 随机梯度下降(SGD)</label><br/>
+            <input type="radio" name="q3" id="q3b" value="B">
+            <label for="q3b">B. 带学习率衰减的梯度下降</label><br/>
+            <input type="radio" name="q3" id="q3c" value="C">
+            <label for="q3c">C. 牛顿法</label><br/>
+            <input type="radio" name="q3" id="q3d" value="D">
+            <label for="q3d">D. 模拟退火(Simulated Annealing)</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer3')">显示解析</button>
+        <div class="answer-reveal" id="answer3">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p>牛顿法在非凸或有多局部极小值的场景常会快速收敛到某个局部极小点而无法跳出。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block">
+        <h4>4. 若模型在训练集和测试集上都表现很差，这通常意味着：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q4" id="q4a" value="A">
+            <label for="q4a">A. 方差高</label><br/>
+            <input type="radio" name="q4" id="q4b" value="B">
+            <label for="q4b">B. 偏差高</label><br/>
+            <input type="radio" name="q4" id="q4c" value="C">
+            <label for="q4c">C. 残差都为零</label><br/>
+            <input type="radio" name="q4" id="q4d" value="D">
+            <label for="q4d">D. 样本量太少</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer4')">显示解析</button>
+        <div class="answer-reveal" id="answer4">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>训练集表现差意味着还没很好地学到规律，通常是偏差(欠拟合)高。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block">
+        <h4>5. 如果在同一建模流程中，多次随机抽样训练不同的模型，结果差异非常大，这可以说明：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q5" id="q5a" value="A">
+            <label for="q5a">A. 偏差高</label><br/>
+            <input type="radio" name="q5" id="q5b" value="B">
+            <label for="q5b">B. 方差高</label><br/>
+            <input type="radio" name="q5" id="q5c" value="C">
+            <label for="q5c">C. 模型没有残差</label><br/>
+            <input type="radio" name="q5" id="q5d" value="D">
+            <label for="q5d">D. 数据是线性可分的</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer5')">显示解析</button>
+        <div class="answer-reveal" id="answer5">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>模型对训练数据的波动敏感→方差高。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block">
+        <h4>6. 下列哪一种情况最可能表示模型过拟合？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q6" id="q6a" value="A">
+            <label for="q6a">A. 训练准确率70%，测试准确率72%</label><br/>
+            <input type="radio" name="q6" id="q6b" value="B">
+            <label for="q6b">B. 训练准确率95%，测试准确率60%</label><br/>
+            <input type="radio" name="q6" id="q6c" value="C">
+            <label for="q6c">C. 训练准确率60%，测试准确率58%</label><br/>
+            <input type="radio" name="q6" id="q6d" value="D">
+            <label for="q6d">D. 训练准确率30%，测试准确率10%</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer6')">显示解析</button>
+        <div class="answer-reveal" id="answer6">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>训练集表现极好而测试集极差，典型过拟合(高方差)特征。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block">
+        <h4>7. 若想快速缓解高方差问题，下列哪种操作常见？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q7" id="q7a" value="A">
+            <label for="q7a">A. 添加更多特征</label><br/>
+            <input type="radio" name="q7" id="q7b" value="B">
+            <label for="q7b">B. 增大模型深度</label><br/>
+            <input type="radio" name="q7" id="q7c" value="C">
+            <label for="q7c">C. 增加正则化强度</label><br/>
+            <input type="radio" name="q7" id="q7d" value="D">
+            <label for="q7d">D. 减少训练数据量</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer7')">显示解析</button>
+        <div class="answer-reveal" id="answer7">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p>方差高→过拟合，通常可增大正则化力度(或减少模型复杂度)来抑制过拟合。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block">
+        <h4>8. 使用梯度提升树(GBDT)时，每次新树拟合的目标往往是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q8" id="q8a" value="A">
+            <label for="q8a">A. 残差</label><br/>
+            <input type="radio" name="q8" id="q8b" value="B">
+            <label for="q8b">B. 随机梯度</label><br/>
+            <input type="radio" name="q8" id="q8c" value="C">
+            <label for="q8c">C. 特征重要度</label><br/>
+            <input type="radio" name="q8" id="q8d" value="D">
+            <label for="q8d">D. 超参数</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer8')">显示解析</button>
+        <div class="answer-reveal" id="answer8">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p>GBDT每棵新树要拟合前一轮的残差，逐步修正预测。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-block">
+        <h4>9. 偏差与方差的概念，更多地属于：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q9" id="q9a" value="A">
+            <label for="q9a">A. 数据清洗层面的概念</label><br/>
+            <input type="radio" name="q9" id="q9b" value="B">
+            <label for="q9b">B. 优化算法的数值稳定性</label><br/>
+            <input type="radio" name="q9" id="q9c" value="C">
+            <label for="q9c">C. 模型泛化性能分析</label><br/>
+            <input type="radio" name="q9" id="q9d" value="D">
+            <label for="q9d">D. 与残差无关</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer9')">显示解析</button>
+        <div class="answer-reveal" id="answer9">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p>偏差与方差主要用于评估模型对新数据的泛化能力，是否欠拟合或过拟合。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block">
+        <h4>10. 训练集表现优秀，测试集表现糟糕，是由于：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q10" id="q10a" value="A">
+            <label for="q10a">A. 偏差高</label><br/>
+            <input type="radio" name="q10" id="q10b" value="B">
+            <label for="q10b">B. 方差高</label><br/>
+            <input type="radio" name="q10" id="q10c" value="C">
+            <label for="q10c">C. 残差不存在</label><br/>
+            <input type="radio" name="q10" id="q10d" value="D">
+            <label for="q10d">D. 学习率过高</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer10')">显示解析</button>
+        <div class="answer-reveal" id="answer10">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>训练好测试差通常意味着模型对训练数据“记得过多”，导致高方差(过拟合)。</p>
+            </div>
+        </div>
+    </div>
+
+    <h3>(2) 多选题 (5 题)</h3>
+
+    <!-- Q11 -->
+    <div class="question-block">
+        <h4>11. 在最优化方法中，下列说法哪些正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q11" id="q11a" value="A">
+            <label for="q11a">A. 梯度下降可在任何可微分的损失函数上使用</label><br/>
+            <input type="checkbox" name="q11" id="q11b" value="B">
+            <label for="q11b">B. 牛顿法对非凸问题也能保证找到全局最优</label><br/>
+            <input type="checkbox" name="q11" id="q11c" value="C">
+            <label for="q11c">C. SGD 在大数据场景下通常比全批量GD更高效</label><br/>
+            <input type="checkbox" name="q11" id="q11d" value="D">
+            <label for="q11d">D. 动量(Momentum)是一种平滑梯度更新的手段，可加快收敛</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer11')">显示解析</button>
+        <div class="answer-reveal" id="answer11">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p>牛顿法对非凸场景也可能只找到局部极小值，不能保证全局最优。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block">
+        <h4>12. 关于残差 (residual)，下列说法正确的是：</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q12" id="q12a" value="A">
+            <label for="q12a">A. 单个点的预测误差就是残差</label><br/>
+            <input type="checkbox" name="q12" id="q12b" value="B">
+            <label for="q12b">B. 残差越大，模型对此样本拟合越差</label><br/>
+            <input type="checkbox" name="q12" id="q12c" value="C">
+            <label for="q12c">C. 残差大就说明模型一定是过拟合</label><br/>
+            <input type="checkbox" name="q12" id="q12d" value="D">
+            <label for="q12d">D. 观测整体残差分布，可评估模型的整体拟合情况</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer12')">显示解析</button>
+        <div class="answer-reveal" id="answer12">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p>C错误：某些样本残差大不一定是过拟合，也可能是该样本是离群点。整体残差分布才更具有参考价值。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block">
+        <h4>13. 如果模型偏差高，下列哪些方法可以降低偏差？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q13" id="q13a" value="A">
+            <label for="q13a">A. 增加模型复杂度，添加多项式特征或深度网络层</label><br/>
+            <input type="checkbox" name="q13" id="q13b" value="B">
+            <label for="q13b">B. 减小正则化系数，放松对模型的限制</label><br/>
+            <input type="checkbox" name="q13" id="q13c" value="C">
+            <label for="q13c">C. 使用更多训练数据</label><br/>
+            <input type="checkbox" name="q13" id="q13d" value="D">
+            <label for="q13d">D. 集成学习(如Bagging)也能减少一部分偏差</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer13')">显示解析</button>
+        <div class="answer-reveal" id="answer13">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p>使用更多数据可缓解高方差(防过拟合)，对高偏差帮助有限(除非原先数据量极小)。集成学习(如Boosting)有时能提升表达能力，降低偏差。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block">
+        <h4>14. 哪些情况可说明方差过高？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q14" id="q14a" value="A">
+            <label for="q14a">A. 训练集准确率明显高于测试集</label><br/>
+            <input type="checkbox" name="q14" id="q14b" value="B">
+            <label for="q14b">B. 用不同子集训练出的模型结果差异巨大</label><br/>
+            <input type="checkbox" name="q14" id="q14c" value="C">
+            <label for="q14c">C. 学习曲线看起来训练集极快收敛，而验证集收敛很慢</label><br/>
+            <input type="checkbox" name="q14" id="q14d" value="D">
+            <label for="q14d">D. 训练集和测试集都很糟糕</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer14')">显示解析</button>
+        <div class="answer-reveal" id="answer14">
+            <strong>正确答案：A, B, C</strong>
+            <div class="explanation">
+                <p>D对应偏差高(欠拟合)的情况。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question-block">
+        <h4>15. 当我们想进一步降低方差，但保持偏差不至于过高，下列哪些操作合适？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q15" id="q15a" value="A">
+            <label for="q15a">A. 增加正则化(L1/L2)</label><br/>
+            <input type="checkbox" name="q15" id="q15b" value="B">
+            <label for="q15b">B. 使用交叉验证调参，找到合适的模型复杂度</label><br/>
+            <input type="checkbox" name="q15" id="q15c" value="C">
+            <label for="q15c">C. 利用Bagging或随机森林等集成学习方法</label><br/>
+            <input type="checkbox" name="q15" id="q15d" value="D">
+            <label for="q15d">D. 让模型变得更简单</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer15')">显示解析</button>
+        <div class="answer-reveal" id="answer15">
+            <strong>正确答案：A, B, C</strong>
+            <div class="explanation">
+                <p>D也能降低方差，但可能偏差会大幅提高，需要谨慎。集成学习、正则化、交叉验证都能较好平衡。</p>
+            </div>
+        </div>
+    </div>
+
+    <h3>(3) 判断题 (5 题)</h3>
+
+    <!-- Q16 -->
+    <div class="question-block">
+        <h4>16. 判断：在梯度下降中，如果损失一直无法降低，就说明一定是学习率太小。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q16" id="q16t" value="True">
+            <label for="q16t">True</label>
+            <input type="radio" name="q16" id="q16f" value="False">
+            <label for="q16f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer16')">显示解析</button>
+        <div class="answer-reveal" id="answer16">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p>无法降低损失可能原因很多：如学习率过大导致震荡，或模型结构与数据不匹配(欠拟合)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block">
+        <h4>17. 判断：偏差高通常表现为在训练集和测试集上都表现不佳，即欠拟合。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q17" id="q17t" value="True">
+            <label for="q17t">True</label>
+            <input type="radio" name="q17" id="q17f" value="False">
+            <label for="q17f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer17')">显示解析</button>
+        <div class="answer-reveal" id="answer17">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>欠拟合即偏差高，无法捕捉数据主要模式。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-block">
+        <h4>18. 判断：方差高时，训练集表现极佳但测试集表现大幅衰减。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q18" id="q18t" value="True">
+            <label for="q18t">True</label>
+            <input type="radio" name="q18" id="q18f" value="False">
+            <label for="q18f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer18')">显示解析</button>
+        <div class="answer-reveal" id="answer18">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>过拟合的典型表现，也是高方差的主要特征。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-block">
+        <h4>19. 判断：残差指的是整个模型对所有样本的平均误差。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q19" id="q19t" value="True">
+            <label for="q19t">True</label>
+            <input type="radio" name="q19" id="q19f" value="False">
+            <label for="q19f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer19')">显示解析</button>
+        <div class="answer-reveal" id="answer19">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p>残差是单个点的真实值与预测值的差；整体平均误差是平均残差或其他汇总统计。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-block">
+        <h4>20. 判断：若想降低偏差，可以增加模型的复杂度或降低正则化。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q20" id="q20t" value="True">
+            <label for="q20t">True</label>
+            <input type="radio" name="q20" id="q20f" value="False">
+            <label for="q20f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer20')">显示解析</button>
+        <div class="answer-reveal" id="answer20">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>减小正则化强度或增加复杂度都可能降低偏差，但要小心方差会上升。</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function showAnswer(id) {
+    const revealDiv = document.getElementById(id);
+    if (revealDiv.style.display === 'none' || revealDiv.style.display === '') {
+        revealDiv.style.display = 'block';
+    } else {
+        revealDiv.style.display = 'none';
+    }
+}
+</script>
+
+</body>
+</html>

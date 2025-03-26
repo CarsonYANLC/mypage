@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>梯度下降与局部/全局最优 - 互动学习</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f8fa;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #4c8bf5;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      background-color: #4c8bf5;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .section-content p {
+      margin: 0.5rem 0;
+      text-indent: 2em;
+    }
+    .example {
+      background-color: #f0f4ff;
+      border-left: 4px solid #4c8bf5;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .interactive {
+      background-color: #fffde7;
+      border-left: 4px solid #ffeb3b;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .quiz {
+      margin-top: 2rem;
+    }
+    .question {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .question h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    .options {
+      margin-left: 1rem;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    .check-answer {
+      background-color: #4c8bf5;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0.5rem 0;
+    }
+    .explanation {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background-color: #e8f5e9;
+      border-left: 4px solid #66bb6a;
+      display: none;
+    }
+    footer {
+      background-color: #4c8bf5;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    .btn-toggle {
+      color: #4c8bf5;
+      background-color: #fff;
+      border: 1px solid #4c8bf5;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>梯度下降与局部/全局最优 - 互动学习</h1>
+</header>
+
+<main>
+  <!-- 第三节：梯度下降 -->
+  <div class="section">
+    <h2 class="section-title">3. 梯度下降（Gradient Descent）</h2>
+    <div class="section-content">
+      <p><strong>概念：</strong></p>
+      <p>梯度下降是一种寻找最优参数（让误差最小化）的方法。它经常被用在神经网络的训练过程里。</p>
+      <p>可以想象我们在爬山或下山：当前所在的山坡斜率就是“梯度”，如果我们要下山（让误差变小），就朝斜率下降的方向走。</p>
+      <p>每走一步，就重新计算当前位置的斜率，继续朝更低的方向走，直到我们到达某个“最低点”。</p>
+      <p><strong>作用：</strong></p>
+      <p>在神经网络训练中，反向传播会先算出梯度，然后根据这个梯度的方向来调整神经网络中所有权重的值，这就是梯度下降在起作用。</p>
+      <div class="example">
+        <h4>【小案例】爬山/下山的比喻</h4>
+        <p>想象一个“山谷”代表我们要找到的理想最优点（误差最低）。每一步都要顺着山坡往下走（朝着让误差减少的方向），这一步的方向和大小怎么定？就是看山坡的“坡度”（梯度）。如果坡度很陡，我们可以走得更快；坡度小就走得慢，以免错过山谷。</p>
+      </div>
+      <div class="interactive">
+        <h4>【互动问题】</h4>
+        <p>1. 你能用生活中其它场景来形容“梯度下降”吗？</p>
+        <p>2. 当我们走到山谷底的时候，意味着什么？</p>
+        <button class="btn-toggle" onclick="toggleHints('hint1')">点击查看提示</button>
+        <div id="hint1" class="hidden">
+          <p>提示：想想“顺着斜度往下走”、“自动往下滑到凹处”的生活现象；如果到达山谷底，说明你很可能已经找到某种局部或全局的最低点。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 第四节：局部最优和全局最优 -->
+  <div class="section">
+    <h2 class="section-title">4. 局部最优（Local Optima）和全局最优（Global Optima）</h2>
+    <div class="section-content">
+      <p><strong>局部最优：</strong></p>
+      <p>在神经网络的训练过程中，误差曲面可能非常复杂，我们有时候会掉进一个“小盆地”。从这个盆地里看，好像已经是最低点了，但如果能翻过“盆地边缘”，或许还能到达更低的点。这个小盆地里的最低点就是局部最优。</p>
+
+      <p><strong>全局最优：</strong></p>
+      <p>也就是整个误差曲面上真正的最低点。实际问题往往非常复杂，能不能找到全局最优点并不一定。很多时候我们退而求其次，找到一个“够好”的局部最优或接近全局最优就行了。</p>
+
+      <div class="example">
+        <h4>【小案例】骑自行车找最低洼地</h4>
+        <p>如果我们想要在某片山区骑车去“海拔最低处”，有时会遇到一个小谷地，一进入谷地后四周都是坡，再也没法骑出去。这个小谷地对应“局部最优”。如果我们想真的找到全局海拔最低处，也许要付出更多代价（推车翻山越岭），才能到达真正的最低洼地。</p>
+      </div>
+
+      <div class="interactive">
+        <h4>【互动问题】</h4>
+        <p>1. 为什么在机器学习中，我们有时并不执着于一定要找到“全局最优”？</p>
+        <p>2. 你觉得哪些方法可以帮助我们逃离“局部最优”，可能让我们有机会找到更好的点？</p>
+        <button class="btn-toggle" onclick="toggleHints('hint2')">点击查看提示</button>
+        <div id="hint2" class="hidden">
+          <p>提示：复杂的模型和数据会让误差曲面非常复杂，找到绝对全局最优可能代价太高；尝试多次随机初始化、使用动量（Momentum）、退火（Simulated Annealing）等都可能帮助逃离局部最优。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 二十道互动题目 -->
+  <div class="section quiz">
+    <h2 class="section-title">习题：检验你的学习成果</h2>
+    <p>以下共有20道题目，包含单选题、多选题和判断题，做完后可以点击“检查答案”进行自测。</p>
+
+    <!-- 1 -->
+    <div class="question" data-answer="A">
+      <h4>1. 梯度下降的主要目标是（单选）：</h4>
+      <div class="options">
+        <label><input type="radio" name="q1" value="A"> 寻找能使损失函数最小化的参数</label>
+        <label><input type="radio" name="q1" value="B"> 寻找最高山峰</label>
+        <label><input type="radio" name="q1" value="C"> 让网络错误率尽量提高</label>
+        <label><input type="radio" name="q1" value="D"> 保持误差不变</label>
+      </div>
+      <div class="explanation">梯度下降用于让损失函数最小化，从而寻找最优参数。</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="question" data-answer="错误">
+      <h4>2. 判断题：梯度下降只能在一维环境中使用，多维情况无法适用。</h4>
+      <div class="options">
+        <label><input type="radio" name="q2" value="正确"> 正确</label>
+        <label><input type="radio" name="q2" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">梯度下降同样适用于高维参数空间，并不局限于一维。</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="question" data-answer="ABCD">
+      <h4>3. 下列关于梯度下降的理解，哪些是正确的？（多选）</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q3" value="A"> 梯度相当于当前点误差曲面的斜率</label>
+        <label><input type="checkbox" name="q3" value="B"> 我们朝斜率反方向移动可以降低误差</label>
+        <label><input type="checkbox" name="q3" value="C"> 每次更新参数后，需要再次计算新的梯度</label>
+        <label><input type="checkbox" name="q3" value="D"> 目标是在迭代中逼近最优点</label>
+      </div>
+      <div class="explanation">梯度下降的核心是利用斜率信息反向更新参数，迭代逼近最低误差点。</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="question" data-answer="B">
+      <h4>4. 当我们使用梯度下降时，每次更新参数都要：</h4>
+      <div class="options">
+        <label><input type="radio" name="q4" value="A"> 朝斜率上升的方向走</label>
+        <label><input type="radio" name="q4" value="B"> 朝斜率下降的方向走</label>
+        <label><input type="radio" name="q4" value="C"> 随机走</label>
+        <label><input type="radio" name="q4" value="D"> 完全不走</label>
+      </div>
+      <div class="explanation">梯度的方向是误差上升最快的方向，所以要在其反方向移动。</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="question" data-answer="B">
+      <h4>5. 关于局部最优（local optimum）的描述，下列哪项是正确的？（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q5" value="A"> 局部最优一定是全局最优</label>
+        <label><input type="radio" name="q5" value="B"> 局部最优是指在某个局部范围内无法再降低误差的点</label>
+        <label><input type="radio" name="q5" value="C"> 一旦进入局部最优，就必定能到达全局最优</label>
+        <label><input type="radio" name="q5" value="D"> 在局部最优处，误差总是最高</label>
+      </div>
+      <div class="explanation">局部最优即在某个范围内最“低”的点，并非全局最优。</div>
+    </div>
+
+    <!-- 6 -->
+    <div class="question" data-answer="正确">
+      <h4>6. 判断题：全局最优一定比局部最优的误差值更低。</h4>
+      <div class="options">
+        <label><input type="radio" name="q6" value="正确"> 正确</label>
+        <label><input type="radio" name="q6" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">全局最优指的是整个误差曲面上的最低点，因此比局部最优误差更低。</div>
+    </div>
+
+    <!-- 7 -->
+    <div class="question" data-answer="C">
+      <h4>7. 在神经网络训练中，下列哪种情况可能导致我们陷入局部最优？（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q7" value="A"> 神经网络只有一个神经元</label>
+        <label><input type="radio" name="q7" value="B"> 学习率足够小</label>
+        <label><input type="radio" name="q7" value="C"> 误差曲面存在多个山谷，且当前初始点落在一个小山谷中</label>
+        <label><input type="radio" name="q7" value="D"> 训练集没有噪声</label>
+      </div>
+      <div class="explanation">多山谷对应多局部最优，初始点可能让我们最终掉进局部最优。</div>
+    </div>
+
+    <!-- 8 -->
+    <div class="question" data-answer="AC">
+      <h4>8. 下列哪些方法可能帮助我们逃离局部最优？（多选）</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q8" value="A"> 采用不同的随机初始权重，多次训练</label>
+        <label><input type="checkbox" name="q8" value="B"> 将学习率设置为0，让训练停止</label>
+        <label><input type="checkbox" name="q8" value="C"> 使用动量（Momentum）或退火（Simulated Annealing）等方法</label>
+        <label><input type="checkbox" name="q8" value="D"> 使用局部最优当最终结果</label>
+      </div>
+      <div class="explanation">多次随机初始化或使用动量等方法都能帮助逃离局部最优。</div>
+    </div>
+
+    <!-- 9 -->
+    <div class="question" data-answer="错误">
+      <h4>9. 判断题：在实际深度学习中，我们一定要找到全局最优才能获得良好效果。</h4>
+      <div class="options">
+        <label><input type="radio" name="q9" value="正确"> 正确</label>
+        <label><input type="radio" name="q9" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">大多数情况下，找到一个“足够好”的局部最优解就能让模型表现很好，不必执着绝对全局最优。</div>
+    </div>
+
+    <!-- 10 -->
+    <div class="question" data-answer="A">
+      <h4>10. 单选题：下列哪项能够在一定程度上说明梯度下降的思想？</h4>
+      <div class="options">
+        <label><input type="radio" name="q10" value="A"> 下山时随时探测山坡斜度并朝下坡方向走</label>
+        <label><input type="radio" name="q10" value="B"> 盲目地向四周漫无目的地走</label>
+        <label><input type="radio" name="q10" value="C"> 原地不动</label>
+        <label><input type="radio" name="q10" value="D"> 先走上坡再走下坡</label>
+      </div>
+      <div class="explanation">梯度下降核心就是看“斜度”（梯度），并朝下降方向行进。</div>
+    </div>
+
+    <!-- 11 -->
+    <div class="question" data-answer="AC">
+      <h4>11. 多选题：下列哪些属于常见的梯度下降改进方法？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q11" value="A"> 随机梯度下降（SGD）</label>
+        <label><input type="checkbox" name="q11" value="B"> 固定不变的参数更新</label>
+        <label><input type="checkbox" name="q11" value="C"> Mini-batch梯度下降</label>
+        <label><input type="checkbox" name="q11" value="D"> 不计算梯度只靠猜</label>
+      </div>
+      <div class="explanation">常见的改进方式包括随机梯度下降和小批量梯度下降等。</div>
+    </div>
+
+    <!-- 12 -->
+    <div class="question" data-answer="B">
+      <h4>12. 单选题：在实际训练中，为什么学习率（learning rate）不能太大？</h4>
+      <div class="options">
+        <label><input type="radio" name="q12" value="A"> 学习率越大，训练就越慢</label>
+        <label><input type="radio" name="q12" value="B"> 学习率太大容易导致错过最优点，甚至使损失发散</label>
+        <label><input type="radio" name="q12" value="C"> 学习率太大可以使误差直接变成0</label>
+        <label><input type="radio" name="q12" value="D"> 学习率太大，计算量太高</label>
+      </div>
+      <div class="explanation">如果学习率过大，更新步伐太猛，容易错过最优点甚至发散。</div>
+    </div>
+
+    <!-- 13 -->
+    <div class="question" data-answer="正确">
+      <h4>13. 判断题：局部最优就是指在某一范围内，再也无法继续降低损失的点。</h4>
+      <div class="options">
+        <label><input type="radio" name="q13" value="正确"> 正确</label>
+        <label><input type="radio" name="q13" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">这是局部最优的定义，在某个局域范围看，该点已经是最低。</div>
+    </div>
+
+    <!-- 14 -->
+    <div class="question" data-answer="CD">
+      <h4>14. 多选题：为了避免或缓解陷入局部最优，训练时我们可以做哪些尝试？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q14" value="A"> 保证初始化权重全为0</label>
+        <label><input type="checkbox" name="q14" value="B"> 只训练一次就终止</label>
+        <label><input type="checkbox" name="q14" value="C"> 设置不同的初始值多次训练</label>
+        <label><input type="checkbox" name="q14" value="D"> 使用带动量的优化算法</label>
+      </div>
+      <div class="explanation">多次随机初始化和使用动量（Momentum）等优化算法都能帮助逃离局部最优。</div>
+    </div>
+
+    <!-- 15 -->
+    <div class="question" data-answer="错误">
+      <h4>15. 判断题：找到全局最优一定比找到局部最优花的时间更少。</h4>
+      <div class="options">
+        <label><input type="radio" name="q15" value="正确"> 正确</label>
+        <label><input type="radio" name="q15" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">全局最优往往需要更多的搜索和计算时间，局部最优更容易达到。</div>
+    </div>
+
+    <!-- 16 -->
+    <div class="question" data-answer="B">
+      <h4>16. 单选题：当我们到达一个局部最优，如果不采取额外策略，梯度下降通常会：</h4>
+      <div class="options">
+        <label><input type="radio" name="q16" value="A"> 自动跳出局部最优</label>
+        <label><input type="radio" name="q16" value="B"> 停留在局部最优附近不再前进</label>
+        <label><input type="radio" name="q16" value="C"> 持续发散</label>
+        <label><input type="radio" name="q16" value="D"> 不断增大学习率</label>
+      </div>
+      <div class="explanation">在局部最低点附近，梯度可能变得非常小，传统梯度下降会停滞。</div>
+    </div>
+
+    <!-- 17 -->
+    <div class="question" data-answer="C">
+      <h4>17. 以下哪种现象与局部最优相似，都会使梯度更新停滞？（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q17" value="A"> 指数爆炸</label>
+        <label><input type="radio" name="q17" value="B"> 参数初始化</label>
+        <label><input type="radio" name="q17" value="C"> 鞍点（saddle point）</label>
+        <label><input type="radio" name="q17" value="D"> 数据缺失</label>
+      </div>
+      <div class="explanation">鞍点也会导致梯度趋近于零，让更新停滞。</div>
+    </div>
+
+    <!-- 18 -->
+    <div class="question" data-answer="AB">
+      <h4>18. 多选题：下列哪些因素会影响梯度下降找到优质解的能力？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q18" value="A"> 初始权重</label>
+        <label><input type="checkbox" name="q18" value="B"> 学习率</label>
+        <label><input type="checkbox" name="q18" value="C"> 输出层激活函数</label>
+        <label><input type="checkbox" name="q18" value="D"> 数据存储路径</label>
+      </div>
+      <div class="explanation">初始权重和学习率的设定对于最终能否找到优质解影响很大。</div>
+    </div>
+
+    <!-- 19 -->
+    <div class="question" data-answer="正确">
+      <h4>19. 判断题：当误差曲面十分复杂时，“全局最优”通常难以保证。</h4>
+      <div class="options">
+        <label><input type="radio" name="q19" value="正确"> 正确</label>
+        <label><input type="radio" name="q19" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">在深度学习中，参数空间高维复杂，想找到绝对全局最优并不容易。</div>
+    </div>
+
+    <!-- 20 -->
+    <div class="question" data-answer="ACD">
+      <h4>20. 下列哪些对“全局最优”与“局部最优”关系的描述是正确的？（多选）</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q20" value="A"> 全局最优必定比任何局部最优的误差更低</label>
+        <label><input type="checkbox" name="q20" value="B"> 局部最优一定是全局最优的一部分</label>
+        <label><input type="checkbox" name="q20" value="C"> 局部最优在某些区域看似最低，但放大范围后可能不是最低</label>
+        <label><input type="checkbox" name="q20" value="D"> 有时我们只需要一个接近全局最优的局部最优</label>
+      </div>
+      <div class="explanation">全局最优在任何区域都是最低，局部最优仅在小范围内最低；很多时候我们满足于“足够好”的局部解。</div>
+    </div>
+
+    <button class="check-answer" onclick="checkAnswers()">检查答案</button>
+  </div>
+</main>
+
+<footer>
+  <p>祝学习愉快，继续加油！</p>
+</footer>
+
+<script>
+  function toggleHints(id) {
+    const hint = document.getElementById(id);
+    if(hint.classList.contains('hidden')) {
+      hint.classList.remove('hidden');
+    } else {
+      hint.classList.add('hidden');
+    }
+  }
+
+  function checkAnswers() {
+    const questions = document.querySelectorAll('.question');
+    questions.forEach((q) => {
+      const correctAnswer = q.getAttribute('data-answer');
+      const explanation = q.querySelector('.explanation');
+
+      let userAnswer = "";
+      const checkboxes = q.querySelectorAll('input[type=checkbox]');
+      const radios = q.querySelectorAll('input[type=radio]');
+
+      if (checkboxes.length > 0) {
+        // 多选题
+        let checkedValues = [];
+        checkboxes.forEach((cb) => {
+          if (cb.checked) {
+            checkedValues.push(cb.value);
+          }
+        });
+        userAnswer = checkedValues.join('');
+      } else if (radios.length > 0) {
+        // 单选题或判断题
+        radios.forEach((r) => {
+          if (r.checked) {
+            userAnswer = r.value;
+          }
+        });
+      }
+
+      // 比较答案（多选题顺序不固定，需要做一下排序再比较）
+      const sortedCorrect = correctAnswer.split('').sort().join('');
+      const sortedUser = userAnswer.split('').sort().join('');
+
+      if (sortedCorrect === sortedUser) {
+        q.style.border = '2px solid #66bb6a';
+      } else {
+        q.style.border = '2px solid #ef5350';
+      }
+
+      // 显示解析
+      explanation.style.display = 'block';
+    });
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

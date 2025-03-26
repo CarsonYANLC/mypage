@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>线性与非线性——交互式学习页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            margin-bottom: 8px;
+        }
+        .content-section {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .question-block {
+            background: #fcfcfc;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+            padding: 15px;
+        }
+        .question-block h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .answers-area, .tf-area {
+            margin: 10px 0;
+        }
+        .answer-reveal {
+            display: none;
+            margin-top: 10px;
+            background: #e6f7ff;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .btn-show-answer {
+            margin-top: 10px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .btn-show-answer:hover {
+            background: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .subtitle {
+            color: #2980b9;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #e6f7ff;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .explanation {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>线性 (Linear) 与 非线性 (Non-linear)</h1>
+
+<div class="content-section">
+    <h2>一、基本概念</h2>
+    <p><strong>线性 (Linear)：</strong>指模型的输出与输入变量之间呈现“线性函数”关系。如果在二维时能画一条直线（或更高维度的超平面）即可分离或拟合数据，即称之为线性模型。</p>
+    <ul>
+        <li>常见例子：<em>线性回归</em>、<em>线性SVM</em>。</li>
+        <li>“线性”不仅限于单一特征，也可在多元输入下通过线性组合 (w0 + w1x1 + ... + wnxn)。</li>
+    </ul>
+
+    <p><strong>非线性 (Non-linear)：</strong>指输出与输入间的映射无法用单一线性函数表达。多层神经网络、决策树等大多数模型都被认为是非线性。</p>
+    <ul>
+        <li>常见例子：<em>决策树</em>、<em>多层神经网络</em>、带核函数的SVM (核SVM)。</li>
+        <li>非线性模型更灵活，可以拟合更复杂的关系，但往往需要更多数据来避免过拟合。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>二、常见误解</h2>
+    <ul>
+        <li><strong>误解1：</strong>“线性”并不只是一条简单的直线，多元线性或高维超平面也可称为线性模型。</li>
+        <li><strong>误解2：</strong>“非线性”不仅仅代表任意复杂曲线，也包含对输入特征的多项式变换、神经网络等各种非线性映射。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>三、案例示例</h2>
+    <p><strong>线性案例：</strong></p>
+    <ul>
+        <li>线性回归：通过直线或超平面对连续值进行预测</li>
+        <li>线性SVM：通过最大化间隔的线性超平面区分类别</li>
+    </ul>
+    <p><strong>非线性案例：</strong></p>
+    <ul>
+        <li>多层神经网络：利用激活函数增加模型的非线性表达能力</li>
+        <li>决策树：通过多层“条件分裂”形成非线性划分边界</li>
+        <li>核方法SVM：通过核函数将数据映射到更高维，实现非线性可分</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>四、20 道模拟测试题</h2>
+    <p>以下题目围绕线性与非线性模型展开，包含单选、多选和判断三种形式。请先自行思考答案，然后点击“显示解析”查看详细讲解。</p>
+
+    <!-- 单选题(8道) -->
+    <h3>单选题 (共 8 题)</h3>
+
+    <!-- Q1 -->
+    <div class="question-block">
+        <h4>1. 下列哪种描述最能体现“线性”模型的特征？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q1" id="q1a" value="A">
+            <label for="q1a">A. 可以在高维空间中用核函数映射数据</label><br/>
+            <input type="radio" name="q1" id="q1b" value="B">
+            <label for="q1b">B. 预测输出是输入特征的线性组合</label><br/>
+            <input type="radio" name="q1" id="q1c" value="C">
+            <label for="q1c">C. 通过分层结构和激活函数实现复杂映射</label><br/>
+            <input type="radio" name="q1" id="q1d" value="D">
+            <label for="q1d">D. 数据分布完全随机</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer1')">显示解析</button>
+        <div class="answer-reveal" id="answer1">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性模型的典型形式是输出=权重×特征的线性组合（加上偏置项），如线性回归。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block">
+        <h4>2. 线性 SVM 与非线性 SVM 的主要区别在于：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q2" id="q2a" value="A">
+            <label for="q2a">A. 线性 SVM 对数据做核映射，非线性 SVM 没有核函数</label><br/>
+            <input type="radio" name="q2" id="q2b" value="B">
+            <label for="q2b">B. 线性 SVM 只能处理回归问题，非线性 SVM 能做分类</label><br/>
+            <input type="radio" name="q2" id="q2c" value="C">
+            <label for="q2c">C. 线性 SVM 在原始特征空间分割，非线性 SVM 通过核函数在高维映射下分割</label><br/>
+            <input type="radio" name="q2" id="q2d" value="D">
+            <label for="q2d">D. 线性 SVM 是无监督学习，非线性 SVM 是监督学习</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer2')">显示解析</button>
+        <div class="answer-reveal" id="answer2">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性 SVM 在原始空间找超平面，非线性 SVM 通过核技巧在更高维空间进行线性分割，从而实现非线性决策边界。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block">
+        <h4>3. 下列哪一项可以被视为“非线性”模型？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q3" id="q3a" value="A">
+            <label for="q3a">A. 线性回归</label><br/>
+            <input type="radio" name="q3" id="q3b" value="B">
+            <label for="q3b">B. 单一特征的线性函数</label><br/>
+            <input type="radio" name="q3" id="q3c" value="C">
+            <label for="q3c">C. 多层前馈神经网络 (带激活函数)</label><br/>
+            <input type="radio" name="q3" id="q3d" value="D">
+            <label for="q3d">D. 不带核的SVM</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer3')">显示解析</button>
+        <div class="answer-reveal" id="answer3">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>多层神经网络因为使用激活函数而能呈现非线性映射。其余三者都属于线性或近似线性模型。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block">
+        <h4>4. 为什么非线性模型通常需要更多数据来避免过拟合？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q4" id="q4a" value="A">
+            <label for="q4a">A. 因为非线性模型通常具有更高的表示能力，易学到数据中的噪音</label><br/>
+            <input type="radio" name="q4" id="q4b" value="B">
+            <label for="q4b">B. 因为非线性模型对数据没有任何要求</label><br/>
+            <input type="radio" name="q4" id="q4c" value="C">
+            <label for="q4c">C. 因为线性模型对数据的内存占用更大</label><br/>
+            <input type="radio" name="q4" id="q4d" value="D">
+            <label for="q4d">D. 因为非线性模型无法在低维空间使用</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer4')">显示解析</button>
+        <div class="answer-reveal" id="answer4">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>非线性模型有更强的表示能力，也就更容易过拟合，需要更多数据约束模型，降低过拟合风险。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block">
+        <h4>5. 在二维平面若能用一条直线把两个类别完全分开，则称为：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q5" id="q5a" value="A">
+            <label for="q5a">A. 线性可分</label><br/>
+            <input type="radio" name="q5" id="q5b" value="B">
+            <label for="q5b">B. 非线性可分</label><br/>
+            <input type="radio" name="q5" id="q5c" value="C">
+            <label for="q5c">C. 线性不可分</label><br/>
+            <input type="radio" name="q5" id="q5d" value="D">
+            <label for="q5d">D. 随机可分</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer5')">显示解析</button>
+        <div class="answer-reveal" id="answer5">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>能用直线区分说明是线性可分。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block">
+        <h4>6. 关于“线性”与“非线性”的常见误解，下列哪项是正确的？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q6" id="q6a" value="A">
+            <label for="q6a">A. 线性只能是一条简单直线，多元输入就变成非线性</label><br/>
+            <input type="radio" name="q6" id="q6b" value="B">
+            <label for="q6b">B. 非线性模型无法解决复杂问题</label><br/>
+            <input type="radio" name="q6" id="q6c" value="C">
+            <label for="q6c">C. 线性不仅包括一元直线，也可以是多维空间中的超平面</label><br/>
+            <input type="radio" name="q6" id="q6d" value="D">
+            <label for="q6d">D. 线性模型永远优于非线性模型</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer6')">显示解析</button>
+        <div class="answer-reveal" id="answer6">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>“线性”不仅限于一维直线，多元输入可以在高维空间中用超平面分割。其余选项的表述都是误解。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block">
+        <h4>7. 哪一项不是常见的非线性模型？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q7" id="q7a" value="A">
+            <label for="q7a">A. 决策树</label><br/>
+            <input type="radio" name="q7" id="q7b" value="B">
+            <label for="q7b">B. 核方法 SVM</label><br/>
+            <input type="radio" name="q7" id="q7c" value="C">
+            <label for="q7c">C. 线性回归</label><br/>
+            <input type="radio" name="q7" id="q7d" value="D">
+            <label for="q7d">D. 多层神经网络</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer7')">显示解析</button>
+        <div class="answer-reveal" id="answer7">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>决策树、核SVM、多层神经网络都为非线性模型；线性回归显然是线性模型。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block">
+        <h4>8. 如果数据本身线性可分，但我们使用了复杂的非线性模型，下列情况可能出现什么问题？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q8" id="q8a" value="A">
+            <label for="q8a">A. 过拟合</label><br/>
+            <input type="radio" name="q8" id="q8b" value="B">
+            <label for="q8b">B. 欠拟合</label><br/>
+            <input type="radio" name="q8" id="q8c" value="C">
+            <label for="q8c">C. 数据不能被分开</label><br/>
+            <input type="radio" name="q8" id="q8d" value="D">
+            <label for="q8d">D. 一定会提升分类精度</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer8')">显示解析</button>
+        <div class="answer-reveal" id="answer8">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>若数据线性可分却使用过于复杂的非线性模型，模型可能会学习到噪音特征，从而产生过拟合风险。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 多选题(6道) -->
+    <h3>多选题 (共 6 题)</h3>
+
+    <!-- Q9 -->
+    <div class="question-block">
+        <h4>9. 关于线性模型和非线性模型，下列说法正确的是：</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q9" id="q9a" value="A">
+            <label for="q9a">A. 线性模型通常更易解释，计算也更简单</label><br/>
+            <input type="checkbox" name="q9" id="q9b" value="B">
+            <label for="q9b">B. 非线性模型可以表示更复杂的映射关系</label><br/>
+            <input type="checkbox" name="q9" id="q9c" value="C">
+            <label for="q9c">C. 若数据确实是线性分布，线性模型通常表现更好或更稳定</label><br/>
+            <input type="checkbox" name="q9" id="q9d" value="D">
+            <label for="q9d">D. 非线性模型一定比线性模型表现更好</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer9')">显示解析</button>
+        <div class="answer-reveal" id="answer9">
+            <strong>正确答案：A, B, C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性模型简单易解释 (A)，非线性模型可表征更复杂关系 (B)。若数据本身线性，线性模型更合适 (C)。非线性模型不一定总比线性更好 (D 错)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block">
+        <h4>10. 哪些模型(或方法)通常属于“非线性”范畴？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q10" id="q10a" value="A">
+            <label for="q10a">A. 深度神经网络</label><br/>
+            <input type="checkbox" name="q10" id="q10b" value="B">
+            <label for="q10b">B. 线性回归</label><br/>
+            <input type="checkbox" name="q10" id="q10c" value="C">
+            <label for="q10c">C. 决策树</label><br/>
+            <input type="checkbox" name="q10" id="q10d" value="D">
+            <label for="q10d">D. 核SVM</label><br/>
+            <input type="checkbox" name="q10" id="q10e" value="E">
+            <label for="q10e">E. 逻辑回归(不带多项式或交互项)</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer10')">显示解析</button>
+        <div class="answer-reveal" id="answer10">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性回归和普通逻辑回归属于线性模型；深度神经网络、决策树、核SVM 都可以呈现非线性。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-block">
+        <h4>11. 在神经网络中，下列哪些设置会增加其非线性表达能力？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q11" id="q11a" value="A">
+            <label for="q11a">A. 使用线性激活函数（identity）</label><br/>
+            <input type="checkbox" name="q11" id="q11b" value="B">
+            <label for="q11b">B. 增加网络深度 (更多隐藏层)</label><br/>
+            <input type="checkbox" name="q11" id="q11c" value="C">
+            <label for="q11c">C. 使用非线性激活函数 (如 ReLU, Sigmoid)</label><br/>
+            <input type="checkbox" name="q11" id="q11d" value="D">
+            <label for="q11d">D. 在输出层改为线性回归输出</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer11')">显示解析</button>
+        <div class="answer-reveal" id="answer11">
+            <strong>正确答案：B, C</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>网络深度+非线性激活函数是增加神经网络非线性能力的关键；若全是线性激活，整体还是线性变换。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block">
+        <h4>12. 下列哪些原因会让我们倾向于选用线性模型？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q12" id="q12a" value="A">
+            <label for="q12a">A. 数据关系确实比较简单，呈线性趋势</label><br/>
+            <input type="checkbox" name="q12" id="q12b" value="B">
+            <label for="q12b">B. 需要更强的可解释性</label><br/>
+            <input type="checkbox" name="q12" id="q12c" value="C">
+            <label for="q12c">C. 数据量非常少，但想逼近训练集</label><br/>
+            <input type="checkbox" name="q12" id="q12d" value="D">
+            <label for="q12d">D. 模型训练和预测都非常高效</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer12')">显示解析</button>
+        <div class="answer-reveal" id="answer12">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>若数据确实简单线性关系、需要可解释性或高效性时选用线性模型更好；(C)数据很少且想逼近训练集，通常会考虑更复杂模型，但也容易过拟合。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block">
+        <h4>13. 在核方法 SVM 中，为什么能够处理非线性问题？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q13" id="q13a" value="A">
+            <label for="q13a">A. 核函数将低维输入映射到高维空间进行线性分割</label><br/>
+            <input type="checkbox" name="q13" id="q13b" value="B">
+            <label for="q13b">B. 核函数只适合线性分布的数据</label><br/>
+            <input type="checkbox" name="q13" id="q13c" value="C">
+            <label for="q13c">C. SVM 是无监督聚类算法</label><br/>
+            <input type="checkbox" name="q13" id="q13d" value="D">
+            <label for="q13d">D. 在高维特征空间中，原来非线性可分的数据可变得线性可分</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer13')">显示解析</button>
+        <div class="answer-reveal" id="answer13">
+            <strong>正确答案：A, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>核函数(SVM)将数据隐式地映射到更高维度，使得原本在低维中非线性可分的数据在高维里变得线性可分。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block">
+        <h4>14. 对于非线性模型，下列哪些说法是正确的？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q14" id="q14a" value="A">
+            <label for="q14a">A. 一定需要更多数据来训练，否则容易过拟合</label><br/>
+            <input type="checkbox" name="q14" id="q14b" value="B">
+            <label for="q14b">B. 一定比线性模型更难训练</label><br/>
+            <input type="checkbox" name="q14" id="q14c" value="C">
+            <label for="q14c">C. 能够拟合更复杂的函数映射</label><br/>
+            <input type="checkbox" name="q14" id="q14d" value="D">
+            <label for="q14d">D. 可能需要正则化或模型集成来防止过拟合</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer14')">显示解析</button>
+        <div class="answer-reveal" id="answer14">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>非线性模型能表示更复杂关系，但也更易过拟合，需要更多数据或正则化。难度可能更高(B也有道理，但“一定比线性更难训练”过于绝对)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 判断题(6道) -->
+    <h3>判断题 (共 6 题)</h3>
+
+    <!-- Q15 -->
+    <div class="question-block">
+        <h4>15. 判断：只要是高维数据，模型就一定是非线性的。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q15" id="q15t" value="True">
+            <label for="q15t">True</label>
+            <input type="radio" name="q15" id="q15f" value="False">
+            <label for="q15f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer15')">显示解析</button>
+        <div class="answer-reveal" id="answer15">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>高维并不代表非线性，线上回归同样可扩展到高维，仍然属于线性模型。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question-block">
+        <h4>16. 判断：线性可分并不意味着只有一条二维直线，也可能是高维超平面。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q16" id="q16t" value="True">
+            <label for="q16t">True</label>
+            <input type="radio" name="q16" id="q16f" value="False">
+            <label for="q16f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer16')">显示解析</button>
+        <div class="answer-reveal" id="answer16">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>线性可分可推广到多维空间，使用超平面进行分割。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block">
+        <h4>17. 判断：决策树属于线性模型。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q17" id="q17t" value="True">
+            <label for="q17t">True</label>
+            <input type="radio" name="q17" id="q17f" value="False">
+            <label for="q17f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer17')">显示解析</button>
+        <div class="answer-reveal" id="answer17">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>决策树通过多层条件划分得到非线性决策边界，属于非线性模型。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-block">
+        <h4>18. 判断：如果数据呈现明显弯曲趋势，用多项式回归也能在一定程度上捕捉非线性。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q18" id="q18t" value="True">
+            <label for="q18t">True</label>
+            <input type="radio" name="q18" id="q18f" value="False">
+            <label for="q18f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer18')">显示解析</button>
+        <div class="answer-reveal" id="answer18">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>在“线性回归”中加入 x 的多项式项(如 x², x³...)，可一定程度增加模型的非线性拟合能力。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-block">
+        <h4>19. 判断：神经网络在没有激活函数时，整体仍为线性映射。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q19" id="q19t" value="True">
+            <label for="q19t">True</label>
+            <input type="radio" name="q19" id="q19f" value="False">
+            <label for="q19f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer19')">显示解析</button>
+        <div class="answer-reveal" id="answer19">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>若隐藏层皆为线性激活，多个线性层组合起来本质仍是线性变换，因此没有非线性表达能力。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-block">
+        <h4>20. 判断：使用核函数后的 SVM，一定比线性SVM 更好。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q20" id="q20t" value="True">
+            <label for="q20t">True</label>
+            <input type="radio" name="q20" id="q20f" value="False">
+            <label for="q20f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer20')">显示解析</button>
+        <div class="answer-reveal" id="answer20">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p><strong>解析：</strong>核SVM虽然更灵活，但如果数据本身是线性可分或样本量不够，核方法未必优于线性SVM，甚至更易过拟合。</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function showAnswer(id) {
+    const revealDiv = document.getElementById(id);
+    if (revealDiv.style.display === 'none' || revealDiv.style.display === '') {
+        revealDiv.style.display = 'block';
+    } else {
+        revealDiv.style.display = 'none';
+    }
+}
+</script>
+
+</body>
+</html>

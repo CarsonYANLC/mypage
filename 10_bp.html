@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>正向传播与反向传播 —— 交互式测试页面</title>
+  <style>
+    /* 全局样式 */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Microsoft YaHei", sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      max-width: 1000px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px 30px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3, h4 {
+      color: #333;
+    }
+    .section-title {
+      margin-top: 2em;
+      border-left: 4px solid #4CAF50;
+      padding-left: 10px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    p { margin: 1em 0; }
+    
+    /* 互动说明区 */
+    .interactive-question {
+      background-color: #e8f5e9;
+      border-left: 5px solid #81c784;
+      padding: 10px;
+      margin: 1em 0;
+    }
+    .interactive-question h4 {
+      margin: 0 0 5px 0;
+      color: #2e7d32;
+    }
+    
+    /* 题目样式 */
+    .question-block {
+      border: 1px solid #ddd;
+      background-color: #fafafa;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .question-block p {
+      margin: 0.5em 0;
+    }
+    .question-text {
+      font-weight: bold;
+    }
+    
+    /* 按钮样式 */
+    .check-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      background-color: #4CAF50;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9em;
+      border-radius: 3px;
+    }
+    .check-btn:hover {
+      background-color: #45a049;
+    }
+    
+    /* 答案反馈区域 */
+    .result-area {
+      margin-top: 10px;
+      padding: 10px;
+      border-left: 3px solid #4CAF50;
+      background-color: #f4f4f4;
+      display: none;
+    }
+    
+    .footer-note {
+      margin-top: 30px;
+      font-size: 0.9em;
+      text-align: center;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>正向传播 &amp; 反向传播 —— 交互式测试</h1>
+    <p>通过选择题检测你对误差反向传播与正向传播知识的掌握</p>
+  </header>
+  <main>
+    <!-- 教学讲解内容 -->
+    <h2 class="section-title">一、正向传播与反向传播讲解</h2>
+    <h3>正向传播（Forward Propagation）</h3>
+    <p>正向传播指的是当输入数据（如图像、温度、天气信息等）进入神经网络后，从输入层开始经过每一层神经元的加权求和和激活函数处理，最终在输出层产生预测结果的过程。简单来说，就是数据从前往后流动，每层输出成为下一层的输入，最终得出预测结果。例如：输入温度、是否下雨等数据，经过网络处理后输出“是否穿外套”。</p>
+    
+    <h3>反向传播（Backward Propagation）</h3>
+    <p>反向传播是在正向传播后，将网络的预测结果与真实标签进行比较，得到误差。系统随后利用“梯度”信息，沿着网络反方向逐层计算每个参数（权重、偏置）的调整量，以减少误差。可以类比于做完题后对照答案，找出错误原因并加以改正。反向传播与正向传播构成了神经网络训练的核心循环：“正向传播 → 计算误差 → 反向传播 → 更新参数 → 再正向传播”。</p>
+    
+    <div class="interactive-question">
+      <h4>课堂互动：</h4>
+      <p>1. 如果正向传播的结果与期望答案相差很大，你认为网络如何得知自己出错了？</p>
+      <p>2. 当你解题时发现错误，你会如何查找问题？这与神经网络哪个步骤相似？</p>
+    </div>
+    
+    <h2 class="section-title">二、互动测试</h2>
+    <p>请完成下列20道题目，点击“提交答案”后系统将显示判断结果和详细解析。</p>
+    
+    <!--【一】单选题（共8题）-->
+    <h3>（一）单选题</h3>
+    
+    <!-- Q1 -->
+    <div class="question-block" id="q1-block">
+      <p class="question-text">Q1. 在神经网络的正向传播中，输入数据主要是：</p>
+      <form id="q1-form">
+        <label><input type="radio" name="q1" value="A"> A. 从输出层开始，逐层往输入层传递</label><br>
+        <label><input type="radio" name="q1" value="B"> B. 从输入层开始，逐层往输出层传递</label><br>
+        <label><input type="radio" name="q1" value="C"> C. 从隐藏层开始，分别往输入层和输出层传递</label><br>
+        <label><input type="radio" name="q1" value="D"> D. 同时在输入层和输出层进行传递</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q1', 'B', '正向传播是从输入层开始，逐层传递到输出层。')">提交答案</button>
+      <div id="result-q1" class="result-area"></div>
+    </div>
+    
+    <!-- Q2 -->
+    <div class="question-block" id="q2-block">
+      <p class="question-text">Q2. 在误差反向传播（BP）中，如果网络预测结果和实际结果差距很大，通常下一步要做的是：</p>
+      <form id="q2-form">
+        <label><input type="radio" name="q2" value="A"> A. 把预测结果当作新的真实结果</label><br>
+        <label><input type="radio" name="q2" value="B"> B. 放弃训练，重新开始</label><br>
+        <label><input type="radio" name="q2" value="C"> C. 根据误差，通过梯度来调整各层权重</label><br>
+        <label><input type="radio" name="q2" value="D"> D. 不调整任何参数，直接继续往下预测</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q2', 'C', '利用误差通过梯度调整权重，使得预测更准确。')">提交答案</button>
+      <div id="result-q2" class="result-area"></div>
+    </div>
+    
+    <!-- Q3 -->
+    <div class="question-block" id="q3-block">
+      <p class="question-text">Q3. “梯度”在反向传播中的作用，最恰当的说法是：</p>
+      <form id="q3-form">
+        <label><input type="radio" name="q3" value="A"> A. 用来记录网络的预测结果</label><br>
+        <label><input type="radio" name="q3" value="B"> B. 表示网络的运行速度</label><br>
+        <label><input type="radio" name="q3" value="C"> C. 告诉我们让误差减少的方向和速度</label><br>
+        <label><input type="radio" name="q3" value="D"> D. 用来存储数据集大小</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q3', 'C', '梯度指示了参数在何方向调整能使误差更快减小。')">提交答案</button>
+      <div id="result-q3" class="result-area"></div>
+    </div>
+    
+    <!-- Q4 -->
+    <div class="question-block" id="q4-block">
+      <p class="question-text">Q4. 在神经网络中，如果没有误差（Error），那么网络：</p>
+      <form id="q4-form">
+        <label><input type="radio" name="q4" value="A"> A. 无法知道参数要怎样更新</label><br>
+        <label><input type="radio" name="q4" value="B"> B. 能更好地学习，不受干扰</label><br>
+        <label><input type="radio" name="q4" value="C"> C. 会自动把结果归零</label><br>
+        <label><input type="radio" name="q4" value="D"> D. 会随机猜测正确答案</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q4', 'A', '没有误差就没有依据去调整参数。')">提交答案</button>
+      <div id="result-q4" class="result-area"></div>
+    </div>
+    
+    <!-- Q5 -->
+    <div class="question-block" id="q5-block">
+      <p class="question-text">Q5. 下列关于正向传播的说法正确的是：</p>
+      <form id="q5-form">
+        <label><input type="radio" name="q5" value="A"> A. 只在训练结束时使用正向传播</label><br>
+        <label><input type="radio" name="q5" value="B"> B. 正向传播和预测时的计算过程类似</label><br>
+        <label><input type="radio" name="q5" value="C"> C. 正向传播和反向传播必须同时进行</label><br>
+        <label><input type="radio" name="q5" value="D"> D. 正向传播不需要输入数据</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q5', 'B', '正向传播在训练和预测时采用相同的计算过程。')">提交答案</button>
+      <div id="result-q5" class="result-area"></div>
+    </div>
+    
+    <!-- Q6 -->
+    <div class="question-block" id="q6-block">
+      <p class="question-text">Q6. 下列哪一个流程最能代表“误差反向传播”的核心循环？</p>
+      <form id="q6-form">
+        <label><input type="radio" name="q6" value="A"> A. 数据清洗 -> 数据分析 -> 输出预测</label><br>
+        <label><input type="radio" name="q6" value="B"> B. 输入 -> 前向计算输出 -> 计算误差 -> 梯度更新 -> 重复</label><br>
+        <label><input type="radio" name="q6" value="C"> C. 收集数据 -> 输出结果 -> 停止</label><br>
+        <label><input type="radio" name="q6" value="D"> D. 数据预处理 -> 结果可视化 -> 结束</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q6', 'B', '这是正向传播、误差计算、反向传播和更新参数的循环过程。')">提交答案</button>
+      <div id="result-q6" class="result-area"></div>
+    </div>
+    
+    <!-- Q7 -->
+    <div class="question-block" id="q7-block">
+      <p class="question-text">Q7. 在“猜数字”游戏里，如果第一次预测是8，实际数字是5，那么此时误差是多少？（以绝对值为准）</p>
+      <form id="q7-form">
+        <label><input type="radio" name="q7" value="A"> A. 2</label><br>
+        <label><input type="radio" name="q7" value="B"> B. 3</label><br>
+        <label><input type="radio" name="q7" value="C"> C. 5</label><br>
+        <label><input type="radio" name="q7" value="D"> D. 8</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q7', 'B', '误差 = |8 - 5| = 3。')">提交答案</button>
+      <div id="result-q7" class="result-area"></div>
+    </div>
+    
+    <!-- Q8 -->
+    <div class="question-block" id="q8-block">
+      <p class="question-text">Q8. 当我们将一个训练好的神经网络用于新的数据上时，主要使用：</p>
+      <form id="q8-form">
+        <label><input type="radio" name="q8" value="A"> A. 反向传播</label><br>
+        <label><input type="radio" name="q8" value="B"> B. 正向传播</label><br>
+        <label><input type="radio" name="q8" value="C"> C. 同时用正向与反向传播</label><br>
+        <label><input type="radio" name="q8" value="D"> D. 先随机猜测再决定</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q8', 'B', '预测新数据只需要正向传播。')">提交答案</button>
+      <div id="result-q8" class="result-area"></div>
+    </div>
+    
+    <!--【二】多选题-->
+    <h3>（二）多选题</h3>
+    
+    <!-- Q9 -->
+    <div class="question-block" id="q9-block">
+      <p class="question-text">Q9. 以下哪些过程属于“正向传播”的步骤？</p>
+      <form id="q9-form">
+        <label><input type="checkbox" name="q9" value="A"> A. 将输入数据逐层传递到输出层</label><br>
+        <label><input type="checkbox" name="q9" value="B"> B. 计算每一层神经元的加权和</label><br>
+        <label><input type="checkbox" name="q9" value="C"> C. 根据误差来调整权重</label><br>
+        <label><input type="checkbox" name="q9" value="D"> D. 得到输出预测结果</label>
+      </form>
+      <button class="check-btn" onclick="checkMultipleAnswer('q9', ['A','B','D'], 'result-q9', '正向传播包括输入传递、加权求和和输出，调整权重属于反向传播。')">提交答案</button>
+      <div id="result-q9" class="result-area"></div>
+    </div>
+    
+    <!-- Q10 -->
+    <div class="question-block" id="q10-block">
+      <p class="question-text">Q10. 以下哪些说法体现了反向传播算法的作用？</p>
+      <form id="q10-form">
+        <label><input type="checkbox" name="q10" value="A"> A. 可以根据预测与实际的差异来更新网络参数</label><br>
+        <label><input type="checkbox" name="q10" value="B"> B. 不断降低网络的训练误差</label><br>
+        <label><input type="checkbox" name="q10" value="C"> C. 为网络预测“下一步输入”做准备</label><br>
+        <label><input type="checkbox" name="q10" value="D"> D. 让网络在没误差的情况下随机改变参数</label>
+      </form>
+      <button class="check-btn" onclick="checkMultipleAnswer('q10', ['A','B'], 'result-q10', '反向传播的核心作用是利用误差更新参数、降低误差；选项C和D不符合原理。')">提交答案</button>
+      <div id="result-q10" class="result-area"></div>
+    </div>
+    
+    <!-- Q11 -->
+    <div class="question-block" id="q11-block">
+      <p class="question-text">Q11. 关于误差（Error），下列哪些说法是正确的？</p>
+      <form id="q11-form">
+        <label><input type="checkbox" name="q11" value="A"> A. 误差 = 预测结果 - 真实结果</label><br>
+        <label><input type="checkbox" name="q11" value="B"> B. 没有误差，网络依然可以学习</label><br>
+        <label><input type="checkbox" name="q11" value="C"> C. 误差可以帮助我们衡量模型在当前状态下的好坏</label><br>
+        <label><input type="checkbox" name="q11" value="D"> D. 误差只在测试阶段才会产生</label>
+      </form>
+      <button class="check-btn" onclick="checkMultipleAnswer('q11', ['A','C'], 'result-q11', '误差是预测与真实值之间的差值，能反映模型好坏。')">提交答案</button>
+      <div id="result-q11" class="result-area"></div>
+    </div>
+    
+    <!-- Q12 -->
+    <div class="question-block" id="q12-block">
+      <p class="question-text">Q12. 在猜数字游戏中，如果我们说“猜得太大了”，那么对于网络参数而言，意味着：</p>
+      <form id="q12-form">
+        <label><input type="checkbox" name="q12" value="A"> A. 需要往更大的方向更新权重</label><br>
+        <label><input type="checkbox" name="q12" value="B"> B. 需要往更小的方向更新权重</label><br>
+        <label><input type="checkbox" name="q12" value="C"> C. 完全不更新</label><br>
+        <label><input type="checkbox" name="q12" value="D"> D. 随机选择更新方向</label>
+      </form>
+      <button class="check-btn" onclick="checkMultipleAnswer('q12', ['B'], 'result-q12', '“猜得太大了”说明参数需要调整，向更小方向更新。')">提交答案</button>
+      <div id="result-q12" class="result-area"></div>
+    </div>
+    
+    <!-- Q13 -->
+    <div class="question-block" id="q13-block">
+      <p class="question-text">Q13. 下列与BP算法相关的术语中，哪些是正确匹配？</p>
+      <form id="q13-form">
+        <label><input type="checkbox" name="q13" value="A"> A. 梯度（Gradient）——确定误差减小的方向</label><br>
+        <label><input type="checkbox" name="q13" value="B"> B. 权重（Weight）——网络中可学习的参数</label><br>
+        <label><input type="checkbox" name="q13" value="C"> C. 偏置（Bias）——网络预测结果的最终输出</label><br>
+        <label><input type="checkbox" name="q13" value="D"> D. 误差（Error）——预测结果与真实结果的差异</label>
+      </form>
+      <button class="check-btn" onclick="checkMultipleAnswer('q13', ['A','B','D'], 'result-q13', '偏置只是在加权和中起辅助作用，不直接代表最终输出。')">提交答案</button>
+      <div id="result-q13" class="result-area"></div>
+    </div>
+    
+    <!-- Q14 -->
+    <div class="question-block" id="q14-block">
+      <p class="question-text">Q14. 关于正向传播与反向传播的关系，下面哪些说法是正确的？</p>
+      <form id="q14-form">
+        <label><input type="checkbox" name="q14" value="A"> A. 它们是训练神经网络时交替进行的两个步骤</label><br>
+        <label><input type="checkbox" name="q14" value="B"> B. 正向传播先运行，反向传播紧随其后</label><br>
+        <label><input type="checkbox" name="q14" value="C"> C. 没有正向传播，就没有可供计算的误差</label><br>
+        <label><input type="checkbox" name="q14" value="D"> D. 没有反向传播，网络也能对输出进行修正</label>
+      </form>
+      <button class="check-btn" onclick="checkMultipleAnswer('q14', ['A','B','C'], 'result-q14', '反向传播依赖于正向传播计算的误差，因此D不正确。')">提交答案</button>
+      <div id="result-q14" class="result-area"></div>
+    </div>
+    
+    <!--【三】判断题-->
+    <h3>（三）判断题</h3>
+    
+    <!-- Q15 -->
+    <div class="question-block" id="q15-block">
+      <p class="question-text">Q15. 在正向传播中，如果输入发生变化，输出不一定会变化。（判断题）</p>
+      <form id="q15-form">
+        <label><input type="radio" name="q15" value="true"> √</label>
+        <label><input type="radio" name="q15" value="false"> ×</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q15', 'false', '如果输入变化，一般输出也会跟着变化。')">提交答案</button>
+      <div id="result-q15" class="result-area"></div>
+    </div>
+    
+    <!-- Q16 -->
+    <div class="question-block" id="q16-block">
+      <p class="question-text">Q16. 反向传播就是把输出结果直接替换掉网络的参数。（判断题）</p>
+      <form id="q16-form">
+        <label><input type="radio" name="q16" value="true"> √</label>
+        <label><input type="radio" name="q16" value="false"> ×</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q16', 'false', '反向传播是根据误差和梯度调整参数，而不是直接替换。')">提交答案</button>
+      <div id="result-q16" class="result-area"></div>
+    </div>
+    
+    <!-- Q17 -->
+    <div class="question-block" id="q17-block">
+      <p class="question-text">Q17. 如果误差始终为0，说明网络的预测和真实结果完全一致。（判断题）</p>
+      <form id="q17-form">
+        <label><input type="radio" name="q17" value="true"> √</label>
+        <label><input type="radio" name="q17" value="false"> ×</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q17', 'true', '误差为0表示预测完全吻合。')">提交答案</button>
+      <div id="result-q17" class="result-area"></div>
+    </div>
+    
+    <!-- Q18 -->
+    <div class="question-block" id="q18-block">
+      <p class="question-text">Q18. 梯度代表了“让误差变大的方向”，因此我们更新参数时要朝着梯度最大的方向走。（判断题）</p>
+      <form id="q18-form">
+        <label><input type="radio" name="q18" value="true"> √</label>
+        <label><input type="radio" name="q18" value="false"> ×</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q18', 'false', '梯度表示使误差减小的方向，更新时沿着梯度下降。')">提交答案</button>
+      <div id="result-q18" class="result-area"></div>
+    </div>
+    
+    <!-- Q19 -->
+    <div class="question-block" id="q19-block">
+      <p class="question-text">Q19. 反向传播和正向传播是深度学习过程中必不可少的两个阶段。（判断题）</p>
+      <form id="q19-form">
+        <label><input type="radio" name="q19" value="true"> √</label>
+        <label><input type="radio" name="q19" value="false"> ×</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q19', 'true', '正向传播产生预测结果，反向传播更新参数，两者均不可或缺。')">提交答案</button>
+      <div id="result-q19" class="result-area"></div>
+    </div>
+    
+    <!-- Q20 -->
+    <div class="question-block" id="q20-block">
+      <p class="question-text">Q20. 在“猜数字”游戏中，如果一次猜的数字是2，而真实数字是5，则本次误差为3。（判断题）</p>
+      <form id="q20-form">
+        <label><input type="radio" name="q20" value="true"> √</label>
+        <label><input type="radio" name="q20" value="false"> ×</label>
+      </form>
+      <button class="check-btn" onclick="checkSingleAnswer('q20', 'true', '误差 = |2 - 5| = 3。')">提交答案</button>
+      <div id="result-q20" class="result-area"></div>
+    </div>
+    
+    <h2 class="section-title">三、总结</h2>
+    <p><strong>正向传播</strong>：数据从输入层经过每一层运算得到输出结果，就像“顺水推舟”。</p>
+    <p><strong>反向传播</strong>：根据输出与真实值的差异，沿反方向计算梯度并更新参数，从而不断减小误差。</p>
+    <p><strong>核心循环</strong>：正向传播 → 计算误差 → 反向传播 → 更新权重 → 再正向传播……</p>
+    <p>通过不断迭代，神经网络的预测能力不断提升，就像我们通过不断练习提高解题水平。</p>
+    
+    <div class="footer-note">
+      © 2025 交互式学习示例页面
+    </div>
+  </main>
+  
+  <script>
+    // 检查单选题答案，参数：题目名称、正确答案、解析
+    function checkSingleAnswer(qName, correct, explanation) {
+      var radios = document.getElementsByName(qName);
+      var selected = "";
+      for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+          selected = radios[i].value;
+          break;
+        }
+      }
+      var resultDiv = document.getElementById("result-" + qName);
+      if (selected === "") {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "<span style='color:red;'>请先选择一个答案！</span>";
+        return;
+      }
+      if (selected === correct) {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "<span style='color:green;'>正确！</span> " + explanation;
+      } else {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "<span style='color:red;'>错误！</span> " + explanation;
+      }
+    }
+    
+    // 检查多选题答案，参数：题目名称、多选答案数组、结果区域ID、解析
+    function checkMultipleAnswer(qName, correctArr, resultId, explanation) {
+      var checkboxes = document.querySelectorAll('input[name="' + qName + '"]:checked');
+      var selected = [];
+      for (var i = 0; i < checkboxes.length; i++) {
+        selected.push(checkboxes[i].value);
+      }
+      var resultDiv = document.getElementById(resultId);
+      if (selected.length === 0) {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "<span style='color:red;'>请至少选择一个答案！</span>";
+        return;
+      }
+      // 排序后比较数组是否完全相同
+      selected.sort();
+      correctArr.sort();
+      var isCorrect = (selected.length === correctArr.length) &&
+        selected.every(function(value, index) { return value === correctArr[index]; });
+      
+      if (isCorrect) {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "<span style='color:green;'>正确！</span> " + explanation;
+      } else {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "<span style='color:red;'>错误！</span> " + explanation;
+      }
+    }
+  </script>
+</body>
+</html>

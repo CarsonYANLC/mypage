@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>神经网络基础与互动学习</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f8fa;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #4c8bf5;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      background-color: #4c8bf5;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .section-content p {
+      margin: 0.5rem 0;
+      text-indent: 2em;
+    }
+    .example {
+      background-color: #f0f4ff;
+      border-left: 4px solid #4c8bf5;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .interactive {
+      background-color: #fffde7;
+      border-left: 4px solid #ffeb3b;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .quiz {
+      margin-top: 2rem;
+    }
+    .question {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .question h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    .options {
+      margin-left: 1rem;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    .check-answer {
+      background-color: #4c8bf5;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0.5rem 0;
+    }
+    .explanation {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background-color: #e8f5e9;
+      border-left: 4px solid #66bb6a;
+      display: none;
+    }
+    footer {
+      background-color: #4c8bf5;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    .btn-toggle {
+      color: #4c8bf5;
+      background-color: #fff;
+      border: 1px solid #4c8bf5;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>神经网络基础与互动学习</h1>
+</header>
+
+<main>
+  <div class="section">
+    <h2 class="section-title">一、神经网络基础</h2>
+    <div class="section-content">
+      <h3>1. 感知机（Perceptron）和神经网络（Neural Network, NN）</h3>
+      <p><strong>感知机（Perceptron）是什么？</strong></p>
+      <p>感知机可以视作人工神经网络中最简单的一种“神经元”模型，它的工作方式与我们生物神经元类似：</p>
+      <ul>
+        <li>神经元会接收到若干个输入信号（对应于生物神经元的树突接收信号）。</li>
+        <li>神经元对输入信号进行加权求和（在生物中就是从树突到胞体的信号累积）。</li>
+        <li>把这个求和值通过一个激活函数，如果超过某个阈值，就输出1，否则输出0（在生物神经元中则对应“是否触发神经冲动”）。</li>
+      </ul>
+      <p>这是最初级的人工神经网络模型，能用来做简单的二分类任务，比如把输入分成“是”和“否”，“正”和“负”等。</p>
+
+      <p><strong>什么是神经网络（NN）？</strong></p>
+      <p>神经网络可以看作由许多类似感知机的神经元层层堆叠而成，它可以处理更加复杂的任务，比如图像识别、语音识别、自然语言处理等。</p>
+      <p>与感知机类似，神经网络也是把输入（如图像的像素）通过加权求和和激活函数处理，再输出结果（如识别到的物体类别）。</p>
+      <p>不同的是，神经网络往往包含多个“隐藏层”（hidden layer），层数越多、结构越复杂，模型的表达能力就越强。</p>
+
+      <div class="example">
+        <h4>【小案例】</h4>
+        <p>二分类问题： 假设我们要判断“今天要不要穿外套”，我们收集了天气温度、是否下雨、是否刮风等信息作为输入。神经网络的输出只有两个：要穿(1)或不要穿(0)。最简单的“单层感知机”就可以根据事先设置的“阈值”做出决定。</p>
+        <p>随着想法越来越多，我们还想考虑“上午和下午的温度变化”、“昼夜温差”等，那么我们就需要在感知机中增加更多的输入，并将它们连接成更复杂的神经网络。</p>
+      </div>
+
+      <div class="interactive">
+        <h4>【互动问题】</h4>
+        <p>1. 你能举一个生活中“二分类”的例子吗？</p>
+        <p>2. 如果需要判断的类别不止两个，比如“要穿厚外套、要穿薄外套、不要穿外套”，我们可以怎么改进感知机或者神经网络的输出？</p>
+        <button class="btn-toggle" onclick="toggleHints('hint1')">点击查看提示</button>
+        <div id="hint1" class="hidden">
+          <p>提示：想想日常生活中“能/不能”，“好/坏”这种只有两种可能的判断。</p>
+          <p>对于多分类情况，可以在网络输出层设计多个神经元，每个神经元对应一个类别。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section quiz">
+    <h2 class="section-title">习题：检验你的学习成果</h2>
+    <p>以下共有20道题目，包括单选题、多选题和判断题，做完后可以点击“检查答案”进行自测。</p>
+
+    <!-- 1 -->
+    <div class="question" data-answer="A">
+      <h4>1. 以下关于感知机的描述中，正确的是（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q1" value="A"> 感知机是最简单的神经元模型，能进行二分类判断</label>
+        <label><input type="radio" name="q1" value="B"> 感知机只能处理多分类任务</label>
+        <label><input type="radio" name="q1" value="C"> 感知机不能做任何决策</label>
+        <label><input type="radio" name="q1" value="D"> 感知机不需要阈值</label>
+      </div>
+      <div class="explanation">感知机本质上就是一种简单的神经元模型，能进行简单的二分类任务。</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="question" data-answer="B">
+      <h4>2. 以下关于神经网络的理解，错误的是（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q2" value="A"> 神经网络由多个感知机层叠而成</label>
+        <label><input type="radio" name="q2" value="B"> 神经网络永远只能进行二分类任务</label>
+        <label><input type="radio" name="q2" value="C"> 神经网络可以有多个隐藏层</label>
+        <label><input type="radio" name="q2" value="D"> 神经网络能用于图像识别、语音识别等复杂任务</label>
+      </div>
+      <div class="explanation">神经网络不仅能进行二分类任务，还能进行多分类甚至回归等其他类型的任务。</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="question" data-answer="AC">
+      <h4>3. 以下哪些属于感知机或神经网络可能的输入？（多选）</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q3" value="A"> 图像的像素值</label>
+        <label><input type="checkbox" name="q3" value="B"> 仅能输入文字</label>
+        <label><input type="checkbox" name="q3" value="C"> 温度、下雨等气象信息</label>
+        <label><input type="checkbox" name="q3" value="D"> 以上都不可输入</label>
+      </div>
+      <div class="explanation">感知机或神经网络可以处理多种类型的数值输入，包括图像像素、天气数据等。</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="question" data-answer="D">
+      <h4>4. 感知机输出时需要判断阈值是否被超过，若超过则输出1，否则输出0，这一步相当于：（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q4" value="A"> 数据归一化</label>
+        <label><input type="radio" name="q4" value="B"> 权重初始化</label>
+        <label><input type="radio" name="q4" value="C"> 反向传播</label>
+        <label><input type="radio" name="q4" value="D"> 激活函数</label>
+      </div>
+      <div class="explanation">感知机最初的激活函数就是阶跃函数，通过阈值来判断输出0或1。</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="question" data-answer="C">
+      <h4>5. 神经网络相对于单个感知机的主要优势是（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q5" value="A"> 计算更简单</label>
+        <label><input type="radio" name="q5" value="B"> 不需要训练</label>
+        <label><input type="radio" name="q5" value="C"> 能够堆叠多层神经元，处理更复杂的任务</label>
+        <label><input type="radio" name="q5" value="D"> 不需要任何激活函数</label>
+      </div>
+      <div class="explanation">神经网络可以堆叠多层神经元，提取更高级的特征，解决更复杂的问题。</div>
+    </div>
+
+    <!-- 6 -->
+    <div class="question" data-answer="A">
+      <h4>6. 如果要把“要穿厚外套、要穿薄外套、不要穿外套”作为神经网络输出，最简单的思路是（单选）</h4>
+      <div class="options">
+        <label><input type="radio" name="q6" value="A"> 在输出层设置3个神经元，分别表示厚外套、薄外套和不穿外套</label>
+        <label><input type="radio" name="q6" value="B"> 在输入层只输入温度</label>
+        <label><input type="radio" name="q6" value="C"> 只需要输出0或1</label>
+        <label><input type="radio" name="q6" value="D"> 随机猜测</label>
+      </div>
+      <div class="explanation">多分类任务通常可以在输出层使用多个神经元，每个神经元对应一个类别。</div>
+    </div>
+
+    <!-- 7 -->
+    <div class="question" data-answer="AB">
+      <h4>7. 下列哪些任务可以用神经网络来完成？（多选）</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q7" value="A"> 图像识别</label>
+        <label><input type="checkbox" name="q7" value="B"> 语音识别</label>
+        <label><input type="checkbox" name="q7" value="C"> 神经网络只能做二分类</label>
+        <label><input type="checkbox" name="q7" value="D"> 无法处理任何文字信息</label>
+      </div>
+      <div class="explanation">神经网络应用非常广泛，包括图像识别、语音识别、自然语言处理等。</div>
+    </div>
+
+    <!-- 8 -->
+    <div class="question" data-answer="正确">
+      <h4>8. 判断题：感知机可以看作是一种简单的神经元模型。</h4>
+      <div class="options">
+        <label><input type="radio" name="q8" value="正确"> 正确</label>
+        <label><input type="radio" name="q8" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">感知机是最早期、最简单的神经元模型之一。</div>
+    </div>
+
+    <!-- 9 -->
+    <div class="question" data-answer="错误">
+      <h4>9. 判断题：有了单层感知机，我们就可以解决所有分类问题。</h4>
+      <div class="options">
+        <label><input type="radio" name="q9" value="正确"> 正确</label>
+        <label><input type="radio" name="q9" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">单层感知机无法处理某些复杂的非线性问题，需要多层网络来提高表达能力。</div>
+    </div>
+
+    <!-- 10 -->
+    <div class="question" data-answer="错误">
+      <h4>10. 判断题：神经网络的隐藏层越多，训练越容易，绝不会过拟合。</h4>
+      <div class="options">
+        <label><input type="radio" name="q10" value="正确"> 正确</label>
+        <label><input type="radio" name="q10" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">隐藏层越多越复杂，确实可以提高模型表达能力，但也更难训练，也更易过拟合。</div>
+    </div>
+
+    <!-- 11 -->
+    <div class="question" data-answer="BC">
+      <h4>11. 下列哪些属于神经网络常见应用？（多选）</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q11" value="A"> 洗衣机洗衣</label>
+        <label><input type="checkbox" name="q11" value="B"> 智能语音助手</label>
+        <label><input type="checkbox" name="q11" value="C"> 自动驾驶中的图像识别</label>
+        <label><input type="checkbox" name="q11" value="D"> 煮饭</label>
+      </div>
+      <div class="explanation">智能语音助手和自动驾驶中的图像识别都属于神经网络的典型应用。</div>
+    </div>
+
+    <!-- 12 -->
+    <div class="question" data-answer="错误">
+      <h4>12. 判断题：感知机只能输出“0或1”，无法进行多分类。</h4>
+      <div class="options">
+        <label><input type="radio" name="q12" value="正确"> 正确</label>
+        <label><input type="radio" name="q12" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">多个感知机并行或神经网络都可以扩展到多分类。</div>
+    </div>
+
+    <!-- 13 -->
+    <div class="question" data-answer="A">
+      <h4>13. 单选题：感知机在输出前会将输入信号进行加权求和，再加上偏置，然后传递给哪个函数？</h4>
+      <div class="options">
+        <label><input type="radio" name="q13" value="A"> 激活函数</label>
+        <label><input type="radio" name="q13" value="B"> 优化函数</label>
+        <label><input type="radio" name="q13" value="C"> 损失函数</label>
+        <label><input type="radio" name="q13" value="D"> 学习率函数</label>
+      </div>
+      <div class="explanation">加权求和后需要通过激活函数来进行非线性变换。</div>
+    </div>
+
+    <!-- 14 -->
+    <div class="question" data-answer="ABC">
+      <h4>14. 多选题：下列哪些是感知机的关键组成部分？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q14" value="A"> 权重</label>
+        <label><input type="checkbox" name="q14" value="B"> 偏置</label>
+        <label><input type="checkbox" name="q14" value="C"> 激活函数</label>
+        <label><input type="checkbox" name="q14" value="D"> 数据增强</label>
+      </div>
+      <div class="explanation">感知机包含权重、偏置和激活函数三大要素。</div>
+    </div>
+
+    <!-- 15 -->
+    <div class="question" data-answer="A">
+      <h4>15. 单选题：在感知机中，判断输出的0或1的阈值通常可以通过哪个方式来学习？</h4>
+      <div class="options">
+        <label><input type="radio" name="q15" value="A"> 通过调整偏置来实现</label>
+        <label><input type="radio" name="q15" value="B"> 无法学习，需要手动给定</label>
+        <label><input type="radio" name="q15" value="C"> 通过改变输入大小</label>
+        <label><input type="radio" name="q15" value="D"> 通过损失函数固定</label>
+      </div>
+      <div class="explanation">感知机的阈值可以用偏置表示，而偏置是可以在训练过程中更新的。</div>
+    </div>
+
+    <!-- 16 -->
+    <div class="question" data-answer="错误">
+      <h4>16. 判断题：如果只有一个神经元，就能很容易实现所有复杂任务。</h4>
+      <div class="options">
+        <label><input type="radio" name="q16" value="正确"> 正确</label>
+        <label><input type="radio" name="q16" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">只有一个神经元相当于单层感知机，无法应对复杂非线性问题。</div>
+    </div>
+
+    <!-- 17 -->
+    <div class="question" data-answer="ABC">
+      <h4>17. 多选题：当我们说神经网络“层数越多”，可能会遇到以下哪些问题？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q17" value="A"> 训练更难</label>
+        <label><input type="checkbox" name="q17" value="B"> 更易过拟合</label>
+        <label><input type="checkbox" name="q17" value="C"> 对硬件资源要求更高</label>
+        <label><input type="checkbox" name="q17" value="D"> 效果一定变差</label>
+      </div>
+      <div class="explanation">深层神经网络往往难以训练，需要更多数据，也更容易过拟合，并且对硬件资源需求更大。</div>
+    </div>
+
+    <!-- 18 -->
+    <div class="question" data-answer="正确">
+      <h4>18. 判断题：多层神经网络可以通过反向传播算法来更新权重。</h4>
+      <div class="options">
+        <label><input type="radio" name="q18" value="正确"> 正确</label>
+        <label><input type="radio" name="q18" value="错误"> 错误</label>
+      </div>
+      <div class="explanation">反向传播（Backpropagation）是训练多层网络的核心算法。</div>
+    </div>
+
+    <!-- 19 -->
+    <div class="question" data-answer="B">
+      <h4>19. 单选题：感知机模型最早是由谁提出的？（有一定知识拓展）</h4>
+      <div class="options">
+        <label><input type="radio" name="q19" value="A"> 亚历山大·格雷厄姆·贝尔</label>
+        <label><input type="radio" name="q19" value="B"> 弗兰克·罗森布拉特（Frank Rosenblatt）</label>
+        <label><input type="radio" name="q19" value="C"> 艾伦·图灵</label>
+        <label><input type="radio" name="q19" value="D"> 约翰·冯·诺依曼</label>
+      </div>
+      <div class="explanation">弗兰克·罗森布拉特于1957年提出了感知机模型。</div>
+    </div>
+
+    <!-- 20 -->
+    <div class="question" data-answer="BD">
+      <h4>20. 多选题：以下哪些表述说明了神经网络可以拓展到多分类？</h4>
+      <div class="options">
+        <label><input type="checkbox" name="q20" value="A"> 只能将输出限定为0或1</label>
+        <label><input type="checkbox" name="q20" value="B"> 在输出层设置多个神经元，每个神经元对应一个类别</label>
+        <label><input type="checkbox" name="q20" value="C"> 需要用多层感知机才能进行二分类</label>
+        <label><input type="checkbox" name="q20" value="D"> 可以通过softmax等函数实现多分类输出</label>
+      </div>
+      <div class="explanation">多分类可在输出层设置多个神经元，并利用softmax进行多分类概率分布。</div>
+    </div>
+
+    <button class="check-answer" onclick="checkAnswers()">检查答案</button>
+  </div>
+</main>
+
+<footer>
+  <p>祝学习愉快，继续加油！</p>
+</footer>
+
+<script>
+  function toggleHints(id) {
+    const hint = document.getElementById(id);
+    if(hint.classList.contains('hidden')) {
+      hint.classList.remove('hidden');
+    } else {
+      hint.classList.add('hidden');
+    }
+  }
+
+  function checkAnswers() {
+    const questions = document.querySelectorAll('.question');
+    questions.forEach((q) => {
+      const correctAnswer = q.getAttribute('data-answer');
+      const explanation = q.querySelector('.explanation');
+
+      let userAnswer = "";
+      const checkboxes = q.querySelectorAll('input[type=checkbox]');
+      const radios = q.querySelectorAll('input[type=radio]');
+
+      if (checkboxes.length > 0) {
+        // 多选题
+        let checkedValues = [];
+        checkboxes.forEach((cb) => {
+          if (cb.checked) {
+            checkedValues.push(cb.value);
+          }
+        });
+        userAnswer = checkedValues.join("");
+      } else if (radios.length > 0) {
+        // 单选题或判断题
+        radios.forEach((r) => {
+          if (r.checked) {
+            userAnswer = r.value;
+          }
+        });
+      }
+
+      // 比较答案（多选题顺序不固定，需要做一下排序再比较）
+      const sortedCorrect = correctAnswer.split('').sort().join('');
+      const sortedUser = userAnswer.split('').sort().join('');
+
+      if (sortedCorrect === sortedUser) {
+        q.style.border = '2px solid #66bb6a';
+      } else {
+        q.style.border = '2px solid #ef5350';
+      }
+
+      // 显示解析
+      explanation.style.display = 'block';
+    });
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

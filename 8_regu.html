@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>欠拟合(Underfitting)、过拟合(Overfitting)与正则化(Regularization)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            margin-bottom: 8px;
+        }
+        .content-section {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .question-block {
+            background: #fcfcfc;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+            padding: 15px;
+        }
+        .question-block h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .answers-area, .tf-area {
+            margin: 10px 0;
+        }
+        .answer-reveal {
+            display: none;
+            margin-top: 10px;
+            background: #e6f7ff;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .btn-show-answer {
+            margin-top: 10px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .btn-show-answer:hover {
+            background: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .subtitle {
+            color: #2980b9;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #e6f7ff;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .explanation {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>欠拟合(Underfitting)、过拟合(Overfitting) 与 正则化(Regularization)</h1>
+
+<div class="content-section">
+    <h2>一、基础概念与通俗案例</h2>
+    <p>在机器学习中，我们的目标是让模型既能“学到”数据中的规律，又不会“记住”数据中的噪声。下面的几个概念常用于描述这一过程：</p>
+
+    <h3>1. 欠拟合 (Underfitting)</h3>
+    <p><strong>定义：</strong>欠拟合是指模型过于简单，无法充分捕捉数据的真实规律。表现为：
+    <ul>
+      <li>训练集误差较大</li>
+      <li>测试集误差也较大</li>
+    </ul>
+    模型在训练阶段就没有学好，“学习不足”。</p>
+    <p><strong>通俗案例：</strong>想象你要用一条直线去拟合一个呈抛物线趋势的数据分布，显然一条直线远不能反映出数据的弯曲走向，就会产生“大量误差”。</p>
+    <p><strong>应对方法：</strong>
+    <ul>
+      <li>增加模型复杂度（如增加多项式特征、增加神经网络层数等）</li>
+      <li>收集更多、更丰富的训练数据</li>
+      <li>减少正则化强度（在模型过于受限制时）</li>
+    </ul>
+    </p>
+
+    <h3>2. 过拟合 (Overfitting)</h3>
+    <p><strong>定义：</strong>过拟合是指模型“记住”了训练数据中的噪声或随机特征，以至于训练误差很低，但在测试新数据时误差却明显升高。体现了模型“学过头”，没有很好地泛化到新数据。</p>
+    <p><strong>通俗案例：</strong>你可能在考试前死记硬背了大量“练习题”的答案，而不去理解题目原理。虽然练习题得分极高，但换一套全新题，你就束手无策。</p>
+    <p><strong>应对方法：</strong>
+    <ul>
+      <li>增加正则化力度（限制模型复杂度）</li>
+      <li>降低模型复杂度（减少层数、节点或深度）</li>
+      <li>使用交叉验证，合理地选择模型超参数</li>
+      <li>数据增强（如图像翻转、噪声注入等）增加样本多样性</li>
+    </ul>
+    </p>
+
+    <h3>3. 正则化 (Regularization) —— 深度解析</h3>
+    <p><strong>概念：</strong>在损失函数中加入对模型复杂度的“惩罚项”，以避免模型过度依赖某些特征或参数过大。通过控制模型的“自由度”来缓解过拟合，也能在某些情况下稍微提高模型的可解释性(如 L1)。</p>
+    <p><strong>常见类型：</strong></p>
+    <ul>
+      <li><strong>L1 正则 (Lasso)</strong>
+        <ul>
+          <li>在损失函数中增加参数绝对值之和的惩罚项 (Sum of |w<sub>i</sub>|)。</li>
+          <li>优点：能将不重要的特征系数推到 0，实现特征选择，简化模型。</li>
+          <li>缺点：在部分场景下求解收敛较困难；对于相关特征可能出现“随意选择其中之一”的情况。</li>
+          <li><strong>案例：</strong>房价预测时，如果很多特征意义不大，L1 会让这些权重直接归 0；此时模型只保留若干关键特征。</li>
+        </ul>
+      </li>
+      <li><strong>L2 正则 (Ridge)</strong>
+        <ul>
+          <li>在损失函数中增加参数平方和的惩罚项 (Sum of w<sub>i</sub>²)。</li>
+          <li>优点：让所有特征系数向 0 收缩，但不至于变成 0，模型更平滑。</li>
+          <li>缺点：无法筛掉特征，只能衰减系数的绝对值。</li>
+          <li><strong>案例：</strong>线性回归中，若担心某些系数太大导致过拟合，可用 L2 让参数都保持在一个较小范围。</li>
+        </ul>
+      </li>
+      <li><strong>Elastic Net (L1 + L2)</strong>
+        <ul>
+          <li>结合 L1 与 L2 的优势，同时具备特征选择与防止系数过大。</li>
+          <li><strong>案例：</strong>当数据特征很多且可能存在相关性时，用 Elastic Net 能兼顾稀疏化和稳定性。</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>更多例子：</strong></p>
+    <ul>
+      <li><strong>神经网络的 L2 权重衰减</strong>：在损失加上所有权重的平方和，有助于避免某些权重过大，从而抑制过拟合。</li>
+      <li><strong>Dropout (也是一种正则化手段)</strong>：随机“屏蔽”部分神经元，让网络无法过度依赖某些神经元，对抗过拟合。</li>
+      <li><strong>RNN中的正则化</strong>：循环神经网络可能更易过拟合，通过 L2、Dropout、或减少时序展开深度等方式实现。</li>
+    </ul>
+    <p>正则化的核心思路：<em>鼓励模型去“学习主要模式”，而不是过度关注某些偶然噪点。</em> 透过在损失函数上施加额外约束，模型倾向于“更简单、更平滑”的解。</p>
+</div>
+
+<div class="content-section">
+    <h2>二、进一步解析</h2>
+    <p><strong>1) 欠拟合 vs. 过拟合</strong></p>
+    <ul>
+      <li>欠拟合：可视化拟合线或曲线时，明显偏离数据整体趋势。</li>
+      <li>过拟合：在训练集上“贴合得近乎完美”，但对新数据无力。</li>
+      <li>理想情况：训练集和测试集的表现都较好。</li>
+    </ul>
+
+    <p><strong>2) 偏差-方差平衡</strong></p>
+    <ul>
+      <li>欠拟合通常对应“偏差(bias)高”</li>
+      <li>过拟合通常对应“方差(variance)高”</li>
+      <li>通过正则化、数据增广、模型结构调节等手段来平衡。</li>
+    </ul>
+
+    <p><strong>3) 正则化注意事项</strong></p>
+    <ul>
+      <li>在使用 L1/L2 时，需要选定正则化系数 (如 λ)，一般通过交叉验证来确定合适值。</li>
+      <li>若模型严重欠拟合，进一步加大正则化往往会使其更糟。</li>
+      <li>若模型过拟合明显，加大正则化或加入Dropout等措施有助于降低过拟合。</li>
+    </ul>
+</div>
+
+<div class="content-section">
+    <h2>三、20 道模拟测试题</h2>
+    <p>下面提供 20 道题，包括单选、多选、判断三种形式，帮助零基础学员理解“欠拟合、过拟合、正则化”相关知识点及案例。</p>
+
+    <!-- 单选题(8题) -->
+    <h3>单选题 (共 8 题)</h3>
+
+    <!-- Q1 -->
+    <div class="question-block">
+        <h4>1. 当模型在训练集和测试集上都表现不佳，最可能出现了什么现象？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q1" id="q1a" value="A">
+            <label for="q1a">A. 过拟合 (overfitting)</label><br/>
+            <input type="radio" name="q1" id="q1b" value="B">
+            <label for="q1b">B. 欠拟合 (underfitting)</label><br/>
+            <input type="radio" name="q1" id="q1c" value="C">
+            <label for="q1c">C. 正则化太强</label><br/>
+            <input type="radio" name="q1" id="q1d" value="D">
+            <label for="q1d">D. 数据量无限多</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer1')">显示解析</button>
+        <div class="answer-reveal" id="answer1">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>训练和测试都不佳，通常说明模型学习能力不足，未很好拟合数据，即欠拟合。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block">
+        <h4>2. 若一个模型在训练集上几乎无误差，但在测试集上误差很大，则最可能？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q2" id="q2a" value="A">
+            <label for="q2a">A. 欠拟合</label><br/>
+            <input type="radio" name="q2" id="q2b" value="B">
+            <label for="q2b">B. 过拟合</label><br/>
+            <input type="radio" name="q2" id="q2c" value="C">
+            <label for="q2c">C. 同时欠拟合和过拟合</label><br/>
+            <input type="radio" name="q2" id="q2d" value="D">
+            <label for="q2d">D. 以上都不是</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer2')">显示解析</button>
+        <div class="answer-reveal" id="answer2">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>训练完美、测试差是典型过拟合的表现。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block">
+        <h4>3. 在回归模型中，引入“L2 正则(Ridge)”的主要目的是什么？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q3" id="q3a" value="A">
+            <label for="q3a">A. 使部分系数收敛到 0</label><br/>
+            <input type="radio" name="q3" id="q3b" value="B">
+            <label for="q3b">B. 惩罚系数过大的情况，让参数更平滑地接近 0</label><br/>
+            <input type="radio" name="q3" id="q3c" value="C">
+            <label for="q3c">C. 专门用于多项式回归</label><br/>
+            <input type="radio" name="q3" id="q3d" value="D">
+            <label for="q3d">D. 只能在神经网络中使用</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer3')">显示解析</button>
+        <div class="answer-reveal" id="answer3">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>L2正则是“Ridge回归”，通过平方惩罚让系数变小但不一定归0，从而控制过拟合。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block">
+        <h4>4. 下列哪种方式通常不会降低过拟合风险？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q4" id="q4a" value="A">
+            <label for="q4a">A. 增大正则化系数</label><br/>
+            <input type="radio" name="q4" id="q4b" value="B">
+            <label for="q4b">B. 减少特征或网络层数</label><br/>
+            <input type="radio" name="q4" id="q4c" value="C">
+            <label for="q4c">C. 增加模型复杂度</label><br/>
+            <input type="radio" name="q4" id="q4d" value="D">
+            <label for="q4d">D. 使用更多数据或数据增强</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer4')">显示解析</button>
+        <div class="answer-reveal" id="answer4">
+            <strong>正确答案：C</strong>
+            <div class="explanation">
+                <p>增加模型复杂度通常会加剧过拟合风险，其余方法都是减少过拟合的常见手段。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block">
+        <h4>5. 在深度学习中，为防止过拟合可采用的策略不包括：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q5" id="q5a" value="A">
+            <label for="q5a">A. L2 权重衰减</label><br/>
+            <input type="radio" name="q5" id="q5b" value="B">
+            <label for="q5b">B. 加大隐层神经元数量</label><br/>
+            <input type="radio" name="q5" id="q5c" value="C">
+            <label for="q5c">C. Dropout</label><br/>
+            <input type="radio" name="q5" id="q5d" value="D">
+            <label for="q5d">D. 数据增广（augmentation）</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer5')">显示解析</button>
+        <div class="answer-reveal" id="answer5">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>加大隐层神经元数量会提高模型复杂度，反而加剧过拟合；其余都能对抗过拟合。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block">
+        <h4>6. 对于线性回归，L1 正则(Lasso)和 L2 正则(Ridge)的区别是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q6" id="q6a" value="A">
+            <label for="q6a">A. L1会让部分系数变为0，L2只能让系数变小但不为0</label><br/>
+            <input type="radio" name="q6" id="q6b" value="B">
+            <label for="q6b">B. L2会让部分系数变为负数</label><br/>
+            <input type="radio" name="q6" id="q6c" value="C">
+            <label for="q6c">C. L1 必须与L2结合才能使用</label><br/>
+            <input type="radio" name="q6" id="q6d" value="D">
+            <label for="q6d">D. 两者效果无任何差异</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer6')">显示解析</button>
+        <div class="answer-reveal" id="answer6">
+            <strong>正确答案：A</strong>
+            <div class="explanation">
+                <p>L1(Lasso)具有特征选择功能，可把系数变成0；L2(Ridge)让系数普遍变小，却不直接清零。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block">
+        <h4>7. 若模型表现出欠拟合，下面的改进不正确的是：</h4>
+        <div class="answers-area">
+            <input type="radio" name="q7" id="q7a" value="A">
+            <label for="q7a">A. 增加模型复杂度或深度</label><br/>
+            <input type="radio" name="q7" id="q7b" value="B">
+            <label for="q7b">B. 引入更多特征或多项式</label><br/>
+            <input type="radio" name="q7" id="q7c" value="C">
+            <label for="q7c">C. 减少正则化强度</label><br/>
+            <input type="radio" name="q7" id="q7d" value="D">
+            <label for="q7d">D. 增加正则化系数</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer7')">显示解析</button>
+        <div class="answer-reveal" id="answer7">
+            <strong>正确答案：D</strong>
+            <div class="explanation">
+                <p>增大正则化会进一步限制模型，可能加重欠拟合；其余方法都能帮忙减少欠拟合。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block">
+        <h4>8. 在调参时，若发现训练集和测试集差距过大，该如何优先改动？</h4>
+        <div class="answers-area">
+            <input type="radio" name="q8" id="q8a" value="A">
+            <label for="q8a">A. 调大模型复杂度</label><br/>
+            <input type="radio" name="q8" id="q8b" value="B">
+            <label for="q8b">B. 增大正则化强度</label><br/>
+            <input type="radio" name="q8" id="q8c" value="C">
+            <label for="q8c">C. 减少训练数据</label><br/>
+            <input type="radio" name="q8" id="q8d" value="D">
+            <label for="q8d">D. 不做任何调整</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer8')">显示解析</button>
+        <div class="answer-reveal" id="answer8">
+            <strong>正确答案：B</strong>
+            <div class="explanation">
+                <p>训练-测试差距大意味着过拟合，典型手段是加大正则化或简化模型等。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 多选题(6题) -->
+    <h3>多选题 (共 6 题)</h3>
+
+    <!-- Q9 -->
+    <div class="question-block">
+        <h4>9. 关于欠拟合，下列说法正确的是：</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q9" id="q9a" value="A">
+            <label for="q9a">A. 训练集准确率低，测试集准确率也低</label><br/>
+            <input type="checkbox" name="q9" id="q9b" value="B">
+            <label for="q9b">B. 模型显然“学过头”了</label><br/>
+            <input type="checkbox" name="q9" id="q9c" value="C">
+            <label for="q9c">C. 通常可尝试增加模型复杂度</label><br/>
+            <input type="checkbox" name="q9" id="q9d" value="D">
+            <label for="q9d">D. 也称为“高偏差”问题</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer9')">显示解析</button>
+        <div class="answer-reveal" id="answer9">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p>B描述的是“过拟合”，与A相反。欠拟合往往偏差高，需要提升模型表达能力。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block">
+        <h4>10. 关于过拟合，下列哪些描述正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q10" id="q10a" value="A">
+            <label for="q10a">A. 训练集表现很好，但测试集表现差</label><br/>
+            <input type="checkbox" name="q10" id="q10b" value="B">
+            <label for="q10b">B. 通常可通过增加正则化来缓解</label><br/>
+            <input type="checkbox" name="q10" id="q10c" value="C">
+            <label for="q10c">C. 也称为“高方差”问题</label><br/>
+            <input type="checkbox" name="q10" id="q10d" value="D">
+            <label for="q10d">D. 通常可通过简化模型、使用数据增强来对抗</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer10')">显示解析</button>
+        <div class="answer-reveal" id="answer10">
+            <strong>正确答案：A, B, C, D</strong>
+            <div class="explanation">
+                <p>过拟合兼具这四项特征/应对措施。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-block">
+        <h4>11. 关于正则化，下列哪些说法正确？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q11" id="q11a" value="A">
+            <label for="q11a">A. L1正则可实现特征选择功能</label><br/>
+            <input type="checkbox" name="q11" id="q11b" value="B">
+            <label for="q11b">B. L2正则可以阻止参数变得过大，但不直接变0</label><br/>
+            <input type="checkbox" name="q11" id="q11c" value="C">
+            <label for="q11c">C. 既能解决欠拟合也能解决过拟合</label><br/>
+            <input type="checkbox" name="q11" id="q11d" value="D">
+            <label for="q11d">D. L1与L2结合即Elastic Net</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer11')">显示解析</button>
+        <div class="answer-reveal" id="answer11">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p>正则化一般用来对抗过拟合(模型过于复杂)，若模型欠拟合再加正则往往会更糟，不是万能。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block">
+        <h4>12. 当模型出现过拟合时，下列哪些措施可能有效？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q12" id="q12a" value="A">
+            <label for="q12a">A. 减少模型参数或层数</label><br/>
+            <input type="checkbox" name="q12" id="q12b" value="B">
+            <label for="q12b">B. 减少正则化系数</label><br/>
+            <input type="checkbox" name="q12" id="q12c" value="C">
+            <label for="q12c">C. 数据扩增或采集更多样本</label><br/>
+            <input type="checkbox" name="q12" id="q12d" value="D">
+            <label for="q12d">D. 使用交叉验证挑选最佳超参数</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer12')">显示解析</button>
+        <div class="answer-reveal" id="answer12">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p>B是减少正则化，可能会使过拟合更严重，而不是缓解。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block">
+        <h4>13. 当模型欠拟合时，下列哪些操作是合理的？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q13" id="q13a" value="A">
+            <label for="q13a">A. 增加模型复杂度</label><br/>
+            <input type="checkbox" name="q13" id="q13b" value="B">
+            <label for="q13b">B. 减小正则化惩罚强度</label><br/>
+            <input type="checkbox" name="q13" id="q13c" value="C">
+            <label for="q13c">C. 减少训练数据量</label><br/>
+            <input type="checkbox" name="q13" id="q13d" value="D">
+            <label for="q13d">D. 添加更多特征或多项式项</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer13')">显示解析</button>
+        <div class="answer-reveal" id="answer13">
+            <strong>正确答案：A, B, D</strong>
+            <div class="explanation">
+                <p>欠拟合通常需要“增强模型表达力”，减少训练数据只会更糟(C错)。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block">
+        <h4>14. 欠拟合和过拟合都表明模型泛化能力不足，但具体原因有差异，下列描述正确的是？</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q14" id="q14a" value="A">
+            <label for="q14a">A. 欠拟合指模型太简单，过拟合指模型太复杂</label><br/>
+            <input type="checkbox" name="q14" id="q14b" value="B">
+            <label for="q14b">B. 欠拟合=高方差，过拟合=高偏差</label><br/>
+            <input type="checkbox" name="q14" id="q14c" value="C">
+            <label for="q14c">C. 欠拟合常需增加复杂度，过拟合常需减小复杂度</label><br/>
+            <input type="checkbox" name="q14" id="q14d" value="D">
+            <label for="q14d">D. 在训练集与测试集表现差异不大时通常是欠拟合</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer14')">显示解析</button>
+        <div class="answer-reveal" id="answer14">
+            <strong>正确答案：A, C, D</strong>
+            <div class="explanation">
+                <p>B错了，恰好相反：欠拟合=高偏差；过拟合=高方差。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question-block">
+        <h4>15. 关于在神经网络中使用 L2 正则化 (weight decay) 的说法正确的是：</h4>
+        <div class="answers-area">
+            <input type="checkbox" name="q15" id="q15a" value="A">
+            <label for="q15a">A. 可减少模型对训练数据的过度依赖</label><br/>
+            <input type="checkbox" name="q15" id="q15b" value="B">
+            <label for="q15b">B. 会让所有权重都趋向于更小，但不一定是 0</label><br/>
+            <input type="checkbox" name="q15" id="q15c" value="C">
+            <label for="q15c">C. 等价于在每次反向传播时再额外加一些噪声</label><br/>
+            <input type="checkbox" name="q15" id="q15d" value="D">
+            <label for="q15d">D. 只能在线性回归中使用</label><br/>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer15')">显示解析</button>
+        <div class="answer-reveal" id="answer15">
+            <strong>正确答案：A, B</strong>
+            <div class="explanation">
+                <p>C描述不准确，L2不等价于加噪声；D错误，神经网络也可用L2正则。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 判断题(6题) -->
+    <h3>判断题 (共 6 题)</h3>
+
+    <!-- Q16 -->
+    <div class="question-block">
+        <h4>16. 判断：欠拟合和过拟合都属于模型泛化能力不足的问题，但根源不同。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q16" id="q16t" value="True">
+            <label for="q16t">True</label>
+            <input type="radio" name="q16" id="q16f" value="False">
+            <label for="q16f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer16')">显示解析</button>
+        <div class="answer-reveal" id="answer16">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>欠拟合=模型太简单；过拟合=模型太复杂。二者均导致泛化不佳。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block">
+        <h4>17. 判断：若在回归任务中发现部分特征系数为 0，这是典型 L2 正则效果。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q17" id="q17t" value="True">
+            <label for="q17t">True</label>
+            <input type="radio" name="q17" id="q17f" value="False">
+            <label for="q17f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer17')">显示解析</button>
+        <div class="answer-reveal" id="answer17">
+            <strong>正确答案：False</strong>
+            <div class="explanation">
+                <p>L1 (Lasso) 才能把系数直接推到 0；L2(Ridge)只会让系数变小但不会为0。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-block">
+        <h4>18. 判断：数据量越大，过拟合风险就越小。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q18" id="q18t" value="True">
+            <label for="q18t">True</label>
+            <input type="radio" name="q18" id="q18f" value="False">
+            <label for="q18f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer18')">显示解析</button>
+        <div class="answer-reveal" id="answer18">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>在相同模型复杂度下，更多数据通常可减少过拟合几率。但也并非绝对，还需看数据质量。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-block">
+        <h4>19. 判断：将网络隐层节点或树模型分支数增加一般有助于减少欠拟合。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q19" id="q19t" value="True">
+            <label for="q19t">True</label>
+            <input type="radio" name="q19" id="q19f" value="False">
+            <label for="q19f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer19')">显示解析</button>
+        <div class="answer-reveal" id="answer19">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>增加模型复杂度可使其更容易拟合数据，从而缓解“学习不足”。但要注意不要过度导致过拟合。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-block">
+        <h4>20. 判断：在神经网络中，除了 L1/L2 正则外，还可以使用 Dropout 来减少过拟合。</h4>
+        <div class="tf-area">
+            <input type="radio" name="q20" id="q20t" value="True">
+            <label for="q20t">True</label>
+            <input type="radio" name="q20" id="q20f" value="False">
+            <label for="q20f">False</label>
+        </div>
+        <button class="btn-show-answer" onclick="showAnswer('answer20')">显示解析</button>
+        <div class="answer-reveal" id="answer20">
+            <strong>正确答案：True</strong>
+            <div class="explanation">
+                <p>Dropout是一种随机“丢弃”神经元连接的手段，也是一种正则化方式。</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function showAnswer(id) {
+    const revealDiv = document.getElementById(id);
+    if (revealDiv.style.display === 'none' || revealDiv.style.display === '') {
+        revealDiv.style.display = 'block';
+    } else {
+        revealDiv.style.display = 'none';
+    }
+}
+</script>
+
+</body>
+</html>

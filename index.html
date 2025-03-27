@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>机器学习交互式课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#fafafa] text-[#111] min-h-screen">
+    <div class="container mx-auto px-4 py-6 max-w-full">
+        <header class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-semibold tracking-tight">机器学习交互式课程</h1>
+                    <p class="text-gray-500 mt-1.5 font-geist-mono">Machine Learning Interactive Course</p>
+                </div>
+                <button id="back-button" class="hidden px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors flex items-center gap-2 text-sm">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>返回课程列表</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="min-h-[calc(100vh-200px)]">
+            <div id="course-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl mx-auto">
+                <!-- Course cards will be inserted here by JavaScript -->
+            </div>
+
+            <div id="multi-link-selector" class="hidden max-w-2xl mx-auto">
+                <!-- Content for multiple link selection will be inserted here -->
+            </div>
+
+            <div id="course-content" class="hidden w-full h-full">
+                <iframe id="course-iframe" class="w-full rounded-lg border border-gray-200" frameborder="0"></iframe>
+            </div>
+        </main>
+
+        <footer class="mt-8 pt-6 border-t border-gray-200 text-center text-gray-500 text-sm">
+            <p>© 2025 机器学习交互式课程 by Carson Yan</p>
+            <p>Machine Learning Interactive Course</p>
+        </footer>
+    </div>
+
+    <script src="icons.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Prevent zooming on the webpage
+        window.addEventListener("wheel", (e)=> {
+            const isPinching = e.ctrlKey
+            if(isPinching) e.preventDefault()
+        }, { passive: false })
+    </script>
+</body>
+</html>

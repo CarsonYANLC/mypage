@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>Python 模块学习</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+      line-height: 1.8;
+      margin: 0;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+      margin-bottom: 0.5em;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 14px;
+    }
+    code {
+      font-family: "Consolas", monospace;
+    }
+    ul {
+      margin-left: 1.5em;
+    }
+    button {
+      padding: 8px 16px;
+      margin-top: 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .quiz {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .quiz p {
+      font-weight: bold;
+      margin-bottom: 0.5em;
+    }
+    select {
+      width: 100%;
+      padding: 6px;
+      margin-top: 5px;
+    }
+    #fillSection {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    #fillSection p {
+      margin: 0.5em 0;
+    }
+    label {
+      display: inline-block;
+      margin: 5px 0;
+    }
+    input[type="text"] {
+      font-family: monospace;
+    }
+    #fillResult {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Python 模块学习</h1>
+
+  <h2>模块简介</h2>
+  <p>在 Python 中，<strong>模块</strong>是一个包含 Python 定义和语句的文件，帮助将代码组织成可管理的部分。使用模块可以带来以下好处：</p>
+  <ul>
+    <li>代码组织和重用性</li>
+    <li>命名空间管理</li>
+    <li>实现隐藏</li>
+    <li>跨多个项目共享代码</li>
+  </ul>
+
+  <h2>导入模块的方式</h2>
+  <pre><code># 导入整个模块
+import math
+
+# 从模块中导入特定项目
+from math import sqrt, pi
+
+# 从模块中导入所有项目（不推荐）
+from math import *
+
+# 使用别名导入
+import math as m</code></pre>
+
+  <!-- ================== 填空式练习 ================== -->
+  <div id="fillSection">
+    <h2>🎯 自己尝试</h2>
+    <p>请完成下面的 Python 代码，导入 <code>random</code> 模块并生成 <strong>1 到 10</strong> 之间的随机整数。</p>
+
+    <p><strong>第一步：</strong>导入 random 模块。</p>
+    <label>import&nbsp;<input type="text" id="importInput" size="10" placeholder="填模块名"></label>
+
+    <p><strong>第二步：</strong>使用模块中的函数生成随机数。</p>
+    <label><span>random_number = </span><input type="text" id="randFuncInput" size="25" placeholder="填函数表达式"></label>
+
+    <p><strong>第三步：</strong>打印输出结果：</p>
+    <pre><code>print(f"随机数：{random_number}")</code></pre>
+
+    <button onclick="checkFillIn()">检查答案</button>
+    <div id="fillResult"></div>
+
+    <hr>
+    <h3>🧠 小提示</h3>
+    <ul>
+      <li>Python 中，模块需要使用 <code>import 模块名</code> 语句导入。</li>
+      <li><code>random</code> 模块里常用的函数 <code>randint(a, b)</code> 会返回 <strong>a 到 b（包含 a 和 b）</strong> 的随机整数。</li>
+      <li>函数调用格式：<code>模块名.函数名(参数)</code>。</li>
+    </ul>
+  </div>
+  <!-- ================== /填空式练习 ================== -->
+
+  <h2>Python 标准库</h2>
+  <p>Python 标准库包含许多有用的模块和工具，随 Python 一起安装。常见模块有：</p>
+  <ul>
+    <li><b>math</b> - 数学函数</li>
+    <li><b>random</b> - 随机数生成</li>
+    <li><b>datetime</b> - 日期和时间</li>
+    <li><b>os</b> - 操作系统接口</li>
+    <li><b>sys</b> - 系统参数和函数</li>
+    <li><b>json</b> - JSON 数据处理</li>
+    <li><b>re</b> - 正则表达式</li>
+    <li><b>collections</b> - 特殊容器数据类型</li>
+  </ul>
+
+  <h3>使用标准库可以大大提高开发效率，减少"重新发明轮子"的情况。在编写新代码前，建议先查看标准库中是否已有解决方案。示例：使用 <code>datetime</code> 模块获取当前日期和时间</h3>
+  <pre><code>import datetime
+
+current_time = datetime.datetime.now()
+print(f"当前日期和时间: {current_time}")
+
+formatted_date = current_time.strftime("%Y-%m-%d %H:%M:%S")
+print(f"格式化后: {formatted_date}")</code></pre>
+
+  <h2>知识检查</h2>
+  <div class="quiz">
+    <p>1. 从 math 模块导入 <code>sqrt</code> 函数的正确方式是什么？</p>
+    <select id="quiz1">
+      <option>选择你的答案</option>
+      <option>import math.sqrt</option>
+      <option>from math import sqrt</option>
+      <option>import sqrt from math</option>
+      <option>from sqrt import math</option>
+    </select>
+    <div id="answer1" style="margin-top: 5px;"></div>
+  </div>
+
+  <div class="quiz">
+    <p>2. 关于 Python 模块的哪一种说法是不正确的？</p>
+    <select id="quiz2">
+      <option>选择你的答案</option>
+      <option>模块是包含 Python 定义和语句的文件。</option>
+      <option>模块必须先导入才能使用。</option>
+      <option>Python 模块必须有 .py 扩展名才能有效。</option>
+      <option>导入模块时，Python 会自动执行其中的所有代码。</option>
+    </select>
+    <div id="answer2" style="margin-top: 5px;"></div>
+  </div>
+
+  <button onclick="checkAnswers()">检查答案</button>
+
+  <!-- ================== JavaScript脚本区 ================== -->
+  <script>
+    /********** 1. 填空式练习的检查函数 **********/
+    function checkFillIn() {
+      const importVal = document.getElementById("importInput").value.trim();
+      const funcVal = document.getElementById("randFuncInput").value.trim();
+      const result = document.getElementById("fillResult");
+
+      // 正确答案判断
+      let correctImport = (importVal === "random");
+      let correctFunc = (
+        funcVal === "random.randint(1, 10)" ||
+        funcVal === "random.randint(1,10)"
+      );
+
+      // 检查结果
+      if (correctImport && correctFunc) {
+        result.innerHTML = "✅ 太棒了！你成功完成了模块导入和函数调用的练习！";
+        result.style.color = "green";
+      } else {
+        result.innerHTML = "❌ 有点小问题：<br>";
+        result.style.color = "red";
+        if (!correctImport) {
+          result.innerHTML += "- 请检查导入的模块名称是否为 <code>random</code><br>";
+        }
+        if (!correctFunc) {
+          result.innerHTML += "- 请使用 <code>random.randint(1, 10)</code> 生成随机数<br>";
+        }
+      }
+    }
+
+    /********** 2. 知识检查多选题 **********/
+    function checkAnswers() {
+      const ans1 = document.getElementById("quiz1").value;
+      const ans2 = document.getElementById("quiz2").value;
+      const out1 = document.getElementById("answer1");
+      const out2 = document.getElementById("answer2");
+
+      // 题1答案
+      if (ans1 === "from math import sqrt") {
+        out1.innerHTML = "✅ 正确！";
+        out1.style.color = "green";
+      } else {
+        out1.innerHTML = "❌ 不正确。正确答案是：from math import sqrt";
+        out1.style.color = "red";
+      }
+
+      // 题2答案
+      if (ans2 === "Python 模块必须有 .py 扩展名才能有效。") {
+        out2.innerHTML = "✅ 正确！Python模块也可以用C语言或其他语言编写，并不一定只有 .py 扩展名。";
+        out2.style.color = "green";
+      } else {
+        out2.innerHTML = "❌ 不正确。正确答案是：Python 模块必须有 .py 扩展名才能有效。";
+        out2.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>
